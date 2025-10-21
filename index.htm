@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复杂系统教学科研团队</title>
+    <style>
+        :root {
+            --primary-color: #750075;
+            --secondary-color: #0000C6;
+            --accent-color: #0066CC;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --font-large: 1.2rem;
+            --font-xlarge: 1.5rem;
+            --font-xxlarge: 2rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: var(--font-xxlarge);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            font-size: var(--font-xlarge);
+            margin: 30px 0 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: var(--font-large);
+            margin: 15px 0;
+            color: var(--secondary-color);
+        }
+        
+        p {
+            font-size: var(--font-large);
+            margin-bottom: 20px;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .member-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .member-photo {
+            width: 100%;
+            height: 250px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 10px;
+        }
+        
+        .member-photo img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .member-card:hover .member-photo img {
+            transform: scale(1.05);
+        }
+        
+        .member-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .member-name {
+            font-size: var(--font-large);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .member-title {
+            font-size: var(--font-large);
+            color: var(--accent-color);
+            margin: 5px 0;
+        }
+        
+        .member-contact {
+            font-size: var(--font-large);
+            margin-top: 10px;
+        }
+        
+        .chief {
+            border-top: 5px solid var(--accent-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            font-size: var(--font-large);
+            text-decoration: none;
+            border-radius: 50px;
+            margin: 20px 0;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        @media (max-width: 768px) {
+            .team-section {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            p, .member-name, .member-title, .member-contact {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>复杂系统教学科研团队</h1>
+            <p>探索复杂系统科学的前沿理论与应用</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="intro">
+            <h2>团队概况</h2>
+            <p>本团队致力于复杂系统科学的教学与研究工作，聚焦于复杂网络、生物种群、多主体系统、演化博弈论等前沿领域。团队由14位成员组成，包括3位首席教授、6位副教授和5位讲师（8位博士）。</p>
+            <p>我们的研究涵盖理论探索与应用实践，在国内外高水平期刊发表论文100余篇，承担国家自然科学基金、省自然科学基金项目等多项科研任务。</p>
+        </section>
+        
+        <section class="team-members">
+            <h2>团队成员（排名不分先后）</h2>
+            <div class="team-section">
+                <!-- 首席教授 -->
+                <div class="member-card chief">
+                    <div class="member-photo">
+                        <img src="shen.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">申传胜（副校长）</div>
+                        <div class="member-title">教授（博士）</div>
+                        <div class="member-contact">邮箱: csshen@mail.ustc.edu.cn</div>
+                        <div class="member-contact">个人主页:  <a href="http://staff.aqnu.edu.cn/csshen" target="_blank">http://staff.aqnu.edu.cn/csshen</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card chief">
+                    <div class="member-photo">
+                        <img src="wudaiy.png">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">伍代勇</div>
+                        <div class="member-title">教授(博士）</div>
+                        <div class="member-contact">邮箱: wudy9901@163.com</div>
+                        <div class="member-contact">个人主页: <a href="https://slxy.aqnu.edu.cn/info/1901/76392.htm" target="_blank">https://slxy.aqnu.edu.cn/info/1901/76392.htm</a></div>
+                    </div>
+                </div>
+                                               
+                <!-- 副教授 -->
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="gao.png">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">高见</div>
+                        <div class="member-title">副教授（博士）</div>
+                        <div class="member-contact">邮箱: gaojian1612@163.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://gaojianhomepage.github.io/" target="_blank"> https://gaojianhomepage.github.io/</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="wuchaoy.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">吴超云</div>
+                        <div class="member-title">副教授（博士）</div>
+                        <div class="member-contact">邮箱: platonwu@126.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76782.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76782.htm</a></div>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="fan.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">范立刚</div>
+                        <div class="member-title">副教授</div>
+                        <div class="member-contact">邮箱: fanligang@aqnu.edu.cn</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76542.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76542.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="chendy.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">陈定元</div>
+                        <div class="member-title">副教授</div>
+                        <div class="member-contact">邮箱: chendy@aqnu.edu.cn</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76582.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76582.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="yuesf.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">岳素芳</div>
+                        <div class="member-title">副教授</div>
+                        <div class="member-contact">邮箱: ysf6510@126.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76642.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76642.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="yelh.png">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">叶陆红</div>
+                        <div class="member-title">副教授（博士）</div>
+                        <div class="member-contact">邮箱: leaf07@163.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/88822.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/88822.htm</a></div>
+                    </div>
+                </div>
+                
+                <!-- 讲师 -->
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="biy.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">毕艳</div>
+                        <div class="member-title">讲师（博士）</div>
+                        <div class="member-contact">邮箱: biyan_gzdx@163.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/80342.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/80342.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="yangt.png">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">杨婷</div>
+                        <div class="member-title">讲师（博士）</div>
+                        <div class="member-contact">邮箱: tingy@mail.ustc.edu.cn</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79812.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79812.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="fengm.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">冯苗 </div>
+                        <div class="member-title">讲师（博士）</div>
+                        <div class="member-contact">邮箱: shnumiaofeng@163.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79472.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79472.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="longys.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">龙永尚</div>
+                        <div class="member-title">讲师（博士）</div>
+                        <div class="member-contact">邮箱: lyslongyongshang@163.com</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79492.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79492.htm</a></div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="wangxy.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">王小艳</div>
+                        <div class="member-title">讲师（博士）</div>
+                        <div class="member-contact">邮箱: 062404@aqnu.edu.cn</div>
+                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79382.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79382.htm</a></div>
+                    </div>
+                </div>
+                <div class="member-card chief">
+                    <div class="member-photo">
+                        <img src="hao.png">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">郝庆一</div>
+                        <div class="member-title">教授（博士）</div>
+                        <div class="member-contact">邮箱: haoqyi@126.com</div>
+                        <div class="member-contact">个人主页: <a href="https://qingyh.github.io/" target="_blank">https://qingyh.github.io/</a></div>
+                    </div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="gamep.jpg">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name"></div>
+                        <div class="member-title"><a href="./game_introduce.htm"><p style="color: blue; font-size: 30px;">演化博弈论简介</p></a></div>
+                        <div class="member-contact"></div>
+                        <div class="member-contact"></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        
+        
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>复杂系统教学科研团队 &copy; 2025 版权所有</p>
+            <p>地址: 安庆市集贤北路1318号 邮编: 246133</p>
+        </div>
+    </footer>
+</body>
+
+</html>
+
+
+
+
+

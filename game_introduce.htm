@@ -1,0 +1,894 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演化博弈论交互式学习平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8f94fb;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #51cf66;
+            --warning-color: #ffd43b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+        }
+        
+        h3 {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin: 20px 0 10px;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .game-panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .value-display {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .matrix {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 2px solid var(--primary-color);
+            padding: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 2px;
+            margin: 20px 0;
+            border: 2px solid var(--dark-color);
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+        
+        .cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cooperator {
+            background-color: var(--success-color);
+        }
+        
+        .defector {
+            background-color: var(--accent-color);
+        }
+        
+        .strategy-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--secondary-color);
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>演化博弈论交互式学习平台</h1>
+            <p>探索合作与竞争的演化动态</p>
+        </header>
+        
+        <section class="intro">
+            <h2>什么是演化博弈论？</h2>
+            <p>演化博弈论结合了博弈论和演化生物学，研究在群体中策略如何随时间演化。与经典博弈论不同，它不假设完全理性的参与者，而是关注有限理性的个体如何通过模仿、学习或自然选择来调整策略。</p>
+            <p>在本平台中，您可以探索两个经典博弈模型：<strong>囚徒困境</strong>和<strong>公共品博弈</strong>。调整参数，观察策略如何演化，以及合作行为在什么条件下能够维持。</p>
+        </section>
+        
+        <div class="game-container">
+            <!-- 囚徒困境面板 -->
+            <div class="game-panel">
+                <h2>囚徒困境</h2>
+                <p>在囚徒困境中，两名囚徒被分开审讯。他们可以选择合作（保持沉默）或背叛（指证对方）。尽管双方合作能带来更好的集体结果，但个体理性导致双方都选择背叛。</p>
+                
+                <div class="matrix">
+                    <h3>收益矩阵</h3>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>合作</th>
+                            <th>背叛</th>
+                        </tr>
+                        <tr>
+                            <th>合作</th>
+                            <td>R = 3</td>
+                            <td>S = 0</td>
+                        </tr>
+                        <tr>
+                            <th>背叛</th>
+                            <td>T = 5</td>
+                            <td>P = 1</td>
+                        </tr>
+                    </table>
+                    <p>其中：R=奖励，S=受骗收益，T=诱惑，P=惩罚</p>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="pd-r">奖励 (R)</label>
+                        <input type="range" id="pd-r" min="1" max="10" step="0.1" value="3">
+                        <div class="value-display" id="pd-r-value">3</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pd-t">诱惑 (T)</label>
+                        <input type="range" id="pd-t" min="1" max="10" step="0.1" value="5">
+                        <div class="value-display" id="pd-t-value">5</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pd-s">受骗收益 (S)</label>
+                        <input type="range" id="pd-s" min="0" max="5" step="0.1" value="0">
+                        <div class="value-display" id="pd-s-value">0</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pd-p">惩罚 (P)</label>
+                        <input type="range" id="pd-p" min="0" max="5" step="0.1" value="1">
+                        <div class="value-display" id="pd-p-value">1</div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="pd-initial-coop">初始合作比例</label>
+                    <input type="range" id="pd-initial-coop" min="0" max="100" value="50">
+                    <div class="value-display" id="pd-initial-coop-value">50%</div>
+                </div>
+                
+                <button id="pd-reset">重置模拟</button>
+                <button id="pd-start">开始/暂停模拟</button>
+                <button id="pd-step">单步执行</button>
+                
+                <h3>合作比例演化</h3>
+                <div class="chart-container">
+                    <canvas id="pd-chart"></canvas>
+                </div>
+                
+                <h3>策略空间分布</h3>
+                <div class="grid-container" id="pd-grid"></div>
+                <div class="strategy-legend">
+                    <div class="legend-item">
+                        <div class="legend-color cooperator"></div>
+                        <span>合作者</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color defector"></div>
+                        <span>背叛者</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 公共品博弈面板 -->
+            <div class="game-panel">
+                <h2>公共品博弈</h2>
+                <p>在公共品博弈中，一组参与者决定是否向公共池贡献资源。所有贡献会被乘以一个因子后平均分配给所有参与者，无论他们是否贡献。这产生了搭便车问题：不贡献的人也能从他人的贡献中获益。</p>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="pg-multiplier">乘数因子</label>
+                        <input type="range" id="pg-multiplier" min="1" max="5" step="0.1" value="2">
+                        <div class="value-display" id="pg-multiplier-value">2</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pg-cost">贡献成本</label>
+                        <input type="range" id="pg-cost" min="0.5" max="5" step="0.1" value="1">
+                        <div class="value-display" id="pg-cost-value">1</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="pg-group-size">小组规模</label>
+                        <input type="range" id="pg-group-size" min="2" max="10" value="4">
+                        <div class="value-display" id="pg-group-size-value">4</div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="pg-initial-coop">初始合作比例</label>
+                    <input type="range" id="pg-initial-coop" min="0" max="100" value="50">
+                    <div class="value-display" id="pg-initial-coop-value">50%</div>
+                </div>
+                
+                <button id="pg-reset">重置模拟</button>
+                <button id="pg-start">开始/暂停模拟</button>
+                <button id="pg-step">单步执行</button>
+                
+                <h3>合作比例演化</h3>
+                <div class="chart-container">
+                    <canvas id="pg-chart"></canvas>
+                </div>
+                
+                <h3>策略空间分布</h3>
+                <div class="grid-container" id="pg-grid"></div>
+                <div class="strategy-legend">
+                    <div class="legend-item">
+                        <div class="legend-color cooperator"></div>
+                        <span>贡献者</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color defector"></div>
+                        <span>搭便车者</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <section class="intro">
+            <h2>学习策略方法</h2>
+            <p>在这些模拟中，个体使用<strong>模仿最优响应</strong>策略：每个时间步，个体会观察邻居的收益，并以一定概率模仿收益最高的邻居的策略。</p>
+            <p>这种学习规则反映了现实世界中人们通过观察和模仿成功者来调整自己行为的过程。通过调整模型参数，您可以探索不同条件下合作行为的演化动态。</p>
+        </section>
+        
+        <footer>
+            <p>演化博弈论研究团队 &copy; 2023 | 设计用于本科生教学</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化变量
+        let pdChart, pgChart;
+        let pdIsRunning = false, pgIsRunning = false;
+        let pdInterval, pgInterval;
+        let pdTime = 0, pgTime = 0;
+        
+        // 初始化网格
+        const gridSize = 20;
+        let pdGrid = initializeGrid(gridSize);
+        let pgGrid = initializeGrid(gridSize);
+        
+        // 初始化图表
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            initializeGrids();
+            setupEventListeners();
+            updateValueDisplays();
+        });
+        
+        // 初始化网格函数
+        function initializeGrid(size) {
+            const grid = [];
+            for (let i = 0; i < size; i++) {
+                grid[i] = [];
+                for (let j = 0; j < size; j++) {
+                    grid[i][j] = Math.random() < 0.5 ? 1 : 0; // 1表示合作，0表示背叛
+                }
+            }
+            return grid;
+        }
+        
+        // 初始化图表
+        function initializeCharts() {
+            const pdCtx = document.getElementById('pd-chart').getContext('2d');
+            pdChart = new Chart(pdCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '合作比例',
+                        data: [],
+                        borderColor: '#51cf66',
+                        backgroundColor: 'rgba(81, 207, 102, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: '合作比例'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '时间步'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 0 // 禁用动画以提高性能
+                    }
+                }
+            });
+            
+            const pgCtx = document.getElementById('pg-chart').getContext('2d');
+            pgChart = new Chart(pgCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '合作比例',
+                        data: [],
+                        borderColor: '#51cf66',
+                        backgroundColor: 'rgba(81, 207, 102, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: '合作比例'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '时间步'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 0 // 禁用动画以提高性能
+                    }
+                }
+            });
+        }
+        
+        // 初始化网格显示
+        function initializeGrids() {
+            renderGrid('pd-grid', pdGrid);
+            renderGrid('pg-grid', pgGrid);
+        }
+        
+        // 渲染网格
+        function renderGrid(gridId, grid) {
+            const container = document.getElementById(gridId);
+            container.innerHTML = '';
+            
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell ${grid[i][j] === 1 ? 'cooperator' : 'defector'}`;
+                    container.appendChild(cell);
+                }
+            }
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 囚徒困境控制
+            document.getElementById('pd-r').addEventListener('input', updateValueDisplays);
+            document.getElementById('pd-t').addEventListener('input', updateValueDisplays);
+            document.getElementById('pd-s').addEventListener('input', updateValueDisplays);
+            document.getElementById('pd-p').addEventListener('input', updateValueDisplays);
+            document.getElementById('pd-initial-coop').addEventListener('input', updateValueDisplays);
+            
+            document.getElementById('pd-reset').addEventListener('click', resetPdSimulation);
+            document.getElementById('pd-start').addEventListener('click', togglePdSimulation);
+            document.getElementById('pd-step').addEventListener('click', stepPdSimulation);
+            
+            // 公共品博弈控制
+            document.getElementById('pg-multiplier').addEventListener('input', updateValueDisplays);
+            document.getElementById('pg-cost').addEventListener('input', updateValueDisplays);
+            document.getElementById('pg-group-size').addEventListener('input', updateValueDisplays);
+            document.getElementById('pg-initial-coop').addEventListener('input', updateValueDisplays);
+            
+            document.getElementById('pg-reset').addEventListener('click', resetPgSimulation);
+            document.getElementById('pg-start').addEventListener('click', togglePgSimulation);
+            document.getElementById('pg-step').addEventListener('click', stepPgSimulation);
+        }
+        
+        // 更新数值显示
+        function updateValueDisplays() {
+            // 囚徒困境
+            document.getElementById('pd-r-value').textContent = document.getElementById('pd-r').value;
+            document.getElementById('pd-t-value').textContent = document.getElementById('pd-t').value;
+            document.getElementById('pd-s-value').textContent = document.getElementById('pd-s').value;
+            document.getElementById('pd-p-value').textContent = document.getElementById('pd-p').value;
+            document.getElementById('pd-initial-coop-value').textContent = document.getElementById('pd-initial-coop').value + '%';
+            
+            // 公共品博弈
+            document.getElementById('pg-multiplier-value').textContent = document.getElementById('pg-multiplier').value;
+            document.getElementById('pg-cost-value').textContent = document.getElementById('pg-cost').value;
+            document.getElementById('pg-group-size-value').textContent = document.getElementById('pg-group-size').value;
+            document.getElementById('pg-initial-coop-value').textContent = document.getElementById('pg-initial-coop').value + '%';
+        }
+        
+        // 重置囚徒困境模拟
+        function resetPdSimulation() {
+            pdIsRunning = false;
+            clearInterval(pdInterval);
+            document.getElementById('pd-start').textContent = '开始模拟';
+            
+            pdTime = 0;
+            pdChart.data.labels = [];
+            pdChart.data.datasets[0].data = [];
+            pdChart.update();
+            
+            const initialCoop = parseInt(document.getElementById('pd-initial-coop').value) / 100;
+            pdGrid = initializeGridWithCooperation(gridSize, initialCoop);
+            renderGrid('pd-grid', pdGrid);
+        }
+        
+        // 重置公共品博弈模拟
+        function resetPgSimulation() {
+            pgIsRunning = false;
+            clearInterval(pgInterval);
+            document.getElementById('pg-start').textContent = '开始模拟';
+            
+            pgTime = 0;
+            pgChart.data.labels = [];
+            pgChart.data.datasets[0].data = [];
+            pgChart.update();
+            
+            const initialCoop = parseInt(document.getElementById('pg-initial-coop').value) / 100;
+            pgGrid = initializeGridWithCooperation(gridSize, initialCoop);
+            renderGrid('pg-grid', pgGrid);
+        }
+        
+        // 初始化带合作比例的网格
+        function initializeGridWithCooperation(size, cooperationRate) {
+            const grid = [];
+            for (let i = 0; i < size; i++) {
+                grid[i] = [];
+                for (let j = 0; j < size; j++) {
+                    grid[i][j] = Math.random() < cooperationRate ? 1 : 0;
+                }
+            }
+            return grid;
+        }
+        
+        // 切换囚徒困境模拟状态
+        function togglePdSimulation() {
+            pdIsRunning = !pdIsRunning;
+            document.getElementById('pd-start').textContent = pdIsRunning ? '暂停模拟' : '开始模拟';
+            
+            if (pdIsRunning) {
+                pdInterval = setInterval(updatePdSimulation, 200);
+            } else {
+                clearInterval(pdInterval);
+            }
+        }
+        
+        // 切换公共品博弈模拟状态
+        function togglePgSimulation() {
+            pgIsRunning = !pgIsRunning;
+            document.getElementById('pg-start').textContent = pgIsRunning ? '暂停模拟' : '开始模拟';
+            
+            if (pgIsRunning) {
+                pgInterval = setInterval(updatePgSimulation, 200);
+            } else {
+                clearInterval(pgInterval);
+            }
+        }
+        
+        // 囚徒困境单步执行
+        function stepPdSimulation() {
+            updatePdSimulation();
+        }
+        
+        // 公共品博弈单步执行
+        function stepPgSimulation() {
+            updatePgSimulation();
+        }
+        
+        // 更新囚徒困境模拟
+        function updatePdSimulation() {
+            // 获取参数
+            const R = parseFloat(document.getElementById('pd-r').value);
+            const T = parseFloat(document.getElementById('pd-t').value);
+            const S = parseFloat(document.getElementById('pd-s').value);
+            const P = parseFloat(document.getElementById('pd-p').value);
+            
+            // 计算每个个体的收益
+            const payoffs = calculatePdPayoffs(pdGrid, R, T, S, P);
+            
+            // 更新策略（模仿最优响应）
+            updateStrategies(pdGrid, payoffs);
+            
+            // 计算合作比例
+            const coopRate = calculateCooperationRate(pdGrid);
+            
+            // 更新图表
+            pdTime++;
+            pdChart.data.labels.push(pdTime);
+            pdChart.data.datasets[0].data.push(coopRate);
+            
+            // 限制图表显示的数据点数量，避免性能问题
+            const maxDataPoints = 100;
+            if (pdChart.data.labels.length > maxDataPoints) {
+                pdChart.data.labels = pdChart.data.labels.slice(-maxDataPoints);
+                pdChart.data.datasets[0].data = pdChart.data.datasets[0].data.slice(-maxDataPoints);
+            }
+            
+            pdChart.update();
+            
+            // 更新网格显示
+            renderGrid('pd-grid', pdGrid);
+        }
+        
+        // 更新公共品博弈模拟
+        function updatePgSimulation() {
+            // 获取参数
+            const multiplier = parseFloat(document.getElementById('pg-multiplier').value);
+            const cost = parseFloat(document.getElementById('pg-cost').value);
+            const groupSize = parseInt(document.getElementById('pg-group-size').value);
+            
+            // 计算每个个体的收益
+            const payoffs = calculatePgPayoffs(pgGrid, multiplier, cost, groupSize);
+            
+            // 更新策略（模仿最优响应）
+            updateStrategies(pgGrid, payoffs);
+            
+            // 计算合作比例
+            const coopRate = calculateCooperationRate(pgGrid);
+            
+            // 更新图表
+            pgTime++;
+            pgChart.data.labels.push(pgTime);
+            pgChart.data.datasets[0].data.push(coopRate);
+            
+            // 限制图表显示的数据点数量，避免性能问题
+            const maxDataPoints = 100;
+            if (pgChart.data.labels.length > maxDataPoints) {
+                pgChart.data.labels = pgChart.data.labels.slice(-maxDataPoints);
+                pgChart.data.datasets[0].data = pgChart.data.datasets[0].data.slice(-maxDataPoints);
+            }
+            
+            pgChart.update();
+            
+            // 更新网格显示
+            renderGrid('pg-grid', pgGrid);
+        }
+        
+        // 计算囚徒困境收益
+        function calculatePdPayoffs(grid, R, T, S, P) {
+            const size = grid.length;
+            const payoffs = Array(size).fill().map(() => Array(size).fill(0));
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    let totalPayoff = 0;
+                    let interactions = 0;
+                    
+                    // 检查四个邻居（上、下、左、右）
+                    const neighbors = [
+                        [i-1, j], [i+1, j], [i, j-1], [i, j+1]
+                    ];
+                    
+                    for (const [ni, nj] of neighbors) {
+                        if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
+                            interactions++;
+                            if (grid[i][j] === 1 && grid[ni][nj] === 1) {
+                                totalPayoff += R; // 双方合作
+                            } else if (grid[i][j] === 1 && grid[ni][nj] === 0) {
+                                totalPayoff += S; // 自己合作，对方背叛
+                            } else if (grid[i][j] === 0 && grid[ni][nj] === 1) {
+                                totalPayoff += T; // 自己背叛，对方合作
+                            } else {
+                                totalPayoff += P; // 双方背叛
+                            }
+                        }
+                    }
+                    
+                    payoffs[i][j] = interactions > 0 ? totalPayoff / interactions : 0;
+                }
+            }
+            
+            return payoffs;
+        }
+        
+        // 计算公共品博弈收益
+        function calculatePgPayoffs(grid, multiplier, cost, groupSize) {
+            const size = grid.length;
+            const payoffs = Array(size).fill().map(() => Array(size).fill(0));
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    // 随机选择小组（包括自己）
+                    const group = getRandomGroup(grid, i, j, groupSize);
+                    
+                    // 计算小组总贡献
+                    let totalContribution = 0;
+                    let contributors = 0;
+                    
+                    for (const [gi, gj] of group) {
+                        if (grid[gi][gj] === 1) {
+                            totalContribution += cost;
+                            contributors++;
+                        }
+                    }
+                    
+                    // 计算收益
+                    const publicGood = totalContribution * multiplier;
+                    const share = publicGood / group.length;
+                    
+                    // 设置收益
+                    if (grid[i][j] === 1) {
+                        payoffs[i][j] = share - cost; // 贡献者支付成本
+                    } else {
+                        payoffs[i][j] = share; // 搭便车者不支付成本
+                    }
+                }
+            }
+            
+            return payoffs;
+        }
+        
+        // 获取随机小组
+        function getRandomGroup(grid, i, j, groupSize) {
+            const size = grid.length;
+            const group = [[i, j]]; // 包括自己
+            
+            // 从所有可能的位置中随机选择
+            const allPositions = [];
+            for (let x = 0; x < size; x++) {
+                for (let y = 0; y < size; y++) {
+                    if (x !== i || y !== j) {
+                        allPositions.push([x, y]);
+                    }
+                }
+            }
+            
+            // 随机打乱并选择前groupSize-1个
+            for (let k = allPositions.length - 1; k > 0; k--) {
+                const l = Math.floor(Math.random() * (k + 1));
+                [allPositions[k], allPositions[l]] = [allPositions[l], allPositions[k]];
+            }
+            
+            for (let k = 0; k < groupSize - 1 && k < allPositions.length; k++) {
+                group.push(allPositions[k]);
+            }
+            
+            return group;
+        }
+        
+        // 更新策略（模仿最优响应）
+        function updateStrategies(grid, payoffs) {
+            const size = grid.length;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    // 找到收益最高的邻居
+                    let bestNeighbor = [i, j];
+                    let bestPayoff = payoffs[i][j];
+                    
+                    const neighbors = [
+                        [i-1, j], [i+1, j], [i, j-1], [i, j+1],
+                        [i-1, j-1], [i-1, j+1], [i+1, j-1], [i+1, j+1]
+                    ];
+                    
+                    for (const [ni, nj] of neighbors) {
+                        if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
+                            if (payoffs[ni][nj] > bestPayoff) {
+                                bestPayoff = payoffs[ni][nj];
+                                bestNeighbor = [ni, nj];
+                            }
+                        }
+                    }
+                    
+                    // 以一定概率模仿最优邻居
+                    if (Math.random() < 0.8) { // 80%概率模仿
+                        newGrid[i][j] = grid[bestNeighbor[0]][bestNeighbor[1]];
+                    }
+                }
+            }
+            
+            // 更新网格
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    grid[i][j] = newGrid[i][j];
+                }
+            }
+        }
+        
+        // 计算合作比例
+        function calculateCooperationRate(grid) {
+            const size = grid.length;
+            let cooperators = 0;
+            let total = 0;
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    if (grid[i][j] === 1) cooperators++;
+                    total++;
+                }
+            }
+            
+            return total > 0 ? cooperators / total : 0;
+        }
+    </script>
+</body>
+</html>
