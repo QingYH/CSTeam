@@ -3,108 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>复杂系统教学科研团队</title>
+    <title>复杂系统教学科研团队 | 安庆师范大学</title>
     <style>
         :root {
-            --primary-color: #750075;
-            --secondary-color: #0000C6;
-            --accent-color: #0066CC;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --font-large: 1.2rem;
+            --primary-color: #6b21a8;
+            --secondary-color: #1e40af;
+            --accent-color: #0891b2;
+            --accent-gold: #d97706;
+            --bg-color: #eef2f7;
+            --text-dark: #1e293b;
+            --font-large: 1.15rem;
             --font-xlarge: 1.5rem;
-            --font-xxlarge: 2rem;
+            --font-xxlarge: 2.2rem;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', Tahoma, sans-serif;
         }
         
         body {
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.7;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 复杂系统主题背景 - 增强版 */
+        .network-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 10% 15%, rgba(107, 33, 168, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 65%, rgba(8, 145, 178, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 45% 85%, rgba(217, 119, 6, 0.07) 0%, transparent 35%),
+                radial-gradient(circle at 70% 25%, rgba(30, 64, 175, 0.08) 0%, transparent 30%),
+                linear-gradient(180deg, #eef2f7 0%, #e4ecf5 30%, #eef2f7 60%, #e8eef6 100%);
+        }
+        
+        .network-bg svg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(107, 33, 168, 0.18);
+            border-radius: 50%;
+            animation: floatParticle 20s infinite linear;
+        }
+        
+        @keyframes floatParticle {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
         
         .container {
-            width: 90%;
+            width: 92%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .marquee-bar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #bae6fd;
+            padding: 14px 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(107, 33, 168, 0.3);
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marqueeScroll 25s linear infinite;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        .marquee-content span {
+            display: inline-block;
+            padding: 0 50px;
+        }
+        
+        .marquee-content .star {
+            color: #7dd3fc;
+            font-size: 1.2rem;
+        }
+        
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, rgba(107, 33, 168, 0.92), rgba(30, 64, 175, 0.9));
             color: white;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
             margin-bottom: 40px;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 8px 32px rgba(107, 33, 168, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 25px 25px;
+            animation: bgMove 50s linear infinite;
+        }
+        
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(25px, 25px); }
         }
         
         h1 {
             font-size: var(--font-xxlarge);
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
         
         h2 {
             font-size: var(--font-xlarge);
-            margin: 30px 0 20px;
+            margin: 35px 0 25px;
             color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-        }
-        
-        h3 {
-            font-size: var(--font-large);
-            margin: 15px 0;
-            color: var(--secondary-color);
-        }
-        
-        p {
-            font-size: var(--font-large);
-            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-gold);
+            padding-left: 18px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
         
         .intro {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(107, 33, 168, 0.12);
+            padding: 35px;
+            border-radius: 16px;
             margin-bottom: 40px;
+            box-shadow: 0 8px 28px rgba(107, 33, 168, 0.1);
+        }
+        
+        .intro p {
+            font-size: var(--font-large);
+            color: #334155;
+            margin-bottom: 15px;
+        }
+        
+        .intro strong {
+            color: var(--primary-color);
+        }
+        
+        .links-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 14px 32px;
+            font-size: 1.05rem;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.35s ease;
+            box-shadow: 0 5px 16px rgba(30, 64, 175, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-weight: 500;
+        }
+        
+        .link-btn:hover {
+            background: linear-gradient(135deg, var(--accent-color), #0e7490);
+            transform: translateY(-3px);
+            box-shadow: 0 9px 24px rgba(8, 145, 178, 0.45);
+        }
+        
+        .link-btn.secondary {
+            background: linear-gradient(135deg, var(--accent-gold), #b45309);
+            box-shadow: 0 5px 16px rgba(217, 119, 6, 0.35);
+        }
+        
+        .link-btn.secondary:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 9px 24px rgba(245, 158, 11, 0.45);
         }
         
         .team-section {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
         
         .member-card {
-            background-color: white;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 20px rgba(107, 33, 168, 0.12);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
             display: flex;
             flex-direction: column;
+            color: #1e293b;
+            position: relative;
+            border: 1px solid rgba(107, 33, 168, 0.08);
         }
         
         .member-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 16px 36px rgba(107, 33, 168, 0.22), 0 0 25px rgba(217, 119, 6, 0.1);
+        }
+        
+        .member-card.chief {
+            border-top: 5px solid var(--accent-gold);
+            background: linear-gradient(180deg, #fffef9, #ffffff);
         }
         
         .member-photo {
             width: 100%;
-            height: 250px;
-            background-color: #f5f5f5;
+            height: 220px;
+            background: linear-gradient(135deg, #e8eef3, #d0dbe6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,8 +284,8 @@
             width: auto;
             height: auto;
             object-fit: contain;
-            transition: transform 0.3s ease;
-            border-radius: 5px;
+            transition: transform 0.4s ease;
+            border-radius: 6px;
         }
         
         .member-card:hover .member-photo img {
@@ -127,300 +293,491 @@
         }
         
         .member-info {
-            padding: 20px;
+            padding: 18px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            gap: 5px;
         }
         
         .member-name {
-            font-size: var(--font-large);
-            font-weight: bold;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--primary-color);
         }
         
         .member-title {
-            font-size: var(--font-large);
+            font-size: 1rem;
             color: var(--accent-color);
-            margin: 5px 0;
+            font-weight: 600;
+        }
+        
+        .member-tutor-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+            color: white;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+            vertical-align: middle;
         }
         
         .member-contact {
-            font-size: var(--font-large);
-            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 3px;
+            word-break: break-all;
         }
         
-        .chief {
-            border-top: 5px solid var(--accent-color);
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 15px 30px;
-            font-size: var(--font-large);
+        .member-contact a {
+            color: var(--secondary-color);
             text-decoration: none;
-            border-radius: 50px;
-            margin: 20px 0;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
-        .btn:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-3px);
+        .member-contact a:hover {
+            text-decoration: underline;
         }
         
-        .btn-container {
-            text-align: center;
-            margin: 40px 0;
+        .member-research {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #cbd5e1;
+            line-height: 1.55;
+        }
+        
+        .achievement-box {
+            font-size: 0.78rem;
+            margin-top: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+        
+        .achievement-box.teaching {
+            background: #eff6ff;
+            border-left: 3px solid #3b82f6;
+            color: #1e40af;
+        }
+        
+        .achievement-box.research {
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+            color: #065f46;
+        }
+        
+        .achievement-box.student {
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            color: #92400e;
         }
         
         footer {
-            background-color: var(--dark-color);
-            color: white;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #e2e8f0;
             text-align: center;
-            padding: 30px 0;
+            padding: 35px 0;
             margin-top: 40px;
-            border-radius: 20px 20px 0 0;
+            border-radius: 30px 30px 0 0;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .college-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .college-logo .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.4);
+        }
+        
+        .college-logo .logo-text {
+            text-align: left;
+        }
+        
+        .college-logo .logo-text .cn {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+        
+        .college-logo .logo-text .en {
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            letter-spacing: 0.5px;
+        }
+        
+        footer p {
+            font-size: 0.9rem;
+            margin: 5px 0;
+            color: #cbd5e1;
         }
         
         @media (max-width: 768px) {
             .team-section {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
             
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            h2 {
-                font-size: 1.4rem;
-            }
-            
-            p, .member-name, .member-title, .member-contact {
-                font-size: 1rem;
-            }
+            h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.3rem; }
+            .intro { padding: 22px; }
+            .intro p { font-size: 0.98rem; }
+            .member-name { font-size: 1.1rem; }
+            .member-photo { height: 200px; }
+            header { padding: 45px 0 35px; }
+            .container { width: 95%; padding: 15px; }
+            .marquee-content { font-size: 0.95rem; }
+            .marquee-content span { padding: 0 30px; }
+            .links-section { gap: 12px; }
+            .link-btn { padding: 12px 24px; font-size: 0.95rem; }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 1.35rem; letter-spacing: 1px; }
+            .subtitle { font-size: 0.95rem; }
+            .member-photo { height: 180px; }
+            .marquee-content { font-size: 0.85rem; }
+            .college-logo .logo-text .cn { font-size: 1rem; }
+            .member-tutor-badge { font-size: 0.65rem; padding: 2px 6px; }
         }
     </style>
 </head>
 <body>
+
+    <div class="network-bg">
+        <svg width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <circle cx="1" cy="1" r="1" fill="#6b21a8" opacity="0.12"/>
+                </pattern>
+                <pattern id="hexGrid" width="70" height="70" patternUnits="userSpaceOnUse">
+                    <polygon points="35,3 62,19 62,51 35,67 8,51 8,19" fill="none" stroke="#1e40af" stroke-width="0.6" opacity="0.1"/>
+                </pattern>
+                <pattern id="triGrid" width="90" height="90" patternUnits="userSpaceOnUse">
+                    <polygon points="45,5 85,75 5,75" fill="none" stroke="#0891b2" stroke-width="0.5" opacity="0.07"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <rect width="100%" height="100%" fill="url(#hexGrid)"/>
+            <rect width="100%" height="100%" fill="url(#triGrid)"/>
+            
+            <g stroke="#1e40af" stroke-width="1.2" opacity="0.18">
+                <line x1="120" y1="100" x2="380" y2="260"/>
+                <line x1="380" y1="260" x2="680" y2="150"/>
+                <line x1="680" y1="150" x2="950" y2="300"/>
+                <line x1="950" y1="300" x2="1280" y2="140"/>
+                <line x1="1280" y1="140" x2="1620" y2="280"/>
+                <line x1="1620" y1="280" x2="1850" y2="150"/>
+                <line x1="380" y1="260" x2="520" y2="500"/>
+                <line x1="520" y1="500" x2="820" y2="450"/>
+                <line x1="820" y1="450" x2="1120" y2="550"/>
+                <line x1="1120" y1="550" x2="1420" y2="430"/>
+                <line x1="1420" y1="430" x2="1700" y2="520"/>
+                <line x1="520" y1="500" x2="720" y2="760"/>
+                <line x1="720" y1="760" x2="1020" y2="710"/>
+                <line x1="1020" y1="710" x2="1320" y2="810"/>
+                <line x1="1320" y1="810" x2="1580" y2="660"/>
+                <line x1="120" y1="100" x2="280" y2="380"/>
+                <line x1="280" y1="380" x2="520" y2="500"/>
+                <line x1="950" y1="300" x2="1120" y2="550"/>
+                <line x1="1420" y1="430" x2="1620" y2="280"/>
+                <line x1="680" y1="150" x2="820" y2="450"/>
+            </g>
+            
+            <g fill="#6b21a8" opacity="0.25">
+                <circle cx="120" cy="100" r="5"/><circle cx="380" cy="260" r="7"/>
+                <circle cx="680" cy="150" r="5"/><circle cx="950" cy="300" r="6"/>
+                <circle cx="1280" cy="140" r="5.5"/><circle cx="1620" cy="280" r="7"/>
+                <circle cx="1850" cy="150" r="4.5"/><circle cx="520" cy="500" r="8"/>
+                <circle cx="820" cy="450" r="5.5"/><circle cx="1120" cy="550" r="6.5"/>
+                <circle cx="1420" cy="430" r="5"/><circle cx="1700" cy="520" r="5.5"/>
+                <circle cx="720" cy="760" r="6"/><circle cx="1020" cy="710" r="5"/>
+                <circle cx="1320" cy="810" r="6.5"/><circle cx="1580" cy="660" r="5"/>
+                <circle cx="280" cy="380" r="4.5"/>
+            </g>
+            
+            <g fill="#0891b2" opacity="0.08" font-family="serif" font-size="40">
+                <text x="80" y="180">∂</text>
+                <text x="1780" y="320">∑</text>
+                <text x="880" y="920">∫</text>
+                <text x="260" y="820">π</text>
+                <text x="1480" y="880">λ</text>
+                <text x="560" y="80">Ω</text>
+                <text x="1180" y="980">μ</text>
+                <text x="1650" y="750">∇</text>
+                <text x="420" y="650">ε</text>
+            </g>
+            
+            <g fill="none" stroke="#d97706" stroke-width="0.8" opacity="0.1">
+                <circle cx="960" cy="540" r="120"/>
+                <circle cx="960" cy="540" r="200"/>
+                <circle cx="960" cy="540" r="280"/>
+            </g>
+        </svg>
+    </div>
+    
+    <div class="particles" id="particles"></div>
+    
+    <div class="marquee-bar">
+        <div class="marquee-content">
+            <span><span class="star">★</span> 欢迎对复杂系统及相关研究的本科生和研究生加入团队！<span class="star">★</span></span>
+            <span><span class="star">★</span> 欢迎对复杂系统及相关研究的本科生和研究生加入团队！<span class="star">★</span></span>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <h1>复杂系统教学科研团队</h1>
-            <p>探索复杂系统科学的前沿理论与应用</p>
+            <p class="subtitle">Complex Systems Teaching and Research Group · 安庆师范大学</p>
         </div>
     </header>
     
     <div class="container">
         <section class="intro">
             <h2>团队概况</h2>
-            <p>本团队致力于复杂系统科学的教学与研究工作，聚焦于复杂网络、生物种群、多主体系统、演化博弈论等前沿领域。团队由14位成员组成，包括3位首席教授、6位副教授和5位讲师（8位博士）。</p>
-            <p>我们的研究涵盖理论探索与应用实践，在国内外高水平期刊发表论文100余篇，承担国家自然科学基金、省自然科学基金项目等多项科研任务。</p>
+            <p>本团队依托<strong>安徽省皖江流域种群生态模拟与控制国际联合研究中心</strong>，致力于复杂系统科学的教学与研究工作，聚焦于<strong>复杂网络、演化博弈论、非线性动力学、生物动力系统、多主体系统建模与仿真</strong>等前沿领域。</p>
+            <p>团队现有核心成员12人，其中首席教授2人、副教授5人、讲师5人（含博士9人）。团队多名成员担任<strong>硕士研究生导师</strong>，已培养毕业研究生20余人。团队在Physical Review E、Journal of Nonlinear Science、Chaos, Solitons & Fractals、Applied Mathematics and Computation等国内外高水平期刊发表论文100余篇，承担国家自然科学基金、安徽省自然科学基金等多项科研任务。</p>
         </section>
+        
+        <div class="links-section">
+            <a href="#" class="link-btn secondary">📘 复杂系统简介</a>
+            <a href="#" class="link-btn">🌐 复杂网络简介</a>
+            <a href="./game_introduce.htm" class="link-btn">🎮 演化博弈论简介</a>
+        </div>
         
         <section class="team-members">
             <h2>团队成员（排名不分先后）</h2>
             <div class="team-section">
-                <!-- 首席教授 -->
+                
                 <div class="member-card chief">
                     <div class="member-photo">
-                        <img src="shen.jpg">
+                        <img src="hao.png" alt="郝庆一教授">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">申传胜（副校长）</div>
-                        <div class="member-title">教授（博士）</div>
-                        <div class="member-contact">邮箱: csshen@mail.ustc.edu.cn</div>
-                        <div class="member-contact">个人主页:  <a href="http://staff.aqnu.edu.cn/csshen" target="_blank">http://staff.aqnu.edu.cn/csshen</a></div>
+                        <div class="member-name">郝庆一 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">教授（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 haoqyi@126.com</div>
+                        <div class="member-contact">🔗 <a href="https://qingyh.github.io/" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：复杂系统、交通流理论和博弈论。1999年本科毕业后留校任教，2012年获中国科学技术大学博士学位，2013年遴选为硕导，2017年晋升教授。安徽省数学会第九届理事会理事。2016年赴香港理工大学访学。主持安徽省自然科学基金项目及高校优秀拔尖人才支持计划重点项目，参与国家自然科学基金项目多项。已在国内外重要学术期刊发表论文40余篇。2026级数学学硕招生2人。</div>
+                        <div class="achievement-box teaching">🏆 2016年获安徽省高校数学微课程教学设计竞赛一等奖；教学案例成功入选2025年教育部教师人工智能应用案例</div>
+                        <div class="achievement-box student">🎯 指导学生获全国大学生数学建模竞赛全国一等奖、省一等奖各一项[citation:1]</div>
+                        <div class="achievement-box student">🎓 指导硕士生考取天津大学、武汉理工大学、上海理工大学、安徽师范大学等高校的博士[citation:13]</div>
                     </div>
                 </div>
                 
                 <div class="member-card chief">
                     <div class="member-photo">
-                        <img src="wudaiy.png">
+                        <img src="wudaiy.png" alt="伍代勇教授">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">伍代勇</div>
-                        <div class="member-title">教授(博士）</div>
-                        <div class="member-contact">邮箱: wudy9901@163.com</div>
-                        <div class="member-contact">个人主页: <a href="https://slxy.aqnu.edu.cn/info/1901/76392.htm" target="_blank">https://slxy.aqnu.edu.cn/info/1901/76392.htm</a></div>
-                    </div>
-                </div>
-                                               
-                <!-- 副教授 -->
-                <div class="member-card">
-                    <div class="member-photo">
-                        <img src="gao.png">
-                    </div>
-                    <div class="member-info">
-                        <div class="member-name">高见</div>
-                        <div class="member-title">副教授（博士）</div>
-                        <div class="member-contact">邮箱: gaojian1612@163.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://gaojianhomepage.github.io/" target="_blank"> https://gaojianhomepage.github.io/</a></div>
+                        <div class="member-name">伍代勇 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">教授（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 wudy9901@163.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1901/76392.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：生物动力系统。安徽省教坛新秀，中国数学会生物数学专业委员会第九届委员会委员，安徽省非线性科学学会第四届理事会理事，省级微分方程教学团队负责人。现任发展规划处（学科建设处）副处长，曾任数理学院副院长。主持安徽省自然科学基金面上项目2项，主持安徽省高校科研计划重点项目，参与国家自然科学基金项目3项。在Journal of Nonlinear Science、Mathematics and Computers in Simulation等期刊发表SCI论文30余篇。2026级数学学硕招生1人。</div>
+                        <div class="achievement-box teaching">🏆 获省级教学成果一等奖1项、二等奖3项[citation:16]</div>
+                        <div class="achievement-box student">🎯 指导学生参加全国大学生数学建模竞赛获国家级一、二等奖7项[citation:16]</div>
+                        <div class="achievement-box student">🎓 已毕业研究生：张子蝶（2025届）考取天津工业大学博士研究生[citation:3]</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="wuchaoy.jpg">
+                        <img src="wuchaoy.jpg" alt="吴超云副教授">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">吴超云</div>
-                        <div class="member-title">副教授（博士）</div>
-                        <div class="member-contact">邮箱: platonwu@126.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76782.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76782.htm</a></div>
+                        <div class="member-name">吴超云 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">副教授（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 platonwu@126.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1911/76782.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：复杂系统和交通流理论。2019年获中国科学技术大学博士学位。现兼任信息计算科学系主任。2026级数学学硕招生1人。2026年与郝庆一教授、毕艳博士合作在中科院一区TOP期刊发表论文。</div>
+                        <div class="achievement-box student">🎯 指导学生参加全国大学生数学建模竞赛：省一等奖1项、省二等奖3项、省三等奖2项；2024年受邀作数学建模专题讲座</div>
                     </div>
                 </div>
-
+                
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="fan.jpg">
+                        <img src="fan.jpg" alt="范立刚副教授">
                     </div>
                     <div class="member-info">
                         <div class="member-name">范立刚</div>
                         <div class="member-title">副教授</div>
-                        <div class="member-contact">邮箱: fanligang@aqnu.edu.cn</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76542.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76542.htm</a></div>
+                        <div class="member-contact">📧 fanligang@aqnu.edu.cn</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1911/76542.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：中学数学教学理论。1990年毕业于东北师范大学数学系，2005年晋升中学高级教师。2006年调任安庆师范大学。现任数学与统计学院纪委委员。</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="chendy.jpg">
+                        <img src="chendy.jpg" alt="陈定元副教授">
                     </div>
                     <div class="member-info">
                         <div class="member-name">陈定元</div>
                         <div class="member-title">副教授</div>
-                        <div class="member-contact">邮箱: chendy@aqnu.edu.cn</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76582.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76582.htm</a></div>
+                        <div class="member-contact">📧 chendy@aqnu.edu.cn</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1911/76582.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：模糊数学、灰色系统理论及应用。研究领域涵盖数学、非线性科学与系统科学、自动化技术。参与国家自然科学基金、安徽省高等学校青年教师科研资助计划项目、安徽省教育厅科研基金等多项课题。</div>
+                        <div class="achievement-box student">🎯 2025年考研动员会主讲《关于考研数学》，提出三阶段复习路径</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="yuesf.jpg">
+                        <img src="yuesf.jpg" alt="岳素芳副教授">
                     </div>
                     <div class="member-info">
                         <div class="member-name">岳素芳</div>
                         <div class="member-title">副教授</div>
-                        <div class="member-contact">邮箱: ysf6510@126.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/76642.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/76642.htm</a></div>
+                        <div class="member-contact">📧 ysf6510@126.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1911/76642.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：偏微分方程数值解。2006年获哈尔滨工业大学理学硕士学位，2009年晋升讲师，2014年晋升副教授。在国内外重要学术期刊发表论文10余篇，其中EI收录论文3篇。主持安徽省高校自然科学研究一般项目，参与多项省级科研与教研项目。</div>
+                        <div class="achievement-box student">🎯 2024届优秀实习指导教师[citation:31]</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="yelh.png">
+                        <img src="yelh.png" alt="叶陆红副教授">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">叶陆红</div>
-                        <div class="member-title">副教授（博士）</div>
-                        <div class="member-contact">邮箱: leaf07@163.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1911/88822.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1911/88822.htm</a></div>
+                        <div class="member-name">叶陆红 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">副教授（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 leaf07@163.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1911/88822.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：生物数学种群动力学性质与应用，重点涵盖捕食-食饵系统分支性质及斑图研究、反应扩散方程刻画种群分布及多样性。2005年本科毕业于安庆师范学院，2008年硕士毕业于华南师范大学，2024年博士毕业于南京航空航天大学。2024年9月-2025年9月公派赴加拿大阿尔伯塔大学访问。2025年新增硕士研究生导师。2026级数学学硕招生1人。2026年在中科院一区期刊Communications in Nonlinear Science and Numerical Simulation发表论文（第一作者兼通讯作者），影响因子3.8。</div>
+                        <div class="achievement-box teaching">🏆 2025年教学公开示范课主讲教师，运用人工智能技术辅助教学；2015-2016学年优秀教育实习指导教师[citation:36]</div>
                     </div>
                 </div>
                 
-                <!-- 讲师 -->
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="biy.jpg">
+                        <img src="biy.jpg" alt="毕艳博士">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">毕艳</div>
+                        <div class="member-name">毕 艳 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">讲师（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 biyan_gzdx@163.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1921/80342.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：复杂网络的建模、演化博弈动力学与非线性控制的机制与算法。2023年博士毕业于贵州大学。2025级硕士生导师，2025年新增硕士研究生导师，2026级数学学硕招生1人。在Applied Mathematics and Computation、Chaos, Solitons & Fractals（中科院一区TOP，IF=5.3）、Physica A、Physics Letters A等期刊发表SCI论文多篇。</div>
+                    </div>
+                </div>
+                
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="yangt.png" alt="杨婷博士">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">杨 婷</div>
                         <div class="member-title">讲师（博士）</div>
-                        <div class="member-contact">邮箱: biyan_gzdx@163.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/80342.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/80342.htm</a></div>
+                        <div class="member-contact">📧 tingy@mail.ustc.edu.cn</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1921/79812.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：多复变、Clifford分析。2013年本科毕业于安庆师范大学，2016年硕士毕业于江西师范大学，2020年在中国科学技术大学获理学博士学位，同年来校工作。</div>
+                        <div class="achievement-box student">🎯 2026届优秀实习指导教师[citation:22]</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="yangt.png">
+                        <img src="fengm.jpg" alt="冯苗博士">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">杨婷</div>
-                        <div class="member-title">讲师（博士）</div>
-                        <div class="member-contact">邮箱: tingy@mail.ustc.edu.cn</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79812.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79812.htm</a></div>
+                        <div class="member-name">冯 苗 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">讲师（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 shnumiaofeng@163.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1921/79472.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：生物数学与单调动力系统。2023年博士毕业于上海师范大学应用数学专业。2025级数学学硕硕士研究生导师，2025年新增硕士研究生导师。现兼任中外合作办学项目专员。</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="fengm.jpg">
+                        <img src="longys.jpg" alt="龙永尚博士">
                     </div>
                     <div class="member-info">
-                        <div class="member-name">冯苗 </div>
-                        <div class="member-title">讲师（博士）</div>
-                        <div class="member-contact">邮箱: shnumiaofeng@163.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79472.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79472.htm</a></div>
+                        <div class="member-name">龙永尚 <span class="member-tutor-badge">硕导</span></div>
+                        <div class="member-title">讲师（博士）·硕士生导师</div>
+                        <div class="member-contact">📧 lyslongyongshang@163.com</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1921/79492.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：复杂网络与非线性动力系统。2022年博士毕业于华东师范大学。2025级硕士生导师。2026年获批国家自然科学基金青年项目，获聘2026级硕士研究生导师，数学学硕招生2人。参与国家自然科学基金国际(地区)合作与交流项目、面上项目等多项课题。</div>
+                        <div class="achievement-box research">📄 代表性论文：Structural position vectors and symmetries in complex networks（Chaos, 2022，封面亮点文章，Scilight报道）；Optimal inference of the start of COVID-19（Physical Review Research, 2021，共同一作）</div>
                     </div>
                 </div>
                 
                 <div class="member-card">
                     <div class="member-photo">
-                        <img src="longys.jpg">
-                    </div>
-                    <div class="member-info">
-                        <div class="member-name">龙永尚</div>
-                        <div class="member-title">讲师（博士）</div>
-                        <div class="member-contact">邮箱: lyslongyongshang@163.com</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79492.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79492.htm</a></div>
-                    </div>
-                </div>
-                
-                <div class="member-card">
-                    <div class="member-photo">
-                        <img src="wangxy.jpg">
+                        <img src="wangxy.jpg" alt="王小艳博士">
                     </div>
                     <div class="member-info">
                         <div class="member-name">王小艳</div>
                         <div class="member-title">讲师（博士）</div>
-                        <div class="member-contact">邮箱: 062404@aqnu.edu.cn</div>
-                        <div class="member-contact">个人主页: <a href=" https://slxy.aqnu.edu.cn/info/1921/79382.htm" target="_blank"> https://slxy.aqnu.edu.cn/info/1921/79382.htm</a></div>
+                        <div class="member-contact">📧 062404@aqnu.edu.cn</div>
+                        <div class="member-contact">🔗 <a href="https://stxy.aqnu.edu.cn/info/1921/79382.htm" target="_blank">个人主页</a></div>
+                        <div class="member-research">研究方向：非线性动力学和复杂系统、混沌控制、时间序列分析、复杂网络分析。2023年博士毕业于华东师范大学。在Chaos, Solitons & Fractals（Q1）、Physica A等期刊发表SCI论文多篇。2026年青年教师课堂教学能力考核合格，2025年度考核结果良好。</div>
                     </div>
                 </div>
-                <div class="member-card chief">
-                    <div class="member-photo">
-                        <img src="hao.png">
-                    </div>
-                    <div class="member-info">
-                        <div class="member-name">郝庆一</div>
-                        <div class="member-title">教授（博士）</div>
-                        <div class="member-contact">邮箱: haoqyi@126.com</div>
-                        <div class="member-contact">个人主页: <a href="https://qingyh.github.io/" target="_blank">https://qingyh.github.io/</a></div>
-                    </div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">
-                        <img src="gamep.jpg">
-                    </div>
-                    <div class="member-info">
-                        <div class="member-name"></div>
-                        <div class="member-title"><a href="./game_introduce.htm"><p style="color: blue; font-size: 30px;">演化博弈论简介</p></a></div>
-                        <div class="member-contact"></div>
-                        <div class="member-contact"></div>
-                    </div>
-                </div>
-
-
+                
             </div>
         </section>
-        
-        
     </div>
     
     <footer>
         <div class="container">
-            <p>复杂系统教学科研团队 &copy; 2025 版权所有</p>
-            <p>地址: 安庆市集贤北路1318号 邮编: 246133</p>
+            <div class="college-logo">
+                <div class="logo-icon">Σ</div>
+                <div class="logo-text">
+                    <div class="cn">安庆师范大学 · 数学与统计学院</div>
+                    <div class="en">School of Mathematics and Statistics, AQNU</div>
+                </div>
+            </div>
+            <p>复杂系统教学科研团队 © 2026 版权所有</p>
+            <p>地址：安庆市集贤北路1318号 邮编：246133</p>
         </div>
     </footer>
+    
+    <script>
+        (function() {
+            const particlesContainer = document.getElementById('particles');
+            const colors = ['rgba(107, 33, 168, 0.15)', 'rgba(8, 145, 178, 0.12)', 'rgba(217, 119, 6, 0.1)', 'rgba(30, 64, 175, 0.13)'];
+            const sizes = [4, 6, 8, 10, 12, 14, 16];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = (100 + Math.random() * 20) + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.animationDelay = (Math.random() * 20) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        })();
+    </script>
+    
 </body>
-
 </html>
-
 
 
 
