@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>复杂系统：从涌现到临界 · 交互式导览</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body{
+    margin:0; padding:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background:#f3f4f7;
+    color:#1f2937;
+    line-height:1.78;
+    font-size:16px;
+    overflow-x:hidden;
+  }
+
+  header{
+    background: linear-gradient(135deg,#1e1b4b 0%,#4338ca 45%,#7c3aed 100%);
+    color:#fff;
+    padding: 46px 18px 40px;
+    text-align:center;
+  }
+  header h1{
+    margin:0 0 10px;
+    font-size: clamp(22px, 6vw, 34px);
+    letter-spacing:.5px;
+    font-weight:700;
+    line-height:1.35;
+  }
+  header p{
+    margin:0 auto;
+    max-width:520px;
+    font-size: clamp(13px, 3.4vw, 15px);
+    opacity:.86;
+    line-height:1.7;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 16px 90px; }
+
+  /* 目录 */
+  .toc{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin: 20px 0 4px;
+    justify-content:center;
+  }
+  .toc a{
+    font-size:13px;
+    padding:6px 13px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #e3e5ec;
+    color:#4338ca;
+    text-decoration:none;
+    transition:.18s;
+    white-space:nowrap;
+  }
+  .toc a:hover{ background:#4338ca; color:#fff; border-color:#4338ca; }
+
+  h2{
+    font-size: clamp(19px, 4.6vw, 24px);
+    margin: 46px 0 8px;
+    padding-left: 13px;
+    border-left: 5px solid #4f46e5;
+    line-height:1.4;
+    color:#111827;
+  }
+  h3{
+    font-size: clamp(16px, 3.9vw, 18.5px);
+    margin: 26px 0 6px;
+    color:#1e293b;
+  }
+  h4{
+    font-size:15px;
+    margin:18px 0 4px;
+    color:#374151;
+  }
+  p{ margin: 10px 0; }
+  ul, ol{ padding-left: 22px; margin: 10px 0; }
+  li{ margin: 5px 0; }
+
+  .card{
+    background:#fff;
+    border:1px solid #e6e8ef;
+    border-radius:14px;
+    padding: 18px 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(16,24,40,.045);
+  }
+  .card.tight{ padding: 14px 14px 16px; }
+
+  .note{
+    background:#eef2ff;
+    border-left:4px solid #6366f1;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#312e81;
+  }
+  .warn{
+    background:#fff7ed;
+    border-left:4px solid #f59e0b;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#7c2d12;
+  }
+
+  /* 主题网格 */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .topic{
+    background:#fff;
+    border:1px solid #e6e8ef;
+    border-radius:13px;
+    padding: 14px 15px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.04);
+    transition:.2s;
+  }
+  .topic:hover{ transform: translateY(-2px); box-shadow:0 6px 18px rgba(79,70,229,.10); border-color:#c7d2fe; }
+  .topic h4{
+    margin:0 0 6px;
+    font-size:15px;
+    color:#4338ca;
+    display:flex; align-items:center; gap:7px;
+  }
+  .topic h4 .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#6366f1; flex:0 0 auto;
+    box-shadow:0 0 0 3px rgba(99,102,241,.16);
+  }
+  .topic p{
+    margin:0;
+    font-size:13.8px;
+    color:#4b5563;
+    line-height:1.65;
+  }
+
+  /* 画布 */
+  canvas{
+    display:block;
+    width:100%;
+    background:#0d1426;
+    border-radius:11px;
+    touch-action: manipulation;
+  }
+  .cv-lg{ height: 300px; }
+  .cv-md{ height: 230px; }
+  .cv-sm{ height: 120px; }
+  .cv-net{ height: 280px; }
+  @media (max-width: 480px){
+    .cv-lg{ height: 240px; }
+    .cv-net{ height: 230px; }
+  }
+
+  /* 控件 */
+  .ctrl{
+    display:flex; flex-direction:column; gap:6px;
+    margin: 14px 0 6px;
+    font-size:14px;
+  }
+  .ctrl .row{
+    display:flex; align-items:center; justify-content:space-between;
+    color:#374151; font-weight:500;
+  }
+  .ctrl .row b{ color:#4f46e5; font-variant-numeric: tabular-nums; }
+  input[type=range]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:5px;
+    background:#e5e7eb; border-radius:3px; outline:none; margin:6px 0 2px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:20px; height:20px; border-radius:50%;
+    background:#4f46e5; cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(79,70,229,.5);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;
+    background:#4f46e5; cursor:pointer; border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(79,70,229,.5);
+  }
+
+  .btns{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; }
+  button{
+    font-family:inherit; font-size:13.5px;
+    padding: 8px 15px;
+    border-radius:9px;
+    border:1px solid #d7dae4;
+    background:#fff; color:#374151;
+    cursor:pointer; transition:.16s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:hover{ border-color:#a5b4fc; color:#4338ca; }
+  button:active{ transform: scale(.97); }
+  button.primary{
+    background:#4f46e5; color:#fff; border-color:#4f46e5;
+  }
+  button.primary:hover{ background:#4338ca; color:#fff; }
+  button.on{ background:#4338ca; color:#fff; border-color:#4338ca; }
+
+  .stat{
+    display:flex; flex-wrap:wrap; gap:10px 18px;
+    font-size:13.5px; color:#4b5563;
+    margin-top:10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span b{ color:#4338ca; }
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:14px;
+    font-size:13px; color:#4b5563; margin-top:9px;
+  }
+  .legend i{
+    display:inline-block; width:10px;height:10px;border-radius:50%;
+    margin-right:5px; vertical-align:-1px;
+  }
+
+  /* 表格 */
+  .tblwrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0; }
+  table{ border-collapse:collapse; width:100%; font-size:14px; min-width:420px; }
+  th,td{ padding:9px 12px; text-align:left; border-bottom:1px solid #eceef4; }
+  th{ background:#f8f9fc; color:#374151; font-weight:600; white-space:nowrap; }
+  td:first-child{ color:#4338ca; font-weight:500; white-space:nowrap; }
+
+  footer{
+    text-align:center;
+    padding: 30px 20px 50px;
+    font-size:13px;
+    color:#9ca3af;
+  }
+
+  .katex, mjx-container{ overflow-x:auto; overflow-y:hidden; max-width:100%; }
+  mjx-container[display="true"]{ margin: 14px 0 !important; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>复杂系统：从涌现到临界</h1>
+  <p>面向本科生与研究生的入门导览 —— 核心主题、经典模型与可交互动态演示</p>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <a href="#s1">① 什么是复杂系统</a>
+    <a href="#s2">② 研究主题</a>
+    <a href="#s3">③ 交互演示</a>
+    <a href="#s4">④ 数学工具箱</a>
+    <a href="#s5">⑤ 学习路径</a>
+  </nav>
+
+  <!-- ================= 1 ================= -->
+  <h2 id="s1">① 什么是复杂系统？</h2>
+
+  <div class="card">
+    <p>
+      <b>复杂系统（complex system）</b>是由大量相互作用的组分构成的系统，其宏观行为
+      无法通过简单地把单个组分的性质相加来得到。物理学家 P. W. Anderson 在 1972 年的名文
+      <i>More is Different</i> 中提出了这一核心思想：<b>量的积累会带来质的跃迁</b>。
+    </p>
+
+    <p>一个一般性的动力学描述是：</p>
+    \[
+      \dot{\mathbf{x}} = \mathbf{f}(\mathbf{x},\, \boldsymbol{\xi},\, t),
+      \qquad \mathbf{x} \in \mathbb{R}^{n},\ \ n \gg 1
+    \]
+    <p>
+      其中 \(\mathbf{x}\) 是系统状态，\(\mathbf{f}\) 通常<b>非线性</b>，\(\boldsymbol{\xi}\) 表示
+      噪声或外部驱动。复杂性恰恰来自：非线性 + 高维 + 强耦合 + 反馈。
+    </p>
+
+    <h4>复杂系统的几个共同特征</h4>
+    <ul>
+      <li><b>涌现（emergence）</b>：整体具有单个组分不具备的性质，如相变、意识、市场周期。</li>
+      <li><b>自组织（self-organization）</b>：没有中央指挥，秩序从局部规则中自发产生。</li>
+      <li><b>非线性与反馈</b>：微小扰动可能被放大（蝴蝶效应），也可能被抑制。</li>
+      <li><b>异质性与网络结构</b>：组分之间不是均匀混合，而是通过特定拓扑相连。</li>
+      <li><b>多尺度与标度律</b>：不同时间／空间尺度上呈现幂律、自相似结构。</li>
+      <li><b>适应与演化</b>：组分本身会改变规则，如经济主体、生物个体。</li>
+    </ul>
+
+    <div class="note">
+      <b>一句话概括：</b>复杂系统研究的是「<b>相互作用如何生成秩序、模式与突变</b>」。
+      它横跨物理、生物、生态、神经科学、经济学、社会学与计算机科学。
+    </div>
+  </div>
+
+  <!-- ================= 2 ================= -->
+  <h2 id="s2">② 复杂系统研究什么？</h2>
+  <p>下面这些是当前最活跃的几条主线，也是研究生阶段常见的选题方向。</p>
+
+  <div class="grid">
+
+    <div class="topic">
+      <h4><span class="dot"></span>非线性动力学与混沌</h4>
+      <p>不动点、周期轨道、分岔、奇怪吸引子、李雅普诺夫指数与初值敏感性。
+      代表式：\(\dot{x}=f(x,\mu)\)。经典模型：Logistic 映射、Lorenz 系统、Kuramoto 振子。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>网络科学</h4>
+      <p>度分布、集聚系数、路径长度、社团结构。小世界网络与无标度网络：
+      \(P(k)\sim k^{-\gamma}\)。研究网络的鲁棒性、传播过程与控制。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>自组织与涌现</h4>
+      <p>局部规则如何生成全局模式。元胞自动机、多主体模型、同步现象、
+      群体行为（鸟群、鱼群）与蚁群算法。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>临界现象与标度律</h4>
+      <p>相变点附近的幂律与普适类。序参量、关联长度
+      \(\xi \sim |p-p_c|^{-\nu}\)、有限尺度标度、自组织临界性（沙堆模型）。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>多主体建模与仿真</h4>
+      <p>用规则驱动的智能体（agent）模拟涌现行为。主体基模型（ABM）、
+      蒙特卡洛方法、强化学习与复杂系统的结合。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>信息、计算与涌现</h4>
+      <p>用熵 \(H=-\sum_i p_i\log p_i\)、互信息、有效信息量刻画复杂程度；
+      研究「计算等价性」——某些简单系统（如 Rule 110）具备图灵完备性。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>鲁棒性与脆弱性</h4>
+      <p>系统在扰动下如何保持功能？级联失效、雪崩、金融风险传染、
+      电网与供应链的可靠性分析。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>演化博弈与合作</h4>
+      <p>囚徒困境、复制子方程、网络上的合作涌现、公共品博弈。
+      解释「自私个体如何产生利他行为」。</p>
+    </div>
+
+  </div>
+
+  <!-- ================= 3 ================= -->
+  <h2 id="s3">③ 四个可交互的经典案例</h2>
+  <p>每个演示都对应一个复杂系统的核心机制。拖动滑块、点击按钮即可观察行为变化。</p>
+
+  <!-- ---------- 3.1 Logistic ---------- -->
+  <h3>3.1 逻辑斯蒂映射与通往混沌之路</h3>
+  <div class="card">
+    <p>
+      这是最简单的非线性离散动力学模型，由生态学家 May 于 1976 年推广：
+    </p>
+    \[
+      x_{t+1} = r\,x_{t}\,(1-x_{t}), \qquad x_t \in [0,1]
+    \]
+    <p>
+      它原本描述种群数量在有限资源下的增长：\(r\) 是增长率，\((1-x_t)\) 是资源约束。
+      尽管方程极其简单，当 \(r\) 增大时，系统会依次经历
+      <b>不动点 → 周期 2 → 周期 4 → 周期 8 → … → 混沌</b>，
+      这就是著名的<b>倍周期分岔</b>。
+    </p>
+
+    <canvas id="bif" class="cv-lg" aria-label="逻辑斯蒂映射分岔图"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>参数 \(r\)</span><b id="rVal">3.700</b></div>
+      <input type="range" id="rRange" min="2.4" max="4" step="0.001" value="3.7">
+    </div>
+
+    <canvas id="series" class="cv-sm" aria-label="时间序列"></canvas>
+
+    <div class="stat">
+      <span>当前 \(r\) = <b id="rVal2">3.700</b></span>
+      <span>轨道类型估计：<b id="periodEl">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>怎么玩：</b>慢慢把 \(r\) 从 3.0 拖到 4.0。
+      注意在 \(r\approx 3.449\)、\(3.544\)、\(3.564\ldots\) 处周期不断加倍；
+      而在 \(r\approx 3.83\) 附近还有一个「周期 3 窗口」——秩序与混沌交错出现。
+      当 \(r>3.57\) 时，两条几乎重合的初始轨道会迅速分离，这就是<b>初值敏感性</b>。
+    </div>
+  </div>
+
+  <!-- ---------- 3.2 CA ---------- -->
+  <h3>3.2 元胞自动机：从简单规则到涌现计算</h3>
+  <div class="card">
+    <p>
+      元胞自动机（Cellular Automaton）把空间离散成一排格子，每个格子只有 0／1 两种状态，
+      下一时刻的状态由它和邻居当前状态唯一决定：
+    </p>
+    \[
+      a_i^{\,t+1} = f\!\left(a_{i-1}^{\,t},\ a_i^{\,t},\ a_{i+1}^{\,t}\right),
+      \qquad a_i \in \{0,1\}
+    \]
+    <p>
+      邻居有 \(2^3=8\) 种组合，每种对应输出 0 或 1，于是共有
+      \(2^8 = 256\) 种规则，用 0–255 的整数编号（Wolfram 编码）。
+      下图从一个单点（或随机初始行）出发，逐行向下演化。
+    </p>
+
+    <canvas id="ca" class="cv-lg" aria-label="一维元胞自动机演化"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>规则编号（0–255）</span><b id="ruleVal">110</b></div>
+      <input type="range" id="ruleRange" min="0" max="255" step="1" value="110">
+    </div>
+
+    <div class="btns">
+      <button data-rule="30">Rule 30（混沌）</button>
+      <button data-rule="90">Rule 90（分形）</button>
+      <button data-rule="110">Rule 110（通用计算）</button>
+      <button data-rule="150">Rule 150（嵌套）</button>
+      <button id="caSeedBtn">切换初始条件</button>
+    </div>
+
+    <div class="note">
+      <b>看点：</b>Rule 30 从完全确定的规则中产生出看起来随机的图案，曾被用作随机数发生器；
+      Rule 90 生成谢尔宾斯基三角分形；而 <b>Rule 110 被证明是图灵完备的</b>——
+      这意味着一个只有两种状态、规则极其简单的系统，原则上可以完成任何计算机能做的计算。
+      这是「简单规则 → 复杂行为」最震撼的例子之一。
+    </div>
+  </div>
+
+  <!-- ---------- 3.3 SIR ---------- -->
+  <h3>3.3 网络上的传染病传播</h3>
+  <div class="card">
+    <p>
+      经典 SIR 模型把人群分为三类：易感者 \(S\)、感染者 \(I\)、康复者 \(R\)。
+      在均匀混合假设下，其动力学由常微分方程组给出：
+    </p>
+    \[
+      \frac{dS}{dt} = -\beta S I,\qquad
+      \frac{dI}{dt} = \beta S I - \gamma I,\qquad
+      \frac{dR}{dt} = \gamma I
+    \]
+    <p>
+      基本再生数 \(R_0 = \beta/\gamma\) 决定疫情是否暴发：
+      \(R_0>1\) 则感染规模指数增长，\(R_0<1\) 则自行消退。
+    </p>
+    <p>
+      但真实人群并非均匀混合，而是构成一个<b>接触网络</b>。这里使用
+      Watts–Strogatz 小世界网络：先构建环形最近邻连接，再以概率 \(p\) 随机重连。
+      \(p\) 越大，网络的平均路径越短，「小世界」效应越明显。
+    </p>
+
+    <canvas id="net" class="cv-net" aria-label="接触网络"></canvas>
+    <canvas id="curve" class="cv-sm" style="margin-top:10px" aria-label="感染曲线"></canvas>
+
+    <div class="legend">
+      <span><i style="background:#64748b"></i>易感 S</span>
+      <span><i style="background:#ef4444"></i>感染 I</span>
+      <span><i style="background:#22c55e"></i>康复 R</span>
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>重连概率 \(p\)（小世界程度）</span><b id="pVal">0.05</b></div>
+      <input type="range" id="pRange" min="0" max="0.5" step="0.01" value="0.05">
+    </div>
+    <div class="ctrl">
+      <div class="row"><span>单次接触传染率 \(\beta\)</span><b id="betaVal">0.07</b></div>
+      <input type="range" id="betaRange" min="0.01" max="0.2" step="0.005" value="0.07">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="sirReset">重新开始</button>
+      <button id="sirToggle">暂停</button>
+    </div>
+
+    <div class="stat">
+      <span>时间步：<b id="sirT">0</b></span>
+      <span>当前感染比例：<b id="sirI">0%</b></span>
+      <span>累计感染：<b id="sirTotal">0%</b></span>
+    </div>
+
+    <div class="note">
+      <b>试一试：</b>把 \(p\) 设为 0（纯环形格点），再把 \(\beta\) 调到略高于临界值，
+      你会看到疫情缓慢地像波一样绕着圈子扩散；然后把 \(p\) 提到 0.2，
+      只需几个时间步，感染就会通过少数几条「捷径」席卷全网。
+      <b>网络的拓扑结构，而非个体的平均行为，决定了传播的速度与规模。</b>
+    </div>
+  </div>
+
+  <!-- ---------- 3.4 Schelling ---------- -->
+  <h3>3.4 谢林隔离模型：微小的偏好，巨大的隔离</h3>
+  <div class="card">
+    <p>
+      1971 年，经济学家 Thomas Schelling 提出了一个惊人的模型：
+      假设有两类人（蓝与黄），每个人<b>只是希望自己周围有至少 \(\tau\) 比例的同类邻居</b>，
+      并不要求完全隔离。每个人只要不满足这个条件，就随机搬到附近的空位。
+    </p>
+    \[
+      \text{个体满意} \iff
+      \frac{\#\{\text{同类邻居}\}}{\#\{\text{非空邻居}\}} \ \ge\ \tau
+    \]
+    <p>
+      直觉上，如果 \(\tau = 0.3\)，社会应该相当混居。
+      但模拟结果却令人不安：<b>即使是温和的偏好，最终也会自发形成高度隔离的格局。</b>
+    </p>
+
+    <canvas id="schelling" class="cv-lg" style="height:320px; image-rendering:pixelated;" aria-label="谢林隔离模型"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>容忍阈值 \(\tau\)</span><b id="tauVal">0.35</b></div>
+      <input type="range" id="tauRange" min="0" max="0.8" step="0.01" value="0.35">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="schReset">重新初始化</button>
+      <button id="schToggle">暂停</button>
+    </div>
+
+    <div class="stat">
+      <span>模拟步数：<b id="schT">0</b></span>
+      <span>平均同类邻居比例：<b id="schSeg">—</b></span>
+      <span>不满意个体数：<b id="schUnh">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>启示：</b>宏观层面的隔离，并不需要微观层面的强烈歧视动机。
+      这是复杂系统中最经典的「<b>微观动机 ≠ 宏观结果</b>」范例，
+      也是多主体建模（ABM）在社会学、城市经济学中的奠基性应用。
+    </div>
+  </div>
+
+  <!-- ================= 4 ================= -->
+  <h2 id="s4">④ 数学工具箱</h2>
+  <p>下面这张表汇总了复杂系统研究中出现频率最高的几组数学对象。</p>
+
+  <div class="tblwrap">
+    <table>
+      <thead>
+        <tr><th>概念</th><th>典型公式</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>幂律分布</td>
+          <td>\(P(k) \sim k^{-\gamma}\)</td>
+          <td>无标度网络、地震、财富分布、城市规模</td>
+        </tr>
+        <tr>
+          <td>香农熵</td>
+          <td>\(H(X) = -\sum_i p_i \log p_i\)</td>
+          <td>度量不确定性、复杂度的下界</td>
+        </tr>
+        <tr>
+          <td>互信息</td>
+          <td>\(I(X;Y)=\sum_{x,y}p(x,y)\log\dfrac{p(x,y)}{p(x)p(y)}\)</td>
+          <td>变量间非线性依赖、网络推断</td>
+        </tr>
+        <tr>
+          <td>李雅普诺夫指数</td>
+          <td>\(\lambda=\lim_{T\to\infty}\dfrac{1}{T}\sum_{t}\ln|f'(x_t)|\)</td>
+          <td>\(\lambda>0\) 即混沌，衡量发散速率</td>
+        </tr>
+        <tr>
+          <td>关联长度</td>
+          <td>\(\xi \sim |p-p_c|^{-\nu}\)</td>
+          <td>临界点附近的标度与普适类</td>
+        </tr>
+        <tr>
+          <td>基本再生数</td>
+          <td>\(R_0 = \beta/\gamma\)</td>
+          <td>传染病、舆情、级联失效的暴发阈值</td>
+        </tr>
+        <tr>
+          <td>自组织临界</td>
+          <td>\(P(s)\sim s^{-\tau}\)</td>
+          <td>沙堆模型、神经元雪崩、森林火灾</td>
+        </tr>
+        <tr>
+          <td>主方程</td>
+          <td>\(\dfrac{dP_n}{dt}=\sum_m \left[W_{m\to n}P_m - W_{n\to m}P_n\right]\)</td>
+          <td>随机过程的概率演化</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <b>研究方法上的一个提醒：</b>复杂系统很少能求得解析解。
+    典型的工作流是「<b>建模 → 数值仿真 → 标度分析 → 与真实数据比对</b>」。
+    因此，编程能力（Python / Julia / C++）、统计物理直觉、
+    以及数据科学工具，是这一领域研究生的基本装备。
+  </div>
+
+  <!-- ================= 5 ================= -->
+  <h2 id="s5">⑤ 学习路径建议</h2>
+
+  <div class="card">
+    <h4>本科阶段（打好基础）</h4>
+    <ul>
+      <li>常微分方程与线性代数：理解相空间、稳定性、特征值。</li>
+      <li>概率论与随机过程：马尔可夫链、主方程、大数定律。</li>
+      <li>统计物理入门：熵、配分函数、相变与临界指数。</li>
+      <li>编程与数值方法：Runge–Kutta、蒙特卡洛、数据可视化。</li>
+    </ul>
+
+    <h4>研究生阶段（进入前沿）</h4>
+    <ul>
+      <li><b>网络科学</b>：随机图、配置模型、谱方法、社团检测、网络上的动力学。</li>
+      <li><b>非线性动力学</b>：分岔理论、混沌控制、同步与 Kuramoto 模型。</li>
+      <li><b>随机过程与标度理论</b>：重整化群、有限尺度标度、渗流理论。</li>
+      <li><b>计算社会科学 / 系统生物学</b>：ABM、贝叶斯推断、网络重建。</li>
+      <li><b>机器学习 × 复杂系统</b>：图神经网络、神经算子、数据驱动的方程发现。</li>
+    </ul>
+
+    <h4>推荐读物</h4>
+    <ul>
+      <li>M. Mitchell, <i>Complexity: A Guided Tour</i>（最佳入门综述）</li>
+      <li>S. Strogatz, <i>Nonlinear Dynamics and Chaos</i>（非线性动力学经典教材）</li>
+      <li>M. Newman, <i>Networks: An Introduction</i>（网络科学标准教材）</li>
+      <li>P. Bak, <i>How Nature Works</i>（自组织临界性科普经典）</li>
+      <li>J. H. Holland, <i>Hidden Order</i>（涌现与适应系统）</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  复杂系统交互式导览 · 所有演示均在本地浏览器中实时计算
+</footer>
+
+<script>
+/* ============================================================
+   通用工具
+   ============================================================ */
+function DPR(){ return Math.min(window.devicePixelRatio || 1, 2); }
+
+function fit(cv){
+  const dpr = DPR();
+  const w = Math.max(1, Math.round(cv.clientWidth  * dpr));
+  const h = Math.max(1, Math.round(cv.clientHeight * dpr));
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  return { ctx: cv.getContext('2d'), W: cv.width, H: cv.height };
+}
+
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* ============================================================
+   演示 1：Logistic 映射
+   ============================================================ */
+const bifEl   = document.getElementById('bif');
+const serEl   = document.getElementById('series');
+const rRange  = document.getElementById('rRange');
+const rValEl  = document.getElementById('rVal');
+const rVal2El = document.getElementById('rVal2');
+const periodEl= document.getElementById('periodEl');
+
+const R_MIN = 2.4, R_MAX = 4.0;
+let curR = 3.7;
+let bifCache = null;
+
+/* 生成分岔图底图（较慢，只做一次） */
+function renderBifBase(){
+  const dpr = DPR();
+  const W = Math.max(1, Math.round(bifEl.clientWidth  * dpr));
+  const H = Math.max(1, Math.round(bifEl.clientHeight * dpr));
+
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const octx = off.getContext('2d');
+  const img = octx.createImageData(W, H);
+  const d = img.data;
+
+  for (let i = 0; i < W * H; i++){
+    d[i*4] = 13; d[i*4+1] = 20; d[i*4+2] = 38; d[i*4+3] = 255;
+  }
+
+  const warm = 220, pts = 340;
+  for (let x = 0; x < W; x++){
+    const r = R_MIN + (R_MAX - R_MIN) * x / (W - 1);
+    let v = 0.4;
+    for (let i = 0; i < warm; i++) v = r * v * (1 - v);
+    for (let i = 0; i < pts; i++){
+      v = r * v * (1 - v);
+      let y = ((1 - v) * (H - 1)) | 0;
+      if (y < 0) y = 0; else if (y > H - 1) y = H - 1;
+      const idx = (y * W + x) << 2;
+      d[idx] = 116; d[idx+1] = 128; d[idx+2] = 250;
+    }
+  }
+  octx.putImageData(img, 0, 0);
+  bifCache = off;
+}
+
+function paintBif(){
+  const { ctx, W, H } = fit(bifEl);
+  if (!bifCache || bifCache.width !== W || bifCache.height !== H) renderBifBase();
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.drawImage(bifCache, 0, 0);
+
+  // 当前 r 的标线
+  const px = (curR - R_MIN) / (R_MAX - R_MIN) * (W - 1);
+  ctx.strokeStyle = 'rgba(251,191,36,0.95)';
+  ctx.lineWidth = Math.max(1.5, W / 650);
+  ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, H); ctx.stroke();
+
+  // 轴标注
+  ctx.fillStyle = 'rgba(148,163,184,0.95)';
+  ctx.font = Math.max(10, Math.round(W / 78)) + 'px system-ui, sans-serif';
+  ctx.fillText('r = 2.4', 8, H - 8);
+  const t = 'r = 4.0';
+  ctx.fillText(t, W - ctx.measureText(t).width - 8, H - 8);
+}
+
+function drawSeries(){
+  const { ctx, W, H } = fit(serEl);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  // 网格
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 1;
+  for (let k = 1; k < 4; k++){
+    const y = Math.round(H * k / 4) + .5;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  const r = curR;
+  let v = 0.4;
+  for (let i = 0; i < 1500; i++) v = r * v * (1 - v);
+
+  const n = 220;
+  const vals = new Float64Array(n);
+  for (let i = 0; i < n; i++){ v = r * v * (1 - v); vals[i] = v; }
+
+  // 折线
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = Math.max(1.4, W / 520);
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  for (let i = 0; i < n; i++){
+    const x = i / (n - 1) * (W - 1);
+    const y = H - 1 - vals[i] * (H - 2);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  }
+  ctx.stroke();
+
+  // 数据点
+  const rad = Math.max(1.4, W / 460);
+  ctx.fillStyle = '#fbbf24';
+  for (let i = 0; i < n; i++){
+    const x = i / (n - 1) * (W - 1);
+    const y = H - 1 - vals[i] * (H - 2);
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.2832); ctx.fill();
+  }
+
+  // 周期估计
+  const set = new Set();
+  for (let i = 90; i < n; i++) set.add(Math.round(vals[i] * 3000));
+  const s = set.size;
+  let txt;
+  if (s <= 1)       txt = '周期 1（不动点）';
+  else if (s <= 2)  txt = '周期 2';
+  else if (s <= 4)  txt = '周期 4';
+  else if (s <= 8)  txt = '周期 8';
+  else if (s <= 16) txt = '周期 ' + s;
+  else if (s >= 70) txt = '混沌（初值敏感）';
+  else              txt = '拟周期 / 窗口（≈' + s + '）';
+
+  periodEl.textContent = txt;
+}
+
+function updateLogistic(){
+  rValEl.textContent  = curR.toFixed(3);
+  rVal2El.textContent = curR.toFixed(3);
+  paintBif();
+  drawSeries();
+}
+
+rRange.addEventListener('input', () => {
+  curR = parseFloat(rRange.value);
+  updateLogistic();
+});
+
+/* ============================================================
+   演示 2：一维元胞自动机
+   ============================================================ */
+const caEl      = document.getElementById('ca');
+const ruleRange = document.getElementById('ruleRange');
+const ruleVal   = document.getElementById('ruleVal');
+
+const CA_N = 128;
+let caRule = 110;
+let caSingle = true;
+
+function drawCA(){
+  const off = document.createElement('canvas');
+  off.width = CA_N; off.height = CA_N;
+  const octx = off.getContext('2d');
+  const img = octx.createImageData(CA_N, CA_N);
+  const d = img.data;
+
+  for (let i = 0; i < CA_N * CA_N; i++){
+    d[i*4] = 13; d[i*4+1] = 20; d[i*4+2] = 38; d[i*4+3] = 255;
+  }
+
+  let row = new Uint8Array(CA_N);
+  if (caSingle){
+    row[CA_N >> 1] = 1;
+  } else {
+    for (let i = 0; i < CA_N; i++) row[i] = Math.random() < 0.5 ? 1 : 0;
+  }
+
+  for (let y = 0; y < CA_N; y++){
+    for (let x = 0; x < CA_N; x++){
+      if (row[x]){
+        const idx = (y * CA_N + x) << 2;
+        d[idx] = 110; d[idx+1] = 231; d[idx+2] = 183;
+      }
+    }
+    const next = new Uint8Array(CA_N);
+    for (let x = 0; x < CA_N; x++){
+      const l = row[(x - 1 + CA_N) % CA_N];
+      const c = row[x];
+      const r = row[(x + 1) % CA_N];
+      next[x] = (caRule >> ((l << 2) | (c << 1) | r)) & 1;
+    }
+    row = next;
+  }
+
+  octx.putImageData(img, 0, 0);
+
+  const { ctx, W, H } = fit(caEl);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, W, H);
+  ctx.drawImage(off, 0, 0, W, H);
+}
+
+ruleRange.addEventListener('input', () => {
+  caRule = parseInt(ruleRange.value, 10);
+  ruleVal.textContent = caRule;
+  drawCA();
+});
+
+document.querySelectorAll('[data-rule]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    caRule = parseInt(btn.dataset.rule, 10);
+    ruleRange.value = caRule;
+    ruleVal.textContent = caRule;
+    drawCA();
+  });
+});
+
+document.getElementById('caSeedBtn').addEventListener('click', (e) => {
+  caSingle = !caSingle;
+  e.target.textContent = caSingle ? '切换初始条件' : '切换初始条件';
+  e.target.classList.toggle('on', !caSingle);
+  drawCA();
+});
+
+/* ============================================================
+   演示 3：网络上的 SIR
+   ============================================================ */
+const netEl   = document.getElementById('net');
+const curveEl = document.getElementById('curve');
+const pRange  = document.getElementById('pRange');
+const betaRange = document.getElementById('betaRange');
+const pVal    = document.getElementById('pVal');
+const betaVal = document.getElementById('betaVal');
+const sirT    = document.getElementById('sirT');
+const sirI    = document.getElementById('sirI');
+const sirTotal= document.getElementById('sirTotal');
+
+const NET_N = 120;
+let netAdj = [];
+let netPos = [];
+let sirState = null;
+let sirHist = [];
+let sirTimer = null;
+let sirDone = true;
+let sirStepCount = 0;
+
+function buildNet(p){
+  const N = NET_N, half = 2;
+  const adj = [];
+  for (let i = 0; i < N; i++) adj.push(new Set());
+
+  for (let i = 0; i < N; i++){
+    for (let d = 1; d <= half; d++){
+      const j = (i + d) % N;
+      adj[i].add(j); adj[j].add(i);
+    }
+  }
+
+  for (let i = 0; i < N; i++){
+    for (let d = 1; d <= half; d++){
+      const j = (i + d) % N;
+      if (!adj[i].has(j)) continue;
+      if (Math.random() >= p) continue;
+
+      let k = -1;
+      for (let t = 0; t < 80; t++){
+        const c = Math.floor(Math.random() * N);
+        if (c !== i && !adj[i].has(c)){ k = c; break; }
+      }
+      if (k < 0) continue;
+
+      adj[i].delete(j); adj[j].delete(i);
+      adj[i].add(k); adj[k].add(i);
+    }
+  }
+
+  netAdj = adj.map(s => Array.from(s));
+
+  netPos = [];
+  for (let i = 0; i < N; i++){
+    const th = 2 * Math.PI * i / N - Math.PI / 2;
+    netPos.push([0.5 + 0.5 * Math.cos(th), 0.5 + 0.5 * Math.sin(th)]);
+  }
+}
+
+function drawNetwork(){
+  const { ctx, W, H } = fit(netEl);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+  if (!sirState) return;
+
+  const cx = W / 2, cy = H / 2;
+  const R = Math.min(W, H) / 2 - Math.max(6, Math.min(W, H) * 0.03);
+
+  const px = new Float64Array(NET_N), py = new Float64Array(NET_N);
+  for (let i = 0; i < NET_N; i++){
+    px[i] = cx + R * (netPos[i][0] - 0.5) * 2;
+    py[i] = cy + R * (netPos[i][1] - 0.5) * 2;
+  }
+
+  // 边
+  ctx.strokeStyle = 'rgba(120,140,200,0.16)';
+  ctx.lineWidth = Math.max(0.5, W / 1000);
+  ctx.beginPath();
+  for (let i = 0; i < NET_N; i++){
+    for (let a = 0; a < netAdj[i].length; a++){
+      const j = netAdj[i][a];
+      if (j > i){
+        ctx.moveTo(px[i], py[i]);
+        ctx.lineTo(px[j], py[j]);
+      }
+    }
+  }
+  ctx.stroke();
+
+  // 节点
+  const colors = ['#64748b', '#ef4444', '#22c55e'];
+  const rad = Math.max(2, Math.min(W, H) / 62);
+  for (let i = 0; i < NET_N; i++){
+    ctx.fillStyle = colors[sirState[i]];
+    ctx.beginPath();
+    ctx.arc(px[i], py[i], rad, 0, 6.2832);
+    ctx.fill();
+  }
+}
+
+function drawCurves(){
+  const { ctx, W, H } = fit(curveEl);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  const n = sirHist.length;
+  if (n < 2) return;
+
+  const span = Math.max(30, n - 1);
+  const series = [
+    ['S', '#64748b'],
+    ['I', '#ef4444'],
+    ['R', '#22c55e']
+  ];
+
+  for (let s = 0; s < series.length; s++){
+    const key = series[s][0], col = series[s][1];
+    ctx.strokeStyle = col;
+    ctx.lineWidth = Math.max(1.4, W / 520);
+    ctx.beginPath();
+    for (let i = 0; i < n; i++){
+      const x = i / span * (W - 1);
+      const y = H - 1 - sirHist[i][key] * (H - 2);
+      if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+  }
+}
+
+function recordHist(){
+  let s = 0, i = 0, r = 0;
+  for (let k = 0; k < NET_N; k++){
+    const v = sirState[k];
+    if (v === 0) s++; else if (v === 1) i++; else r++;
+  }
+  sirHist.push({ S: s / NET_N, I: i / NET_N, R: r / NET_N });
+  sirI.textContent = Math.round(i / NET_N * 100) + '%';
+  sirTotal.textContent = Math.round((i + r) / NET_N * 100) + '%';
+  sirT.textContent = sirStepCount;
+}
+
+function resetSIR(){
+  if (sirTimer){ clearInterval(sirTimer); sirTimer = null; }
+
+  const p = parseFloat(pRange.value);
+  buildNet(p);
+
+  sirState = new Uint8Array(NET_N);
+  sirHist = [];
+  sirStepCount = 0;
+  sirDone = false;
+
+  sirState[Math.floor(Math.random() * NET_N)] = 1;
+  recordHist();
+  drawNetwork();
+  drawCurves();
+
+  document.getElementById('sirToggle').textContent = '暂停';
+  document.getElementById('sirToggle').classList.remove('on');
+
+  sirTimer = setInterval(sirTick, 110);
+}
+
+function sirTick(){
+  if (sirDone) return;
+
+  const beta = parseFloat(betaRange.value);
+  const gamma = 0.18;
+  const st = sirState;
+
+  const newInf = [];
+  for (let i = 0; i < NET_N; i++){
+    if (st[i] !== 1) continue;
+    const nb = netAdj[i];
+    for (let a = 0; a < nb.length; a++){
+      const j = nb[a];
+      if (st[j] === 0 && Math.random() < beta) newInf.push(j);
+    }
+  }
+
+  for (let i = 0; i < NET_N; i++){
+    if (st[i] === 1 && Math.random() < gamma) st[i] = 2;
+  }
+  for (let a = 0; a < newInf.length; a++){
+    const j = newInf[a];
+    if (st[j] === 0) st[j] = 1;
+  }
+
+  sirStepCount++;
+  recordHist();
+  drawNetwork();
+  drawCurves();
+
+  let alive = 0;
+  for (let i = 0; i < NET_N; i++) if (st[i] === 1) alive++;
+  if (alive === 0){
+    sirDone = true;
+    if (sirTimer){ clearInterval(sirTimer); sirTimer = null; }
+    document.getElementById('sirToggle').textContent = '已结束';
+  }
+}
+
+pRange.addEventListener('input', () => {
+  pVal.textContent = parseFloat(pRange.value).toFixed(2);
+  resetSIR();
+});
+
+betaRange.addEventListener('input', () => {
+  betaVal.textContent = parseFloat(betaRange.value).toFixed(3);
+});
+
+document.getElementById('sirReset').addEventListener('click', resetSIR);
+
+document.getElementById('sirToggle').addEventListener('click', (e) => {
+  if (sirDone) return;
+  if (sirTimer){
+    clearInterval(sirTimer); sirTimer = null;
+    e.target.textContent = '继续';
+    e.target.classList.add('on');
+  } else {
+    sirTimer = setInterval(sirTick, 110);
+    e.target.textContent = '暂停';
+    e.target.classList.remove('on');
+  }
+});
+
+/* ============================================================
+   演示 4：谢林隔离模型
+   ============================================================ */
+const schEl = document.getElementById('schelling');
+const tauRange = document.getElementById('tauRange');
+const tauVal = document.getElementById('tauVal');
+const schT = document.getElementById('schT');
+const schSeg = document.getElementById('schSeg');
+const schUnh = document.getElementById('schUnh');
+
+const SCH_N = 50;
+let schGrid = null;
+let schTau = 0.35;
+let schStepCount = 0;
+let schTimer = null;
+let schRunning = false;
+let schSegVal = 0;
+
+function schInit(){
+  schGrid = new Int8Array(SCH_N * SCH_N);
+  for (let i = 0; i < SCH_N * SCH_N; i++){
+    const r = Math.random();
+    schGrid[i] = r < 0.10 ? -1 : (r < 0.55 ? 0 : 1);
+  }
+  schStepCount = 0;
+  schSegVal = measureSeg();
+  schT.textContent = '0';
+  schSeg.textContent = (schSegVal * 100).toFixed(1) + '%';
+  schUnh.textContent = '—';
+  schDraw();
+}
+
+function measureSeg(){
+  let sum = 0, cnt = 0;
+  const N = SCH_N, g = schGrid;
+  for (let y = 0; y < N; y++){
+    for (let x = 0; x < N; x++){
+      const i = y * N + x;
+      const v = g[i];
+      if (v < 0) continue;
+      let same = 0, tot = 0;
+      for (let dy = -1; dy <= 1; dy++){
+        for (let dx = -1; dx <= 1; dx++){
+          if (!dx && !dy) continue;
+          const nx = (x + dx + N) % N;
+          const ny = (y + dy + N) % N;
+          const w = g[ny * N + nx];
+          if (w < 0) continue;
+          tot++;
+          if (w === v) same++;
+        }
+      }
+      if (tot > 0){ sum += same / tot; cnt++; }
+    }
+  }
+  return cnt > 0 ? sum / cnt : 0;
+}
+
+function schStep(){
+  const N = SCH_N, g = schGrid;
+  const tau = schTau;
+
+  const unhappy = [];
+  for (let y = 0; y < N; y++){
+    for (let x = 0; x < N; x++){
+      const i = y * N + x;
+      const v = g[i];
+      if (v < 0) continue;
+      let same = 0, tot = 0;
+      for (let dy = -1; dy <= 1; dy++){
+        for (let dx = -1; dx <= 1; dx++){
+          if (!dx && !dy) continue;
+          const nx = (x + dx + N) % N;
+          const ny = (y + dy + N) % N;
+          const w = g[ny * N + nx];
+          if (w < 0) continue;
+          tot++;
+          if (w === v) same++;
+        }
+      }
+      const frac = tot > 0 ? same / tot : 1;
+      if (frac < tau) unhappy.push(i);
+    }
+  }
+
+  const empties = [];
+  for (let i = 0; i < N * N; i++) if (g[i] < 0) empties.push(i);
+  shuffle(empties);
+  shuffle(unhappy);
+
+  for (let a = 0; a < unhappy.length; a++){
+    if (empties.length === 0) break;
+    const i = unhappy[a];
+    if (g[i] < 0) continue;
+    const j = empties.pop();
+    if (j === i){ empties.push(i); continue; }
+    g[j] = g[i];
+    g[i] = -1;
+    empties.push(i);
+  }
+
+  schStepCount++;
+  schSegVal = measureSeg();
+
+  schT.textContent = schStepCount;
+  schSeg.textContent = (schSegVal * 100).toFixed(1) + '%';
+  schUnh.textContent = unhappy.length;
+
+  schDraw();
+}
+
+function schDraw(){
+  const N = SCH_N;
+  const off = document.createElement('canvas');
+  off.width = N; off.height = N;
+  const octx = off.getContext('2d');
+  const img = octx.createImageData(N, N);
+  const d = img.data;
+
+  for (let i = 0; i < N * N; i++){
+    const v = schGrid[i];
+    let r, g, b;
+    if (v < 0)       { r = 13;  g = 20;  b = 38;  }
+    else if (v === 0){ r = 96;  g = 165; b = 250; }
+    else             { r = 251; g = 191; b = 36;  }
+    d[i*4] = r; d[i*4+1] = g; d[i*4+2] = b; d[i*4+3] = 255;
+  }
+  octx.putImageData(img, 0, 0);
+
+  const { ctx, W, H } = fit(schEl);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, W, H);
+  ctx.drawImage(off, 0, 0, W, H);
+}
+
+function schPlay(){
+  if (schTimer) return;
+  schRunning = true;
+  document.getElementById('schToggle').textContent = '暂停';
+  document.getElementById('schToggle').classList.remove('on');
+  schTimer = setInterval(schStep, 260);
+}
+
+function schPause(){
+  if (schTimer){ clearInterval(schTimer); schTimer = null; }
+  schRunning = false;
+  document.getElementById('schToggle').textContent = '继续';
+  document.getElementById('schToggle').classList.add('on');
+}
+
+tauRange.addEventListener('input', () => {
+  schTau = parseFloat(tauRange.value);
+  tauVal.textContent = schTau.toFixed(2);
+});
+
+document.getElementById('schReset').addEventListener('click', () => {
+  schInit();
+  schPlay();
+});
+
+document.getElementById('schToggle').addEventListener('click', () => {
+  if (schRunning) schPause(); else schPlay();
+});
+
+/* ============================================================
+   初始化 & 响应式
+   ============================================================ */
+function initAll(){
+  updateLogistic();
+
+  ruleRange.value = caRule;
+  ruleVal.textContent = caRule;
+  drawCA();
+
+  pVal.textContent = parseFloat(pRange.value).toFixed(2);
+  betaVal.textContent = parseFloat(betaRange.value).toFixed(3);
+  resetSIR();
+
+  tauVal.textContent = schTau.toFixed(2);
+  schInit();
+  setTimeout(schPlay, 700);
+}
+
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    bifCache = null;
+    paintBif();
+    drawSeries();
+    drawCA();
+    drawNetwork();
+    drawCurves();
+    schDraw();
+  }, 160);
+});
+
+/* 等 MathJax 与布局稳定后再初始化画布 */
+if (document.readyState === 'complete'){
+  initAll();
+} else {
+  window.addEventListener('load', initAll);
+}
+</script>
+
+</body>
+</html>

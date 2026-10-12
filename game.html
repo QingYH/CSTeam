@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>演化博弈论 · 两个有趣的应用案例</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body{
+    margin:0; padding:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background:#f5f6fa;
+    color:#1f2937;
+    line-height:1.78;
+    font-size:16px;
+    overflow-x:hidden;
+  }
+
+  header{
+    background: linear-gradient(135deg,#052e16 0%,#166534 45%,#22c55e 100%);
+    color:#fff;
+    padding: 44px 18px 38px;
+    text-align:center;
+  }
+  header h1{
+    margin:0 0 10px;
+    font-size: clamp(21px, 5.8vw, 32px);
+    letter-spacing:.5px;
+    font-weight:700;
+    line-height:1.35;
+  }
+  header p{
+    margin:0 auto;
+    max-width:520px;
+    font-size: clamp(13px, 3.4vw, 15px);
+    opacity:.88;
+    line-height:1.7;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+
+  .toc{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin: 18px 0 4px;
+    justify-content:center;
+  }
+  .toc a{
+    font-size:13px;
+    padding:6px 13px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #e3e6ec;
+    color:#15803d;
+    text-decoration:none;
+    transition:.18s;
+    white-space:nowrap;
+  }
+  .toc a:hover{ background:#22c55e; color:#fff; border-color:#22c55e; }
+
+  h2{
+    font-size: clamp(19px, 4.5vw, 23px);
+    margin: 42px 0 8px;
+    padding-left: 13px;
+    border-left: 5px solid #16a34a;
+    line-height:1.4;
+    color:#111827;
+  }
+  h3{
+    font-size: clamp(16px, 3.9vw, 18px);
+    margin: 24px 0 6px;
+    color:#1e293b;
+  }
+  h4{ font-size:15px; margin:16px 0 4px; color:#374151; }
+  p{ margin: 10px 0; }
+  ul, ol{ padding-left: 22px; margin: 10px 0; }
+  li{ margin: 5px 0; }
+
+  .card{
+    background:#fff;
+    border:1px solid #e6e9ef;
+    border-radius:14px;
+    padding: 18px 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(16,24,40,.045);
+  }
+
+  .note{
+    background:#f0fdf4;
+    border-left:4px solid #16a34a;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#14532d;
+  }
+  .warn{
+    background:#fff7ed;
+    border-left:4px solid #f59e0b;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#7c2d12;
+  }
+
+  /* 收益矩阵表格 */
+  .payoff{
+    display:grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap:1px;
+    background:#e5e7eb;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    overflow:hidden;
+    margin: 14px 0;
+    font-size:14px;
+  }
+  .payoff > div{
+    background:#fff;
+    padding: 9px 10px;
+    text-align:center;
+    line-height:1.5;
+  }
+  .payoff .hd{
+    background:#f0fdf4;
+    font-weight:600;
+    color:#166534;
+  }
+  .payoff .rowhd{
+    background:#f8fafc;
+    font-weight:600;
+    color:#334155;
+    text-align:left;
+  }
+
+  canvas{ display:block; width:100%; background:#0b1220; border-radius:11px; touch-action: manipulation; }
+  .cv-lg{ height: 330px; }
+  .cv-md{ height: 240px; }
+  .cv-sm{ height: 110px; }
+  @media (max-width: 480px){
+    .cv-lg{ height: 270px; }
+    .cv-md{ height: 200px; }
+  }
+
+  .ctrl{ display:flex; flex-direction:column; gap:6px; margin: 14px 0 4px; font-size:14px; }
+  .ctrl .row{ display:flex; align-items:center; justify-content:space-between; color:#374151; font-weight:500; }
+  .ctrl .row b{ color:#15803d; font-variant-numeric: tabular-nums; }
+
+  input[type=range]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:5px;
+    background:#e5e7eb; border-radius:3px; outline:none; margin:6px 0 2px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:20px; height:20px; border-radius:50%;
+    background:#16a34a; cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(22,163,74,.5);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;
+    background:#16a34a; cursor:pointer; border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(22,163,74,.5);
+  }
+
+  .btns{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; }
+  button{
+    font-family:inherit; font-size:13.5px;
+    padding: 8px 15px;
+    border-radius:9px;
+    border:1px solid #d7dbe4;
+    background:#fff; color:#374151;
+    cursor:pointer; transition:.16s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:hover{ border-color:#86efac; color:#15803d; }
+  button:active{ transform: scale(.97); }
+  button.primary{ background:#16a34a; color:#fff; border-color:#16a34a; }
+  button.primary:hover{ background:#15803d; color:#fff; }
+  button.on{ background:#15803d; color:#fff; border-color:#15803d; }
+
+  .stat{
+    display:flex; flex-wrap:wrap; gap:8px 18px;
+    font-size:13.5px; color:#4b5563;
+    margin-top:10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span b{ color:#15803d; }
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:14px;
+    font-size:13px; color:#4b5563; margin-top:9px;
+  }
+  .legend i{
+    display:inline-block; width:10px;height:10px;border-radius:3px;
+    margin-right:5px; vertical-align:-1px;
+  }
+
+  footer{ text-align:center; padding: 28px 20px 46px; font-size:13px; color:#9ca3af; }
+
+  .katex, mjx-container{ overflow-x:auto; overflow-y:hidden; max-width:100%; }
+  mjx-container[display="true"]{ margin: 12px 0 !important; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>演化博弈论 · 两个有趣的应用案例</h1>
+  <p>当「自私」遇上「重复相遇」——合作、惩罚与秩序如何从博弈中自发涌现</p>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <a href="#intro">① 核心思想</a>
+    <a href="#case1">② 案例一：重复囚徒困境</a>
+    <a href="#case2">③ 案例二：公共品与惩罚</a>
+    <a href="#sum">④ 小结</a>
+  </nav>
+
+  <!-- ================= 核心思想 ================= -->
+  <h2 id="intro">① 演化博弈论：从「理性选择」到「自然选择」</h2>
+
+  <div class="card">
+    <p>
+      经典博弈论假设玩家<b>完全理性</b>，能算出最优策略。演化博弈论换了一个视角：
+      个体不需要聪明，只需要<b>能复制、会遗传</b>。策略的成败由「适应度」决定——
+      收益高的策略在种群中占比越来越大，收益低的逐渐消失。
+    </p>
+
+    <p>最核心的动力学方程是<b>复制子方程</b>（replicator equation）：</p>
+
+    \[
+      \dot{x}_i = x_i\left(\pi_i - \bar{\pi}\right),
+      \qquad
+      \bar{\pi} = \sum_j x_j \pi_j
+    \]
+
+    <p>
+      其中 \(x_i\) 是使用策略 \(i\) 的个体在种群中的比例，\(\pi_i\) 是该策略的平均收益，
+      \(\bar{\pi}\) 是全群平均收益。方程的含义朴素而深刻：
+      <b>收益高于平均的策略会增长，低于平均的会萎缩。</b>
+    </p>
+
+    <div class="note">
+      <b>为什么有趣？</b>它把「道德」「合作」「惩罚」这些看似属于哲学的问题，
+      变成了可以用数学和模拟研究的<b>动力学现象</b>。
+      下面两个案例，都是演化博弈论最经典的「反直觉」结果。
+    </div>
+  </div>
+
+  <!-- ================= 案例一 ================= -->
+  <h2 id="case1">② 案例一：重复囚徒困境——「一报还一报」如何胜出</h2>
+
+  <div class="card">
+    <p>
+      两个玩家各自选择<b>合作（C）</b>或<b>背叛（D）</b>。收益矩阵如下：
+    </p>
+
+    <div class="payoff">
+      <div class="hd"></div>
+      <div class="hd">对方合作 C</div>
+      <div class="hd">对方背叛 D</div>
+      <div class="rowhd">我合作 C</div>
+      <div>\(R=3,\ R=3\)</div>
+      <div>\(S=0,\ T=5\)</div>
+      <div class="rowhd">我背叛 D</div>
+      <div>\(T=5,\ S=0\)</div>
+      <div>\(P=1,\ P=1\)</div>
+    </div>
+
+    <p>
+      这里 \(T>R>P>S\)（诱惑 &gt; 奖励 &gt; 惩罚 &gt; 傻瓜）。
+      如果只玩一次，背叛是唯一的纳什均衡；但如果<b>反复相遇</b>，
+      合作就有可能通过「以牙还牙」维持下去。
+    </p>
+
+    <p>
+      下面模拟一个有限种群的演化过程。种群中有四种策略：
+      <b>永远合作（ALLC）</b>、<b>永远背叛（ALLD）</b>、
+      <b>一报还一报（TFT）</b>、<b>随机（RAND）</b>。
+      每轮随机配对，进行多回合的重复博弈，然后按收益进行复制更新。
+    </p>
+
+    <canvas id="ipdCanvas" class="cv-lg" aria-label="重复囚徒困境演化"></canvas>
+
+    <div class="legend">
+      <span><i style="background:#38bdf8"></i>永远合作 ALLC</span>
+      <span><i style="background:#ef4444"></i>永远背叛 ALLD</span>
+      <span><i style="background:#22c55e"></i>一报还一报 TFT</span>
+      <span><i style="background:#fbbf24"></i>随机 RAND</span>
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>单次相遇的回合数 \(m\)</span><b id="ipdMVal">6</b></div>
+      <input type="range" id="ipdMRange" min="1" max="12" step="1" value="6">
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>选择强度 \(w\)（越大越「优胜劣汰」）</span><b id="ipdWVal">0.10</b></div>
+      <input type="range" id="ipdWRange" min="0.01" max="0.5" step="0.01" value="0.10">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="ipdReset">重新开始</button>
+      <button id="ipdToggle">暂停</button>
+    </div>
+
+    <div class="stat">
+      <span>时间步：<b id="ipdT">0</b></span>
+      <span>合作类（ALLC+TFT）占比：<b id="ipdCoop">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>怎么玩：</b>把「回合数 \(m\)」从 1 慢慢调到 12。
+      当 \(m=1\)（一次性博弈）时，ALLD 会迅速占领整个种群；
+      当 \(m\) 增大到 5 以上时，TFT 凭借「先合作、被背叛就报复」的简单规则，
+      能有效遏制 ALLD 的扩张，合作类策略稳定共存。
+      <b>合作能否存活，取决于未来相遇的重要性。</b>
+    </div>
+  </div>
+
+  <!-- ================= 案例二 ================= -->
+  <h2 id="case2">③ 案例二：公共品与惩罚——「无私惩罚者」的悖论</h2>
+
+  <div class="card">
+    <p>
+      一群人共同投资一个公共品（比如清洁的社区、公共池塘）。
+      每个人可以选择<b>贡献（C）</b>或<b>搭便车（D）</b>。
+      设贡献成本为 \(c\)，贡献带来的公共收益按倍数 \(r>1\) 平均分给所有人。
+    </p>
+
+    \[
+      \pi_i =
+      \begin{cases}
+        r\cdot \dfrac{n_C}{n} - c, & \text{若我贡献} \\[6pt]
+        r\cdot \dfrac{n_C}{n}, & \text{若我搭便车}
+      \end{cases}
+    \]
+
+    <p>
+      这里 \(n_C\) 是贡献者人数。由于搭便车者不付出成本却同样享受收益，
+      纯博弈论预测：<b>贡献会逐渐消失，公共品崩塌</b>。
+    </p>
+
+    <p>
+      但现实中人们会<b>惩罚</b>搭便车者。假设有一群「惩罚者」，
+      他们愿意自己付出代价 \(p\)，去惩罚每一个搭便车者，使其损失 \(q\)。
+      问题是：惩罚者自己不贡献更多，却额外付出成本，
+      这似乎是一个「更亏」的策略。它能在演化中存活吗？
+    </p>
+
+    <canvas id="pubCanvas" class="cv-lg" aria-label="公共品与惩罚演化"></canvas>
+
+    <div class="legend">
+      <span><i style="background:#38bdf8"></i>贡献者 C</span>
+      <span><i style="background:#ef4444"></i>搭便车者 D</span>
+      <span><i style="background:#a855f7"></i>惩罚者 P（贡献+惩罚）</span>
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>公共收益倍数 \(r\)</span><b id="pubRVal">2.0</b></div>
+      <input type="range" id="pubRRange" min="1.2" max="4" step="0.1" value="2.0">
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>惩罚成本 \(p\)（惩罚者自己承担）</span><b id="pubPVal">0.30</b></div>
+      <input type="range" id="pubPRange" min="0.05" max="0.8" step="0.05" value="0.30">
+    </div>
+
+    <div class="ctrl">
+      <div class="row"><span>惩罚力度 \(q\)（搭便车者损失）</span><b id="pubQVal">0.80</b></div>
+      <input type="range" id="pubQRange" min="0.1" max="1.5" step="0.05" value="0.80">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="pubReset">重新开始</button>
+      <button id="pubToggle">暂停</button>
+    </div>
+
+    <div class="stat">
+      <span>时间步：<b id="pubT">0</b></span>
+      <span>平均贡献水平：<b id="pubAvg">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>怎么玩：</b>先把惩罚力度 \(q\) 调到 0，观察搭便车者如何迅速占领种群。
+      然后把 \(q\) 调到 1 以上，惩罚者 P 会压制搭便车者；
+      但如果把惩罚成本 \(p\) 调得太高，惩罚者自己又会因为「太亏」而消失，
+      搭便车者卷土重来。<b>只有惩罚足够有效、成本足够低时，
+      惩罚者才能与贡献者稳定共存，公共品得以维持。</b>
+    </div>
+
+    <div class="warn">
+      <b>反直觉的结论：</b>惩罚者并没有贡献更多，反而额外付出成本，
+      看似是演化上的「傻子」；但在群体博弈中，
+      正是这种「愿意吃亏去维护规则」的行为，
+      才使得整个群体能够逃脱搭便车的陷阱。
+      这为人类社会中「利他惩罚」的演化提供了博弈论解释。
+    </div>
+  </div>
+
+  <!-- ================= 小结 ================= -->
+  <h2 id="sum">④ 小结：两个案例告诉我们什么？</h2>
+
+  <div class="card">
+    <ul>
+      <li>
+        <b>合作不是理性计算的产物，而是演化动力学的产物。</b>
+        策略的长期占比由复制子方程决定，而非某个个体的深思熟虑。
+      </li>
+      <li>
+        <b>重复相遇改变了博弈的结局。</b>
+        在一次性囚徒困境中，背叛是唯一均衡；
+        在重复博弈中，只要「未来足够重要」，TFT 就能稳定合作。
+      </li>
+      <li>
+        <b>惩罚需要成本，但可以演化稳定。</b>
+        如果惩罚足够有效且成本足够低，惩罚者与贡献者可以形成稳定共存，
+        公共品得以维持。
+      </li>
+      <li>
+        <b>简单的局部规则可以生成复杂的群体秩序。</b>
+        这正是复杂系统研究的核心命题。
+      </li>
+    </ul>
+
+    <div class="note">
+      <b>延伸阅读：</b>
+      R. Axelrod, <i>The Evolution of Cooperation</i>（合作演化的奠基之作）；
+      M. A. Nowak, <i>Evolutionary Dynamics</i>（演化博弈论权威教材）；
+      E. Fehr &amp; S. Gächter, <i>Altruistic punishment in humans</i>, Nature 415, 137 (2002)。
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  演化博弈论科普导览 · 所有演示均在本地浏览器中实时计算
+</footer>
+
+<script>
+/* ============================================================
+   通用工具
+   ============================================================ */
+const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+
+function fit(cv){
+  const dpr = DPR();
+  const w = Math.max(1, Math.round(cv.clientWidth  * dpr));
+  const h = Math.max(1, Math.round(cv.clientHeight * dpr));
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  return { ctx: cv.getContext('2d'), W: w, H: h };
+}
+
+/* ============================================================
+   案例一：重复囚徒困境（有限种群 + Moran 式复制）
+   ============================================================ */
+
+/*
+  策略编码：
+    0 = ALLC  永远合作
+    1 = ALLD  永远背叛
+    2 = TFT   一报还一报
+    3 = RAND  随机
+*/
+const STRAT_COLORS = ['#38bdf8', '#ef4444', '#22c55e', '#fbbf24'];
+const STRAT_NAMES  = ['ALLC', 'ALLD', 'TFT', 'RAND'];
+
+const IPD_N = 120;            // 种群规模
+const IPD_STRATS = 4;
+
+let ipdPop = null;            // Int8Array，每个个体的策略
+let ipdM = 6;                 // 单次相遇回合数
+let ipdW = 0.10;              // 选择强度
+let ipdT = 0;
+let ipdTimer = null;
+let ipdRunning = false;
+
+const ipdCanvas = document.getElementById('ipdCanvas');
+const ipdMRange = document.getElementById('ipdMRange');
+const ipdMVal   = document.getElementById('ipdMVal');
+const ipdWRange = document.getElementById('ipdWRange');
+const ipdWVal   = document.getElementById('ipdWVal');
+const ipdTEl    = document.getElementById('ipdT');
+const ipdCoopEl = document.getElementById('ipdCoop');
+
+/* 一次重复博弈：返回双方总收益 */
+function playIPD(s1, s2, m){
+  let score1 = 0, score2 = 0;
+  let last1 = null, last2 = null;   // 上一回合各自的动作（true=合作）
+
+  for (let r = 0; r < m; r++){
+    const a1 = actionOf(s1, last2, r);
+    const a2 = actionOf(s2, last1, r);
+    const [p1, p2] = payoffIPD(a1, a2);
+    score1 += p1; score2 += p2;
+    last1 = a1; last2 = a2;
+  }
+  return [score1, score2];
+}
+
+/* 根据策略与对手上一动作，决定本回合动作 */
+function actionOf(strat, oppLast, round){
+  if (strat === 0) return true;                       // ALLC 永远合作
+  if (strat === 1) return false;                      // ALLD 永远背叛
+  if (strat === 3) return Math.random() < 0.5;        // RAND 随机
+  // TFT：第一回合合作，之后复制对手上一动作
+  if (round === 0) return true;
+  return oppLast === true;
+}
+
+/* 收益矩阵：T=5, R=3, P=1, S=0 */
+function payoffIPD(a1, a2){
+  if (a1 && a2)  return [3, 3];      // 双方合作
+  if (a1 && !a2) return [0, 5];      // 我合作，对方背叛
+  if (!a1 && a2) return [5, 0];      // 我背叛，对方合作
+  return [1, 1];                     // 双方背叛
+}
+
+/* 计算每个个体的平均收益（随机配对） */
+function ipdFitness(){
+  const N = IPD_N;
+  const totals = new Float64Array(N);
+  const counts = new Int32Array(N);
+
+  const rounds = 3;   // 每人参与 3 次随机配对，减小噪声
+  for (let r = 0; r < rounds; r++){
+    const order = [];
+    for (let i = 0; i < N; i++) order.push(i);
+    for (let i = N - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = order[i]; order[i] = order[j]; order[j] = t;
+    }
+    for (let k = 0; k + 1 < N; k += 2){
+      const i = order[k], j = order[k + 1];
+      const [si, sj] = playIPD(ipdPop[i], ipdPop[j], ipdM);
+      totals[i] += si; counts[i]++;
+      totals[j] += sj; counts[j]++;
+    }
+  }
+
+  const fit = new Float64Array(N);
+  for (let i = 0; i < N; i++){
+    fit[i] = counts[i] ? totals[i] / counts[i] : 0;
+  }
+  return fit;
+}
+
+/* 一步演化：按适应度进行复制更新 */
+function ipdStep(){
+  const fit = ipdFitness();
+
+  /* 用 Fermi 规则做一次更新：随机选 i, j，i 模仿 j 的概率为 */
+  /* p = 1 / (1 + exp(-w*(fit_j - fit_i)))                         */
+  const i = Math.floor(Math.random() * IPD_N);
+  let j = Math.floor(Math.random() * IPD_N);
+  if (i === j) j = (j + 1) % IPD_N;
+
+  const p = 1 / (1 + Math.exp(-ipdW * (fit[j] - fit[i])));
+  if (Math.random() < p) ipdPop[i] = ipdPop[j];
+
+  ipdT++;
+}
+
+/* 绘制：上方网络状策略分布 + 下方占比堆叠曲线 */
+let ipdHist = [];
+
+function ipdDraw(){
+  const { ctx, W, H } = fit(ipdCanvas);
+  ctx.fillStyle = '#0b1220';
+  ctx.fillRect(0, 0, W, H);
+
+  const topH = Math.round(H * 0.52);
+  const botH = H - topH;
+
+  /* 上半部分：个体网格 */
+  const cols = 20;
+  const rows = Math.ceil(IPD_N / cols);
+  const cell = Math.min(W / cols, topH / rows);
+  const ox = (W - cell * cols) / 2;
+  const oy = 4;
+
+  for (let idx = 0; idx < IPD_N; idx++){
+    const r = Math.floor(idx / cols);
+    const c = idx % cols;
+    const x = ox + c * cell;
+    const y = oy + r * cell;
+    ctx.fillStyle = STRAT_COLORS[ipdPop[idx]];
+    ctx.fillRect(x + cell * 0.08, y + cell * 0.08,
+                 cell * 0.84, cell * 0.84);
+  }
+
+  /* 下半部分：占比曲线 */
+  const padL = 34, padR = 8, padT = topH + 16, padB = 14;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  if (plotH > 20){
+    ctx.strokeStyle = 'rgba(148,163,184,0.14)';
+    ctx.lineWidth = 1;
+    for (let g = 0; g <= 2; g++){
+      const y = Math.round(padT + plotH * g / 2) + 0.5;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+    }
+
+    const n = ipdHist.length;
+    if (n > 1){
+      const xOf = (i) => padL + i / (n - 1) * plotW;
+      const yOf = (v) => padT + (1 - v) * plotH;
+
+      for (let s = 0; s < IPD_STRATS; s++){
+        ctx.strokeStyle = STRAT_COLORS[s];
+        ctx.lineWidth = Math.max(1.5, W / 520);
+        ctx.beginPath();
+        for (let i = 0; i < n; i++){
+          const x = xOf(i), y = yOf(ipdHist[i][s]);
+          if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    ctx.fillStyle = 'rgba(148,163,184,0.9)';
+    const fs = Math.max(9, Math.round(W / 95));
+    ctx.font = fs + 'px system-ui, sans-serif';
+    ctx.fillText('100%', 2, padT + fs - 1);
+    ctx.fillText('0%', 2, padT + plotH);
+  }
+}
+
+function ipdRecord(){
+  const cnt = new Array(IPD_STRATS).fill(0);
+  for (let i = 0; i < IPD_N; i++) cnt[ipdPop[i]]++;
+  const frac = cnt.map(c => c / IPD_N);
+  ipdHist.push(frac);
+  if (ipdHist.length > 320) ipdHist.shift();
+
+  const coop = (cnt[0] + cnt[2]) / IPD_N;
+  ipdCoopEl.textContent = (coop * 100).toFixed(1) + '%';
+  ipdTEl.textContent = ipdT;
+}
+
+function ipdInit(){
+  ipdPop = new Int8Array(IPD_N);
+  /* 初始：四类策略各占约 1/4 */
+  for (let i = 0; i < IPD_N; i++){
+    ipdPop[i] = i % IPD_STRATS;
+  }
+  /* 打乱 */
+  for (let i = IPD_N - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = ipdPop[i]; ipdPop[i] = ipdPop[j]; ipdPop[j] = t;
+  }
+  ipdT = 0;
+  ipdHist = [];
+  ipdRecord();
+  ipdDraw();
+}
+
+function ipdLoop(){
+  if (!ipdRunning) return;
+  const stepsPerFrame = 6;
+  for (let s = 0; s < stepsPerFrame; s++) ipdStep();
+  ipdRecord();
+  ipdDraw();
+  ipdTimer = requestAnimationFrame(ipdLoop);
+}
+
+function ipdStart(){
+  if (ipdRunning) return;
+  ipdRunning = true;
+  ipdTimer = requestAnimationFrame(ipdLoop);
+}
+
+function ipdStop(){
+  ipdRunning = false;
+  if (ipdTimer){ cancelAnimationFrame(ipdTimer); ipdTimer = null; }
+}
+
+ipdMRange.addEventListener('input', () => {
+  ipdM = parseInt(ipdMRange.value, 10);
+  ipdMVal.textContent = ipdM;
+});
+
+ipdWRange.addEventListener('input', () => {
+  ipdW = parseFloat(ipdWRange.value);
+  ipdWVal.textContent = ipdW.toFixed(2);
+});
+
+document.getElementById('ipdReset').addEventListener('click', () => {
+  ipdStop();
+  ipdInit();
+  ipdStart();
+});
+
+document.getElementById('ipdToggle').addEventListener('click', (e) => {
+  if (ipdRunning){
+    ipdStop();
+    e.target.textContent = '继续';
+    e.target.classList.add('on');
+  } else {
+    ipdStart();
+    e.target.textContent = '暂停';
+    e.target.classList.remove('on');
+  }
+});
+
+/* ============================================================
+   案例二：公共品与惩罚
+   ============================================================ */
+
+/*
+  策略编码：
+    0 = C  贡献者（只贡献，不惩罚）
+    1 = D  搭便车者（不贡献）
+    2 = P  惩罚者（贡献 + 惩罚每一个搭便车者）
+*/
+const PUB_STRATS = 3;
+const PUB_COLORS = ['#38bdf8', '#ef4444', '#a855f7'];
+const PUB_NAMES  = ['贡献者 C', '搭便车者 D', '惩罚者 P'];
+
+const PUB_N = 120;
+let pubPop = null;
+let pubR = 2.0;       // 公共收益倍数
+let pubP = 0.30;      // 惩罚成本
+let pubQ = 0.80;      // 惩罚力度
+let pubT = 0;
+let pubTimer = null;
+let pubRunning = false;
+let pubHist = [];
+
+const pubCanvas = document.getElementById('pubCanvas');
+const pubRRange = document.getElementById('pubRRange');
+const pubRVal   = document.getElementById('pubRVal');
+const pubPRange = document.getElementById('pubPRange');
+const pubPVal   = document.getElementById('pubPVal');
+const pubQRange = document.getElementById('pubQRange');
+const pubQVal   = document.getElementById('pubQVal');
+const pubTEl    = document.getElementById('pubT');
+const pubAvgEl  = document.getElementById('pubAvg');
+
+/* 计算一次公共品博弈中，每个个体的收益 */
+function pubFitness(){
+  const N = PUB_N;
+  const fit = new Float64Array(N);
+
+  /* 统计贡献者与惩罚者人数 */
+  let nC = 0, nP = 0;
+  for (let i = 0; i < N; i++){
+    if (pubPop[i] === 0) nC++;
+    else if (pubPop[i] === 2) nP++;
+  }
+  /* 贡献者包括 C 与 P */
+  const nContrib = nC + nP;
+
+  /* 每个搭便车者被惩罚的次数 = 惩罚者人数 nP */
+  for (let i = 0; i < N; i++){
+    const s = pubPop[i];
+    let payoff = 0;
+
+    /* 公共收益：所有人平均分享 r * nContrib / N */
+    payoff += pubR * nContrib / N;
+
+    if (s === 0){
+      /* 贡献者：付出成本 c=1 */
+      payoff -= 1.0;
+    } else if (s === 1){
+      /* 搭便车者：不付出，但被每个惩罚者惩罚 */
+      payoff -= pubQ * nP;
+    } else {
+      /* 惩罚者：付出贡献成本 + 惩罚成本 */
+      payoff -= 1.0;
+      payoff -= pubP * (N - nContrib);   // 惩罚每一个搭便车者
+    }
+    fit[i] = payoff;
+  }
+
+  /* 加入小噪声，避免完全同步 */
+  for (let i = 0; i < N; i++){
+    fit[i] += (Math.random() - 0.5) * 0.05;
+  }
+  return fit;
+}
+
+function pubStep(){
+  const fit = pubFitness();
+
+  /* Fermi 更新 */
+  const i = Math.floor(Math.random() * PUB_N);
+  let j = Math.floor(Math.random() * PUB_N);
+  if (i === j) j = (j + 1) % PUB_N;
+
+  const w = 0.6;
+  const p = 1 / (1 + Math.exp(-w * (fit[j] - fit[i])));
+  if (Math.random() < p) pubPop[i] = pubPop[j];
+
+  pubT++;
+}
+
+function pubRecord(){
+  const cnt = new Array(PUB_STRATS).fill(0);
+  for (let i = 0; i < PUB_N; i++) cnt[pubPop[i]]++;
+  const frac = cnt.map(c => c / PUB_N);
+  pubHist.push(frac);
+  if (pubHist.length > 320) pubHist.shift();
+
+  /* 平均贡献水平：C 计 1，P 计 1，D 计 0 */
+  const contrib = (cnt[0] + cnt[2]) / PUB_N;
+  pubAvgEl.textContent = (contrib * 100).toFixed(1) + '%';
+  pubTEl.textContent = pubT;
+}
+
+function pubDraw(){
+  const { ctx, W, H } = fit(pubCanvas);
+  ctx.fillStyle = '#0b1220';
+  ctx.fillRect(0, 0, W, H);
+
+  const topH = Math.round(H * 0.52);
+  const botH = H - topH;
+
+  /* 上半部分：个体网格 */
+  const cols = 20;
+  const rows = Math.ceil(PUB_N / cols);
+  const cell = Math.min(W / cols, topH / rows);
+  const ox = (W - cell * cols) / 2;
+  const oy = 4;
+
+  for (let idx = 0; idx < PUB_N; idx++){
+    const r = Math.floor(idx / cols);
+    const c = idx % cols;
+    const x = ox + c * cell;
+    const y = oy + r * cell;
+    ctx.fillStyle = PUB_COLORS[pubPop[idx]];
+    ctx.fillRect(x + cell * 0.08, y + cell * 0.08,
+                 cell * 0.84, cell * 0.84);
+  }
+
+  /* 下半部分：占比曲线 */
+  const padL = 34, padR = 8, padT = topH + 16, padB = 14;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  if (plotH > 20){
+    ctx.strokeStyle = 'rgba(148,163,184,0.14)';
+    ctx.lineWidth = 1;
+    for (let g = 0; g <= 2; g++){
+      const y = Math.round(padT + plotH * g / 2) + 0.5;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+    }
+
+    const n = pubHist.length;
+    if (n > 1){
+      const xOf = (i) => padL + i / (n - 1) * plotW;
+      const yOf = (v) => padT + (1 - v) * plotH;
+
+      for (let s = 0; s < PUB_STRATS; s++){
+        ctx.strokeStyle = PUB_COLORS[s];
+        ctx.lineWidth = Math.max(1.5, W / 520);
+        ctx.beginPath();
+        for (let i = 0; i < n; i++){
+          const x = xOf(i), y = yOf(pubHist[i][s]);
+          if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    ctx.fillStyle = 'rgba(148,163,184,0.9)';
+    const fs = Math.max(9, Math.round(W / 95));
+    ctx.font = fs + 'px system-ui, sans-serif';
+    ctx.fillText('100%', 2, padT + fs - 1);
+    ctx.fillText('0%', 2, padT + plotH);
+  }
+}
+
+function pubInit(){
+  pubPop = new Int8Array(PUB_N);
+  /* 初始：约 1/3 贡献者、1/3 搭便车者、1/3 惩罚者 */
+  for (let i = 0; i < PUB_N; i++){
+    pubPop[i] = i % PUB_STRATS;
+  }
+  for (let i = PUB_N - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = pubPop[i]; pubPop[i] = pubPop[j]; pubPop[j] = t;
+  }
+  pubT = 0;
+  pubHist = [];
+  pubRecord();
+  pubDraw();
+}
+
+function pubLoop(){
+  if (!pubRunning) return;
+  const stepsPerFrame = 6;
+  for (let s = 0; s < stepsPerFrame; s++) pubStep();
+  pubRecord();
+  pubDraw();
+  pubTimer = requestAnimationFrame(pubLoop);
+}
+
+function pubStart(){
+  if (pubRunning) return;
+  pubRunning = true;
+  pubTimer = requestAnimationFrame(pubLoop);
+}
+
+function pubStop(){
+  pubRunning = false;
+  if (pubTimer){ cancelAnimationFrame(pubTimer); pubTimer = null; }
+}
+
+pubRRange.addEventListener('input', () => {
+  pubR = parseFloat(pubRRange.value);
+  pubRVal.textContent = pubR.toFixed(1);
+});
+
+pubPRange.addEventListener('input', () => {
+  pubP = parseFloat(pubPRange.value);
+  pubPVal.textContent = pubP.toFixed(2);
+});
+
+pubQRange.addEventListener('input', () => {
+  pubQ = parseFloat(pubQRange.value);
+  pubQVal.textContent = pubQ.toFixed(2);
+});
+
+document.getElementById('pubReset').addEventListener('click', () => {
+  pubStop();
+  pubInit();
+  pubStart();
+});
+
+document.getElementById('pubToggle').addEventListener('click', (e) => {
+  if (pubRunning){
+    pubStop();
+    e.target.textContent = '继续';
+    e.target.classList.add('on');
+  } else {
+    pubStart();
+    e.target.textContent = '暂停';
+    e.target.classList.remove('on');
+  }
+});
+
+/* ============================================================
+   初始化
+   ============================================================ */
+function initAll(){
+  /* 案例一 */
+  ipdM = parseInt(ipdMRange.value, 10);
+  ipdMVal.textContent = ipdM;
+  ipdW = parseFloat(ipdWRange.value);
+  ipdWVal.textContent = ipdW.toFixed(2);
+  ipdInit();
+  ipdStart();
+
+  /* 案例二 */
+  pubR = parseFloat(pubRRange.value);
+  pubRVal.textContent = pubR.toFixed(1);
+  pubP = parseFloat(pubPRange.value);
+  pubPVal.textContent = pubP.toFixed(2);
+  pubQ = parseFloat(pubQRange.value);
+  pubQVal.textContent = pubQ.toFixed(2);
+  pubInit();
+  pubStart();
+}
+
+/* 响应式重绘 */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    ipdDraw();
+    pubDraw();
+  }, 160);
+});
+
+function boot(){
+  setTimeout(initAll, 80);
+}
+if (document.readyState === 'complete') boot();
+else window.addEventListener('load', boot);
+</script>
+
+</body>
+</html>

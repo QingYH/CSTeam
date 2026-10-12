@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>复杂网络：从随机图到无标度 · 交互式导览</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body{
+    margin:0; padding:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background:#f3f4f7;
+    color:#1f2937;
+    line-height:1.78;
+    font-size:16px;
+    overflow-x:hidden;
+  }
+
+  header{
+    background: linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#0ea5e9 100%);
+    color:#fff;
+    padding: 46px 18px 40px;
+    text-align:center;
+  }
+  header h1{
+    margin:0 0 10px;
+    font-size: clamp(22px, 6vw, 34px);
+    letter-spacing:.5px;
+    font-weight:700;
+    line-height:1.35;
+  }
+  header p{
+    margin:0 auto;
+    max-width:540px;
+    font-size: clamp(13px, 3.4vw, 15px);
+    opacity:.86;
+    line-height:1.7;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 16px 90px; }
+
+  .toc{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin: 20px 0 4px;
+    justify-content:center;
+  }
+  .toc a{
+    font-size:13px;
+    padding:6px 13px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #e3e5ec;
+    color:#0369a1;
+    text-decoration:none;
+    transition:.18s;
+    white-space:nowrap;
+  }
+  .toc a:hover{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
+
+  h2{
+    font-size: clamp(19px, 4.6vw, 24px);
+    margin: 46px 0 8px;
+    padding-left: 13px;
+    border-left: 5px solid #0284c7;
+    line-height:1.4;
+    color:#111827;
+  }
+  h3{
+    font-size: clamp(16px, 3.9vw, 18.5px);
+    margin: 26px 0 6px;
+    color:#1e293b;
+  }
+  h4{ font-size:15px; margin:18px 0 4px; color:#374151; }
+  p{ margin: 10px 0; }
+  ul, ol{ padding-left: 22px; margin: 10px 0; }
+  li{ margin: 5px 0; }
+
+  .card{
+    background:#fff;
+    border:1px solid #e6e8ef;
+    border-radius:14px;
+    padding: 18px 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(16,24,40,.045);
+  }
+
+  .note{
+    background:#e0f2fe;
+    border-left:4px solid #0284c7;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#075985;
+  }
+  .warn{
+    background:#fff7ed;
+    border-left:4px solid #f59e0b;
+    border-radius:0 10px 10px 0;
+    padding: 11px 14px;
+    margin: 14px 0;
+    font-size:14.5px;
+    color:#7c2d12;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .topic{
+    background:#fff;
+    border:1px solid #e6e8ef;
+    border-radius:13px;
+    padding: 14px 15px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.04);
+    transition:.2s;
+  }
+  .topic:hover{ transform: translateY(-2px); box-shadow:0 6px 18px rgba(2,132,199,.10); border-color:#bae6fd; }
+  .topic h4{
+    margin:0 0 6px;
+    font-size:15px;
+    color:#0369a1;
+    display:flex; align-items:center; gap:7px;
+  }
+  .topic h4 .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#0ea5e9; flex:0 0 auto;
+    box-shadow:0 0 0 3px rgba(14,165,233,.16);
+  }
+  .topic p{ margin:0; font-size:13.8px; color:#4b5563; line-height:1.65; }
+
+  canvas{ display:block; width:100%; background:#0d1426; border-radius:11px; touch-action: manipulation; }
+  .cv-lg{ height: 320px; }
+  .cv-md{ height: 240px; }
+  .cv-sm{ height: 120px; }
+  .cv-hist{ height: 130px; }
+  @media (max-width: 480px){
+    .cv-lg{ height: 250px; }
+    .cv-md{ height: 200px; }
+  }
+
+  .ctrl{ display:flex; flex-direction:column; gap:6px; margin: 14px 0 6px; font-size:14px; }
+  .ctrl .row{ display:flex; align-items:center; justify-content:space-between; color:#374151; font-weight:500; }
+  .ctrl .row b{ color:#0284c7; font-variant-numeric: tabular-nums; }
+
+  input[type=range]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:5px;
+    background:#e5e7eb; border-radius:3px; outline:none; margin:6px 0 2px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:20px; height:20px; border-radius:50%;
+    background:#0284c7; cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(2,132,199,.5);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;
+    background:#0284c7; cursor:pointer; border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(2,132,199,.5);
+  }
+
+  .btns{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; }
+  button{
+    font-family:inherit; font-size:13.5px;
+    padding: 8px 15px;
+    border-radius:9px;
+    border:1px solid #d7dae4;
+    background:#fff; color:#374151;
+    cursor:pointer; transition:.16s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:hover{ border-color:#7dd3fc; color:#0369a1; }
+  button:active{ transform: scale(.97); }
+  button.primary{ background:#0284c7; color:#fff; border-color:#0284c7; }
+  button.primary:hover{ background:#0369a1; color:#fff; }
+  button.on{ background:#0369a1; color:#fff; border-color:#0369a1; }
+
+  .stat{
+    display:flex; flex-wrap:wrap; gap:8px 18px;
+    font-size:13.5px; color:#4b5563;
+    margin-top:10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span b{ color:#0369a1; }
+
+  .tblwrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; margin:14px 0; }
+  table{ border-collapse:collapse; width:100%; font-size:14px; min-width:440px; }
+  th,td{ padding:9px 12px; text-align:left; border-bottom:1px solid #eceef4; }
+  th{ background:#f8f9fc; color:#374151; font-weight:600; white-space:nowrap; }
+  td:first-child{ color:#0369a1; font-weight:500; white-space:nowrap; }
+
+  .modelbtns{ display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 4px; }
+
+  footer{ text-align:center; padding: 30px 20px 50px; font-size:13px; color:#9ca3af; }
+
+  .katex, mjx-container{ overflow-x:auto; overflow-y:hidden; max-width:100%; }
+  mjx-container[display="true"]{ margin: 14px 0 !important; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>复杂网络：从随机图到无标度</h1>
+  <p>面向本科生与研究生的入门导览 —— 核心概念、经典模型与四组可交互动态演示</p>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <a href="#s1">① 什么是复杂网络</a>
+    <a href="#s2">② 研究主题</a>
+    <a href="#s3">③ 交互演示</a>
+    <a href="#s4">④ 数学工具箱</a>
+    <a href="#s5">⑤ 学习路径</a>
+  </nav>
+
+  <!-- ================= 1 ================= -->
+  <h2 id="s1">① 什么是复杂网络？</h2>
+
+  <div class="card">
+    <p>
+      把系统的每个组分画成一个<strong>节点</strong>（node），把组分之间的相互作用画成一条
+      <strong>连边</strong>（edge），就得到一个<strong>网络</strong>（network / graph）。
+      复杂网络研究的核心问题是：<b>网络的拓扑结构如何决定系统的功能与动力学行为？</b>
+    </p>
+
+    <p>数学上，一个网络记作 \(G=(V,E)\)，其中 \(V\) 是节点集合，\(E\) 是边集合。用<strong>邻接矩阵</strong>表示：</p>
+
+    \[
+      A_{ij} =
+      \begin{cases}
+        1, & (i,j)\in E \\[2pt]
+        0, & \text{其他}
+      \end{cases}
+      \qquad
+      k_i = \sum_{j=1}^{N} A_{ij}
+    \]
+
+    <p>
+      其中 \(k_i\) 是节点 \(i\) 的<strong>度</strong>（degree），即与它相连的邻居个数。
+      \(N=|V|\) 是节点数，\(E=|E|\) 是边数，网络的平均度为
+      \(\langle k\rangle = \frac{1}{N}\sum_i k_i = \frac{2E}{N}\)。
+    </p>
+
+    <h4>为什么叫「复杂」？</h4>
+    <ul>
+      <li><b>结构复杂</b>：既非完全规则，也非完全随机，而是介于两者之间。</li>
+      <li><b>节点异质</b>：少数节点拥有大量连接（枢纽），度分布高度不均。</li>
+      <li><b>动态演化</b>：网络本身会随时间生长、重连、失效。</li>
+      <li><b>跨尺度耦合</b>：微观连边规则决定宏观功能（传播、同步、鲁棒性）。</li>
+    </ul>
+
+    <div class="note">
+      <b>一句话概括：</b>复杂网络把「<b>谁和谁相连</b>」这件事变成一门可定量研究的科学。
+      它连接了图论、统计物理、计算机科学与各领域的真实数据。
+    </div>
+  </div>
+
+  <!-- ================= 2 ================= -->
+  <h2 id="s2">② 复杂网络研究什么？</h2>
+
+  <div class="grid">
+
+    <div class="topic">
+      <h4><span class="dot"></span>网络拓扑与统计量</h4>
+      <p>度分布 \(P(k)\)、集聚系数 \(C\)、平均路径长度 \(L\)、同配性、社团结构。
+      这些量刻画了网络的「骨架」。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>随机图模型</h4>
+      <p>Erdős–Rényi 模型 \(G(N,p)\)：每条边以概率 \(p\) 独立出现，
+      度分布近似泊松分布，存在巨连通分量的相变阈值 \(\langle k\rangle = 1\)。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>小世界网络</h4>
+      <p>Watts–Strogatz 模型：规则环上少量随机重连，就使 \(L\) 骤降而 \(C\) 几乎不变。
+      解释了「六度分隔」现象。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>无标度网络</h4>
+      <p>Barabási–Albert 模型：增长 + 优先连接 \(\Pi(k_i)\propto k_i\)，
+      产生幂律度分布 \(P(k)\sim k^{-\gamma}\)，\(\gamma\approx 3\)。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>网络上的传播动力学</h4>
+      <p>SIR / SIS 模型、信息扩散、级联失效。传播阈值由
+      \(\langle k^2\rangle/\langle k\rangle\) 决定，而非 \(\langle k\rangle\)。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>同步与集体行为</h4>
+      <p>Kuramoto 模型、主稳定性函数、耦合振子网络。萤火虫闪光、
+      心脏起搏细胞、电网频率都是同步现象。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>鲁棒性与脆弱性</h4>
+      <p>无标度网络对随机故障极其鲁棒，但对蓄意攻击枢纽节点极其脆弱。
+      这是「稳健但脆弱」的典型悖论。</p>
+    </div>
+
+    <div class="topic">
+      <h4><span class="dot"></span>网络推断与机器学习</h4>
+      <p>从数据中重建网络、链路预测、图神经网络（GNN）、
+      网络嵌入与图表示学习。</p>
+    </div>
+
+  </div>
+
+  <!-- ================= 3 ================= -->
+  <h2 id="s3">③ 四组可交互演示</h2>
+  <p>每组演示都对应复杂网络中的一个核心概念，拖动滑块或点击按钮即可观察变化。</p>
+
+  <!-- ---------- 3.1 网络生成器 ---------- -->
+  <h3>3.1 三种经典网络模型：结构决定性质</h3>
+  <div class="card">
+    <p>
+      下面三个模型是复杂网络研究的基石，它们对「边如何形成」做出不同假设，
+      从而产生截然不同的拓扑结构。
+    </p>
+
+    <div class="modelbtns">
+      <button class="primary" data-model="ER">ER 随机图</button>
+      <button data-model="WS">WS 小世界</button>
+      <button data-model="BA">BA 无标度</button>
+    </div>
+
+    <canvas id="netCanvas" class="cv-lg" aria-label="网络结构可视化"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>节点数 \(N\)</span><b id="nVal">90</b></div>
+      <input type="range" id="nRange" min="40" max="140" step="5" value="90">
+    </div>
+
+    <div class="ctrl" id="paramWrap">
+      <div class="row"><span id="paramLabel">连接概率 \(p\)</span><b id="paramVal">0.060</b></div>
+      <input type="range" id="paramRange" min="0.01" max="0.2" step="0.005" value="0.06">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="regenBtn">重新生成网络</button>
+    </div>
+
+    <div class="stat">
+      <span>边数 \(E\) = <b id="statE">—</b></span>
+      <span>平均度 \(\langle k\rangle\) = <b id="statK">—</b></span>
+      <span>集聚系数 \(C\) = <b id="statC">—</b></span>
+      <span>平均路径长度 \(L\) = <b id="statL">—</b></span>
+    </div>
+
+    <canvas id="histCanvas" class="cv-sm" style="margin-top:12px" aria-label="度分布直方图"></canvas>
+    <p style="font-size:13px;color:#6b7280;margin:6px 0 0;">↑ 度分布 \(P(k)\)：横轴为度 \(k\)，纵轴为出现频率</p>
+
+    <div class="note">
+      <b>看点：</b>
+      <b>ER 随机图</b>的度分布近似泊松分布，在 \(\langle k\rangle\) 附近有一个峰；
+      <b>WS 小世界</b>保留规则环的高集聚特性，但路径长度极短；
+      <b>BA 无标度</b>的度分布是重尾的——存在极少数连接数极高的「枢纽」节点，
+      直方图上会拖出一条长长的尾巴。
+      切换模型时，留意网络的视觉形态和度分布形状的差异。
+    </div>
+  </div>
+
+  <!-- ---------- 3.2 小世界 ---------- -->
+  <h3>3.2 小世界现象：六度分隔的由来</h3>
+  <div class="card">
+    <p>
+      1998 年 Watts 与 Strogatz 发现：在一个规则的最近邻环上，
+      只需要以很小的概率 \(p\) 把边随机重连，就能同时得到
+      <b>短的平均路径长度</b>和<b>高的集聚系数</b>。
+    </p>
+
+    \[
+      L = \frac{1}{N(N-1)}\sum_{i\neq j} d_{ij},
+      \qquad
+      C_i = \frac{2L_i}{k_i(k_i-1)},
+      \qquad
+      C = \frac{1}{N}\sum_i C_i
+    \]
+
+    <p>
+      其中 \(d_{ij}\) 是节点 \(i\) 与 \(j\) 之间的最短路径长度，
+      \(L_i\) 是节点 \(i\) 的邻居之间实际存在的边数。
+    </p>
+
+    <canvas id="swCanvas" class="cv-md" aria-label="小世界曲线"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>重连概率 \(p\)（对数刻度）</span><b id="swPVal">0.001</b></div>
+      <input type="range" id="swPRange" min="0" max="24" step="1" value="0">
+    </div>
+
+    <div class="stat">
+      <span>\(L(p)/L(0)\) = <b id="swL">—</b></span>
+      <span>\(C(p)/C(0)\) = <b id="swC">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>怎么读这张图：</b>横轴是 \(\log_{10} p\)，纵轴是归一化后的比值。
+      当 \(p\) 从 \(10^{-3}\) 增大到 \(10^{-1}\) 时，
+      \(L(p)/L(0)\) 会迅速塌缩到接近 0（路径变短），
+      而 \(C(p)/C(0)\) 还保持在 0.7 以上（集聚性几乎没丢）。
+      这个「<b>短路径 + 高集聚</b>」的窗口，就是小世界区域。
+      真实的社会网络、神经网络、电网都落在这一区间。
+    </div>
+  </div>
+
+  <!-- ---------- 3.3 鲁棒性 ---------- -->
+  <h3>3.3 鲁棒性与脆弱性：随机故障 vs 蓄意攻击</h3>
+  <div class="card">
+    <p>
+      考虑从网络中逐步移除节点。随着移除比例 \(f\) 增大，
+      网络的<b>最大连通分量（giant component）</b>会逐渐缩小，
+      当 \(f\) 超过临界值 \(f_c\) 时，网络彻底碎裂成孤立的小块。
+    </p>
+
+    <p>理论上的随机失效阈值由 Molloy–Reed 判据给出：</p>
+
+    \[
+      \kappa = \frac{\langle k^2\rangle}{\langle k\rangle},
+      \qquad
+      f_c^{\text{random}} = 1 - \frac{1}{\kappa - 1}
+    \]
+
+    <p>
+      对于无标度网络，当 \(2<\gamma\le 3\) 时 \(\langle k^2\rangle \to \infty\)，
+      于是 \(f_c^{\text{random}} \to 1\) ——
+      理论上<b>随机移除任何比例的节点都不会使网络崩溃</b>。
+      但如果是按度从大到小地<b>蓄意攻击</b>，枢纽节点被优先清除，
+      网络就会迅速瓦解。
+    </p>
+
+    <canvas id="robCanvas" class="cv-lg" aria-label="网络鲁棒性可视化"></canvas>
+    <canvas id="robCurve" class="cv-md" style="margin-top:10px" aria-label="巨连通分量曲线"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>节点移除比例 \(f\)</span><b id="robFVal">0%</b></div>
+      <input type="range" id="robRange" min="0" max="100" step="1" value="0">
+    </div>
+
+    <div class="btns">
+      <button id="robRandom">随机故障曲线</button>
+      <button id="robTarget">蓄意攻击曲线</button>
+      <button id="robBoth" class="primary">两条曲线对比</button>
+    </div>
+
+    <div class="stat">
+      <span>当前最大连通分量占比：<b id="robGCC">—</b></span>
+    </div>
+
+    <div class="note">
+      <b>结论：</b>蓝色曲线是随机故障，红色曲线是按度攻击。
+      随机故障下，即使移除 60% 的节点，网络仍可能保留一个可观的连通核心；
+      而蓄意攻击只需移除不到 10% 的枢纽节点，连通性就会崩塌。
+      <b>这正是互联网、金融系统「平时很稳、关键时刻很脆」的结构性原因。</b>
+      <br><br>
+      <b>提示：</b>滑块控制的是当前移除比例；拖动滑块时，着色网络和竖直标记线会同步更新，
+      但两条理论曲线保持固定，便于对比。
+    </div>
+  </div>
+
+  <!-- ---------- 3.4 Kuramoto ---------- -->
+  <h3>3.4 网络上的同步：从杂乱到一致</h3>
+  <div class="card">
+    <p>
+      同步是复杂网络上最普遍的集体行为之一。Kuramoto 模型用最简单的形式刻画了它：
+      每个节点是一个相位振子 \(\theta_i\)，只通过正弦耦合影响邻居。
+    </p>
+
+    \[
+      \dot{\theta}_i = \omega_i + \frac{K}{k_i}\sum_{j=1}^{N} A_{ij}\,\sin(\theta_j - \theta_i)
+    \]
+
+    <p>
+      其中 \(\omega_i\) 是节点 \(i\) 的固有频率，\(K\) 是耦合强度。
+      为了刻画整个系统的同步程度，定义<strong>序参量</strong>：
+    </p>
+
+    \[
+      r\,e^{\mathrm{i}\psi} = \frac{1}{N}\sum_{j=1}^{N} e^{\mathrm{i}\theta_j},
+      \qquad r \in [0,1]
+    \]
+
+    <p>
+      \(r \approx 0\) 表示相位完全散乱，\(r \approx 1\) 表示所有节点同相位。
+      当 \(K\) 超过临界值 \(K_c\) 时，系统会发生<b>同步相变</b>。
+    </p>
+
+    <canvas id="kuCanvas" class="cv-lg" aria-label="Kuramoto 同步网络"></canvas>
+    <canvas id="kuHist" class="cv-hist" style="margin-top:10px" aria-label="序参量随时间变化"></canvas>
+
+    <div class="ctrl">
+      <div class="row"><span>耦合强度 \(K\)</span><b id="kuKVal">0.00</b></div>
+      <input type="range" id="kuKRange" min="0" max="4" step="0.05" value="0">
+    </div>
+
+    <div class="btns">
+      <button class="primary" id="kuReset">重新初始化相位</button>
+    </div>
+
+    <div class="stat">
+      <span>序参量 \(r\) = <b id="kuR">0.00</b></span>
+      <span>时间 \(t\) = <b id="kuT">0.0</b></span>
+    </div>
+
+    <div class="note">
+      <b>怎么玩：</b>从 \(K=0\) 开始慢慢往上拖。
+      节点颜色代表相位（彩虹映射），\(K\) 很小时颜色杂乱、\(r\) 在 0 附近抖动；
+      当 \(K\) 超过约 1.2 后，颜色会突然趋于一致，\(r\) 迅速攀升到 0.8 以上。
+      这就是<b>同步相变</b>——一个典型的、由耦合强度驱动的涌现现象。
+      <b>注意：网络结构（谁和谁相连）会影响 \(K_c\) 的大小，但相变本身是稳健的。</b>
+    </div>
+  </div>
+
+  <!-- ================= 4 ================= -->
+  <h2 id="s4">④ 数学工具箱</h2>
+  <p>下表汇总了复杂网络研究中最常用的数学对象与公式。</p>
+
+  <div class="tblwrap">
+    <table>
+      <thead>
+        <tr><th>概念</th><th>公式</th><th>含义 / 用途</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>度分布</td>
+          <td>\(P(k) = \dfrac{N_k}{N}\)</td>
+          <td>度为 \(k\) 的节点占比，网络的「指纹」</td>
+        </tr>
+        <tr>
+          <td>幂律分布</td>
+          <td>\(P(k)\sim k^{-\gamma}\)</td>
+          <td>无标度网络，\(\gamma\in(2,3]\) 时方差发散</td>
+        </tr>
+        <tr>
+          <td>泊松分布</td>
+          <td>\(P(k)=\dfrac{\langle k\rangle^k e^{-\langle k\rangle}}{k!}\)</td>
+          <td>ER 随机图在大 \(N\) 极限下的度分布</td>
+        </tr>
+        <tr>
+          <td>集聚系数</td>
+          <td>\(C_i=\dfrac{2L_i}{k_i(k_i-1)}\)</td>
+          <td>邻居之间也相连的程度（「朋友的密度」）</td>
+        </tr>
+        <tr>
+          <td>平均路径长度</td>
+          <td>\(L=\dfrac{1}{N(N-1)}\sum_{i\neq j}d_{ij}\)</td>
+          <td>网络有多「小」，六度分隔的量化</td>
+        </tr>
+        <tr>
+          <td>随机图相变</td>
+          <td>\(\langle k\rangle_c = 1\)</td>
+          <td>巨连通分量出现的阈值</td>
+        </tr>
+        <tr>
+          <td>传播阈值</td>
+          <td>\(\lambda_c = \dfrac{\langle k\rangle}{\langle k^2\rangle}\)</td>
+          <td>SIS 模型在任意网络上的流行阈值</td>
+        </tr>
+        <tr>
+          <td>优先连接</td>
+          <td>\(\Pi(k_i)=\dfrac{k_i}{\sum_j k_j}\)</td>
+          <td>BA 模型的核心机制，产生幂律</td>
+        </tr>
+        <tr>
+          <td>拉普拉斯矩阵</td>
+          <td>\(L = D - A\)</td>
+          <td>谱图理论的核心，特征值反映连通性</td>
+        </tr>
+        <tr>
+          <td>代数连通度</td>
+          <td>\(\lambda_2 > 0 \iff\) 图连通</td>
+          <td>Fiedler 值，衡量网络的连通紧密程度</td>
+        </tr>
+        <tr>
+          <td>模块度</td>
+          <td>\(Q=\dfrac{1}{2m}\sum_{ij}\!\left(A_{ij}-\dfrac{k_ik_j}{2m}\right)\delta(c_i,c_j)\)</td>
+          <td>社团划分质量的度量，Louvain 算法的目标函数</td>
+        </tr>
+        <tr>
+          <td>Kuramoto 序参量</td>
+          <td>\(r e^{\mathrm{i}\psi}=\dfrac{1}{N}\sum_j e^{\mathrm{i}\theta_j}\)</td>
+          <td>同步程度的量化指标</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <b>研究方法提醒：</b>复杂网络很少能求得精确解析解。
+    典型工作流是「<b>定义模型 → 生成网络 → 测量统计量 → 解析近似 / 数值模拟 → 与真实数据比对</b>」。
+    因此，图论基础、概率统计、数值模拟和编程能力（Python + NetworkX / igraph / C++）
+    是这一方向研究生的基本装备。
+  </div>
+
+  <!-- ================= 5 ================= -->
+  <h2 id="s5">⑤ 学习路径建议</h2>
+
+  <div class="card">
+    <h4>本科阶段（打好基础）</h4>
+    <ul>
+      <li>离散数学与图论：图、路径、连通性、树、平面图。</li>
+      <li>线性代数：矩阵、特征值、谱分解、正定矩阵。</li>
+      <li>概率论：随机变量、分布、期望、大数定律与中心极限定理。</li>
+      <li>常微分方程与动力系统：稳定性、分岔、相平面。</li>
+      <li>编程与数据结构：BFS/DFS、并查集、优先队列、复杂度分析。</li>
+    </ul>
+
+    <h4>研究生阶段（进入前沿）</h4>
+    <ul>
+      <li><b>网络科学核心</b>：随机图理论、配置模型、谱方法、社团检测、网络零模型。</li>
+      <li><b>网络动力学</b>：传播过程、同步、博弈演化、级联失效、控制理论。</li>
+      <li><b>统计物理方法</b>：渗流理论、生成函数、消息传递算法、空腔法。</li>
+      <li><b>网络推断与学习</b>：贝叶斯网络重建、图神经网络、图表示学习。</li>
+      <li><b>多尺度与高阶网络</b>：时序网络、多层网络、超图、单纯复形。</li>
+    </ul>
+
+    <h4>推荐读物</h4>
+    <ul>
+      <li>M. Newman, <i>Networks: An Introduction</i>（最权威的教科书）</li>
+      <li>A.-L. Barabási, <i>Network Science</i>（免费在线，图文并茂）</li>
+      <li>D. Watts, <i>Six Degrees: The Science of a Connected Age</i>（科普经典）</li>
+      <li>S. Boccaletti et al., <i>Complex Networks: Structure and Dynamics</i>（综述）</li>
+      <li>R. Albert &amp; A.-L. Barabási, <i>Statistical mechanics of complex networks</i>, Rev. Mod. Phys. 74, 47 (2002)</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  复杂网络交互式导览 · 所有演示均在本地浏览器中实时计算
+</footer>
+
+<script>
+/* ============================================================
+   通用工具
+   ============================================================ */
+const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+
+function fit(cv){
+  const dpr = DPR();
+  const w = Math.max(1, Math.round(cv.clientWidth  * dpr));
+  const h = Math.max(1, Math.round(cv.clientHeight * dpr));
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  return { ctx: cv.getContext('2d'), W: w, H: h };
+}
+
+function shuffleArr(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* ============================================================
+   网络构建函数
+   ============================================================ */
+
+/* ER 随机图 */
+function buildER(N, p){
+  const adj = Array.from({length: N}, () => []);
+  for (let i = 0; i < N; i++){
+    for (let j = i + 1; j < N; j++){
+      if (Math.random() < p){ adj[i].push(j); adj[j].push(i); }
+    }
+  }
+  return adj;
+}
+
+/* WS 小世界 */
+function buildWS(N, k, p){
+  const half = Math.max(1, Math.floor(k / 2));
+  const adj = Array.from({length: N}, () => []);
+  for (let i = 0; i < N; i++){
+    for (let d = 1; d <= half; d++){
+      const j = (i + d) % N;
+      if (j === i) continue;
+      adj[i].push(j); adj[j].push(i);
+    }
+  }
+  for (let i = 0; i < N; i++){
+    for (let d = 1; d <= half; d++){
+      const j = (i + d) % N;
+      if (j === i) continue;
+      const idx = adj[i].indexOf(j);
+      if (idx < 0) continue;
+      if (Math.random() >= p) continue;
+
+      let target = -1;
+      for (let t = 0; t < 60; t++){
+        const c = Math.floor(Math.random() * N);
+        if (c !== i && adj[i].indexOf(c) < 0){ target = c; break; }
+      }
+      if (target < 0) continue;
+
+      adj[i].splice(adj[i].indexOf(j), 1);
+      adj[j].splice(adj[j].indexOf(i), 1);
+      adj[i].push(target); adj[target].push(i);
+    }
+  }
+  return adj;
+}
+
+/* BA 无标度 */
+function buildBA(N, m){
+  const adj = Array.from({length: N}, () => []);
+  const m0 = Math.min(m, N - 1);
+  for (let i = 0; i <= m0; i++){
+    for (let j = i + 1; j <= m0; j++){
+      adj[i].push(j); adj[j].push(i);
+    }
+  }
+  const deg = adj.map(a => a.length);
+
+  for (let i = m0 + 1; i < N; i++){
+    const chosen = new Set();
+    const need = Math.min(m, i);
+    let guard = 0;
+    while (chosen.size < need && guard < 400){
+      guard++;
+      let total = 0;
+      for (let j = 0; j < i; j++) total += deg[j];
+      if (total <= 0) break;
+      let r = Math.random() * total;
+      let pick = 0;
+      for (let j = 0; j < i; j++){
+        r -= deg[j];
+        if (r <= 0){ pick = j; break; }
+      }
+      chosen.add(pick);
+    }
+    for (const j of chosen){
+      if (adj[i].indexOf(j) >= 0) continue;
+      adj[i].push(j); adj[j].push(i);
+      deg[i]++; deg[j]++;
+    }
+  }
+  return adj;
+}
+
+/* ============================================================
+   网络统计量
+   ============================================================ */
+function avgDegree(adj){
+  let s = 0;
+  for (let i = 0; i < adj.length; i++) s += adj[i].length;
+  return s / adj.length;
+}
+
+function clustering(adj){
+  const N = adj.length;
+  const nb = adj.map(a => new Set(a));
+  let sum = 0;
+  for (let i = 0; i < N; i++){
+    const arr = adj[i], k = arr.length;
+    if (k < 2) continue;
+    let links = 0;
+    for (let a = 0; a < k; a++){
+      const na = arr[a], setA = nb[na];
+      for (let b = a + 1; b < k; b++){
+        if (setA.has(arr[b])) links++;
+      }
+    }
+    sum += 2 * links / (k * (k - 1));
+  }
+  return sum / N;
+}
+
+function pathStats(adj){
+  const N = adj.length;
+  const dist = new Int32Array(N);
+  const queue = new Int32Array(N);
+  let totalDist = 0, totalPairs = 0;
+
+  for (let s = 0; s < N; s++){
+    dist.fill(-1);
+    let head = 0, tail = 0;
+    dist[s] = 0; queue[tail++] = s;
+    while (head < tail){
+      const u = queue[head++];
+      const nb = adj[u];
+      for (let a = 0; a < nb.length; a++){
+        const v = nb[a];
+        if (dist[v] < 0){ dist[v] = dist[u] + 1; queue[tail++] = v; }
+      }
+    }
+    for (let t = 0; t < N; t++){
+      if (t !== s && dist[t] >= 0){
+        totalDist += dist[t]; totalPairs++;
+      }
+    }
+  }
+  return { L: totalPairs ? totalDist / totalPairs : 0 };
+}
+
+/* 最大连通分量 */
+function giantComponent(adj, N, removed){
+  const visited = new Uint8Array(N);
+  let best = 0;
+  const stack = [];
+  for (let s = 0; s < N; s++){
+    if (visited[s] || (removed && removed.has(s))) continue;
+    let size = 0;
+    stack.length = 0;
+    stack.push(s); visited[s] = 1;
+    while (stack.length){
+      const u = stack.pop(); size++;
+      const nb = adj[u];
+      for (let a = 0; a < nb.length; a++){
+        const v = nb[a];
+        if (!visited[v] && !(removed && removed.has(v))){
+          visited[v] = 1; stack.push(v);
+        }
+      }
+    }
+    if (size > best) best = size;
+  }
+  return best;
+}
+
+/* ============================================================
+   力导向布局
+   ============================================================ */
+function layoutForce(adj, N, iters){
+  iters = iters || Math.max(40, Math.min(120, Math.round(12000 / N)));
+  const pos = new Array(N);
+  for (let i = 0; i < N; i++){
+    const th = 2 * Math.PI * i / N;
+    pos[i] = { x: 0.5 + 0.42 * Math.cos(th), y: 0.5 + 0.42 * Math.sin(th) };
+  }
+  const k = 0.85 / Math.sqrt(N);
+  const disp = new Array(N);
+  for (let i = 0; i < N; i++) disp[i] = { x: 0, y: 0 };
+
+  for (let it = 0; it < iters; it++){
+    for (let i = 0; i < N; i++){ disp[i].x = 0; disp[i].y = 0; }
+
+    for (let i = 0; i < N; i++){
+      const pi = pos[i];
+      for (let j = i + 1; j < N; j++){
+        const pj = pos[j];
+        let dx = pi.x - pj.x, dy = pi.y - pj.y;
+        let d2 = dx * dx + dy * dy;
+        if (d2 < 1e-9){
+          dx = (Math.random() - 0.5) * 1e-3;
+          dy = (Math.random() - 0.5) * 1e-3;
+          d2 = dx * dx + dy * dy + 1e-9;
+        }
+        const d = Math.sqrt(d2);
+        const f = (k * k) / d;
+        const ux = dx / d, uy = dy / d;
+        disp[i].x += ux * f; disp[i].y += uy * f;
+        disp[j].x -= ux * f; disp[j].y -= uy * f;
+      }
+    }
+
+    for (let i = 0; i < N; i++){
+      const nb = adj[i];
+      for (let a = 0; a < nb.length; a++){
+        const j = nb[a];
+        if (j <= i) continue;
+        let dx = pos[i].x - pos[j].x, dy = pos[i].y - pos[j].y;
+        const d = Math.max(1e-4, Math.sqrt(dx * dx + dy * dy));
+        const f = (d * d) / k;
+        const ux = dx / d, uy = dy / d;
+        disp[i].x -= ux * f; disp[i].y -= uy * f;
+        disp[j].x += ux * f; disp[j].y += uy * f;
+      }
+    }
+
+    const temp = 0.10 * (1 - it / iters) + 0.004;
+    for (let i = 0; i < N; i++){
+      const d = Math.max(1e-6, Math.sqrt(disp[i].x * disp[i].x + disp[i].y * disp[i].y));
+      const lim = Math.min(d, temp);
+      pos[i].x += disp[i].x / d * lim;
+      pos[i].y += disp[i].y / d * lim;
+      if (pos[i].x < 0.02) pos[i].x = 0.02;
+      if (pos[i].x > 0.98) pos[i].x = 0.98;
+      if (pos[i].y < 0.02) pos[i].y = 0.02;
+      if (pos[i].y > 0.98) pos[i].y = 0.98;
+    }
+  }
+  return pos;
+}
+
+/* 绘制网络 */
+function drawNetwork(ctx, W, H, adj, pos, opt){
+  opt = opt || {};
+  const pad = opt.pad || 10;
+  const size = Math.min(W, H) - 2 * pad;
+  const ox = (W - size) / 2;
+  const oy = (H - size) / 2;
+
+  const px = new Float64Array(pos.length);
+  const py = new Float64Array(pos.length);
+  for (let i = 0; i < pos.length; i++){
+    px[i] = ox + pos[i].x * size;
+    py[i] = oy + pos[i].y * size;
+  }
+
+  ctx.strokeStyle = opt.edgeColor || 'rgba(125,211,252,0.14)';
+  ctx.lineWidth = Math.max(0.5, W / 1100);
+  ctx.beginPath();
+  for (let i = 0; i < pos.length; i++){
+    const nb = adj[i];
+    for (let a = 0; a < nb.length; a++){
+      const j = nb[a];
+      if (j > i){
+        ctx.moveTo(px[i], py[i]);
+        ctx.lineTo(px[j], py[j]);
+      }
+    }
+  }
+  ctx.stroke();
+
+  const r = opt.nodeRadius || Math.max(1.8, Math.min(W, H) / 66);
+  for (let i = 0; i < pos.length; i++){
+    let col = opt.nodeColor;
+    if (typeof col === 'function') col = col(i);
+    if (!col) col = '#38bdf8';
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(px[i], py[i], r, 0, 6.2832);
+    ctx.fill();
+  }
+  return { px, py, size, ox, oy };
+}
+
+/* ============================================================
+   演示 1：网络生成器
+   ============================================================ */
+const netCanvas = document.getElementById('netCanvas');
+const histCanvas = document.getElementById('histCanvas');
+const nRange = document.getElementById('nRange');
+const nVal = document.getElementById('nVal');
+const paramRange = document.getElementById('paramRange');
+const paramVal = document.getElementById('paramVal');
+const paramLabel = document.getElementById('paramLabel');
+const statE = document.getElementById('statE');
+const statK = document.getElementById('statK');
+const statC = document.getElementById('statC');
+const statL = document.getElementById('statL');
+
+let netModel = 'ER';
+let netN = 90;
+let netAdj = [];
+let netPos = [];
+let layoutBusy = false;
+let regenTimer = null;
+
+function modelConfig(){
+  if (netModel === 'ER'){
+    return { label: '连接概率 \\(p\\)', min: 0.01, max: 0.20, step: 0.005, val: 0.06, dec: 3 };
+  }
+  if (netModel === 'WS'){
+    return { label: '重连概率 \\(p\\)', min: 0, max: 0.5, step: 0.01, val: 0.08, dec: 2 };
+  }
+  return { label: '每个新节点的连接数 \\(m\\)', min: 1, max: 5, step: 1, val: 2, dec: 0 };
+}
+
+function syncParamUI(){
+  const cfg = modelConfig();
+  paramLabel.innerHTML = cfg.label;
+  paramRange.min = cfg.min;
+  paramRange.max = cfg.max;
+  paramRange.step = cfg.step;
+  paramRange.value = cfg.val;
+  paramVal.textContent = cfg.dec ? Number(cfg.val).toFixed(cfg.dec) : cfg.val;
+}
+
+function buildCurrentNetwork(){
+  const p = parseFloat(paramRange.value);
+  if (netModel === 'ER'){
+    netAdj = buildER(netN, p);
+  } else if (netModel === 'WS'){
+    netAdj = buildWS(netN, 6, p);
+  } else {
+    netAdj = buildBA(netN, Math.round(p));
+  }
+}
+
+function refreshNetStats(){
+  let E = 0;
+  for (let i = 0; i < netN; i++) E += netAdj[i].length;
+  E = E / 2;
+
+  statE.textContent = E;
+  statK.textContent = avgDegree(netAdj).toFixed(2);
+  statC.textContent = clustering(netAdj).toFixed(3);
+
+  const ps = pathStats(netAdj);
+  statL.textContent = ps.L.toFixed(2);
+}
+
+function drawHistogram(){
+  const { ctx, W, H } = fit(histCanvas);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  const N = netN;
+  const degs = new Array(N);
+  let maxDeg = 0;
+  for (let i = 0; i < N; i++){
+    degs[i] = netAdj[i].length;
+    if (degs[i] > maxDeg) maxDeg = degs[i];
+  }
+  if (maxDeg < 1) maxDeg = 1;
+
+  const nb = Math.min(20, maxDeg + 1);
+  const counts = new Array(nb).fill(0);
+  for (let i = 0; i < N; i++){
+    let b = Math.floor(degs[i] / (maxDeg + 1) * nb);
+    if (b >= nb) b = nb - 1;
+    counts[b]++;
+  }
+  let maxCount = 0;
+  for (let i = 0; i < nb; i++) if (counts[i] > maxCount) maxCount = counts[i];
+  if (maxCount === 0) maxCount = 1;
+
+  const padL = 34, padB = 20, padT = 8, padR = 8;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  const bw = plotW / nb;
+  for (let i = 0; i < nb; i++){
+    const h = counts[i] / maxCount * plotH;
+    const x = padL + i * bw;
+    const y = padT + plotH - h;
+    const grad = ctx.createLinearGradient(0, y, 0, padT + plotH);
+    grad.addColorStop(0, '#38bdf8');
+    grad.addColorStop(1, '#0369a1');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x + bw * 0.12, y, Math.max(1, bw * 0.76), h);
+  }
+
+  ctx.strokeStyle = 'rgba(148,163,184,0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL + 0.5, padT);
+  ctx.lineTo(padL + 0.5, padT + plotH + 0.5);
+  ctx.lineTo(padL + plotW, padT + plotH + 0.5);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(148,163,184,0.95)';
+  const fs = Math.max(9, Math.round(W / 90));
+  ctx.font = fs + 'px system-ui, sans-serif';
+  ctx.fillText('0', 4, padT + plotH + 4);
+  ctx.fillText(String(maxDeg), padL + plotW - ctx.measureText(String(maxDeg)).width, padT + plotH + fs + 4);
+  ctx.fillText('k', padL + plotW - 10, padT + plotH + fs + 4);
+  ctx.fillText('P(k)', padL + 4, padT + fs);
+}
+
+function renderNetworkDemo(){
+  if (layoutBusy) return;
+  layoutBusy = true;
+  buildCurrentNetwork();
+  netPos = layoutForce(netAdj, netN);
+  const { ctx, W, H } = fit(netCanvas);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+  drawNetwork(ctx, W, H, netAdj, netPos, {
+    nodeColor: '#38bdf8',
+    edgeColor: 'rgba(125,211,252,0.13)'
+  });
+  refreshNetStats();
+  drawHistogram();
+  layoutBusy = false;
+}
+
+function scheduleRegen(){
+  if (regenTimer) clearTimeout(regenTimer);
+  regenTimer = setTimeout(renderNetworkDemo, 110);
+}
+
+document.querySelectorAll('[data-model]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-model]').forEach(b => b.classList.remove('primary'));
+    btn.classList.add('primary');
+    netModel = btn.dataset.model;
+    syncParamUI();
+    scheduleRegen();
+  });
+});
+
+nRange.addEventListener('input', () => {
+  netN = parseInt(nRange.value, 10);
+  nVal.textContent = netN;
+  scheduleRegen();
+});
+
+paramRange.addEventListener('input', () => {
+  const cfg = modelConfig();
+  paramVal.textContent = cfg.dec ? Number(paramRange.value).toFixed(cfg.dec) : paramRange.value;
+  scheduleRegen();
+});
+
+document.getElementById('regenBtn').addEventListener('click', scheduleRegen);
+
+/* ============================================================
+   演示 2：小世界曲线（修正：滑块直接映射数据索引）
+   ============================================================ */
+const swCanvas = document.getElementById('swCanvas');
+const swPRange = document.getElementById('swPRange');
+const swPVal = document.getElementById('swPVal');
+const swLEl = document.getElementById('swL');
+const swCEl = document.getElementById('swC');
+
+const SW_N = 180;
+const SW_K = 6;
+const SW_POINTS = 25;
+let swData = null;
+let swCurIdx = 0;
+
+function computeSmallWorld(){
+  const logMin = -3, logMax = 0;
+  const data = [];
+  const reps = 2;
+
+  for (let i = 0; i < SW_POINTS; i++){
+    const logp = logMin + (logMax - logMin) * i / (SW_POINTS - 1);
+    const p = Math.pow(10, logp);
+    let sumL = 0, sumC = 0;
+    for (let r = 0; r < reps; r++){
+      const adj = buildWS(SW_N, SW_K, p);
+      const ps = pathStats(adj);
+      sumL += ps.L;
+      sumC += clustering(adj);
+    }
+    data.push({ logp, p, L: sumL / reps, C: sumC / reps });
+  }
+
+  const L0 = data[0].L;
+  const C0 = data[0].C;
+  for (const d of data){
+    d.Ln = d.L / L0;
+    d.Cn = d.C / C0;
+  }
+  return data;
+}
+
+function drawSmallWorld(){
+  if (!swData) return;
+  const { ctx, W, H } = fit(swCanvas);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  const padL = 42, padR = 14, padT = 14, padB = 30;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  const xOf = (logp) => padL + (logp + 3) / 3 * plotW;
+  const yOf = (v) => padT + (1 - v) * plotH;
+
+  ctx.strokeStyle = 'rgba(148,163,184,0.16)';
+  ctx.lineWidth = 1;
+  for (let g = 0; g <= 4; g++){
+    const y = Math.round(padT + plotH * g / 4) + 0.5;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+  }
+  for (let g = 0; g <= 3; g++){
+    const x = Math.round(padL + plotW * g / 3) + 0.5;
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
+  }
+
+  /* C(p)/C(0) */
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = Math.max(1.8, W / 420);
+  ctx.beginPath();
+  swData.forEach((d, i) => {
+    const x = xOf(d.logp), y = yOf(d.Cn);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  });
+  ctx.stroke();
+
+  /* L(p)/L(0) */
+  ctx.strokeStyle = '#38bdf8';
+  ctx.beginPath();
+  swData.forEach((d, i) => {
+    const x = xOf(d.logp), y = yOf(d.Ln);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  });
+  ctx.stroke();
+
+  /* 当前标记 */
+  const cur = swData[swCurIdx];
+  if (cur){
+    const cx = xOf(cur.logp);
+    ctx.strokeStyle = 'rgba(244,114,182,0.9)';
+    ctx.lineWidth = Math.max(1.2, W / 700);
+    ctx.beginPath(); ctx.moveTo(cx, padT); ctx.lineTo(cx, padT + plotH); ctx.stroke();
+
+    const c1 = yOf(cur.Ln), c2 = yOf(cur.Cn);
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath(); ctx.arc(cx, c1, Math.max(3, W / 200), 0, 6.2832); ctx.fill();
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath(); ctx.arc(cx, c2, Math.max(3, W / 200), 0, 6.2832); ctx.fill();
+
+    swLEl.textContent = cur.Ln.toFixed(3);
+    swCEl.textContent = cur.Cn.toFixed(3);
+    swPVal.textContent = cur.p < 0.01 ? cur.p.toExponential(1) : cur.p.toFixed(3);
+  }
+
+  const fs = Math.max(9, Math.round(W / 85));
+  ctx.font = fs + 'px system-ui, sans-serif';
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText('L(p)/L(0)', padL + 6, padT + fs + 2);
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText('C(p)/C(0)', padL + 6, padT + 2 * fs + 6);
+
+  ctx.fillStyle = 'rgba(148,163,184,0.9)';
+  ctx.fillText('10⁻³', padL - 4, padT + plotH + fs + 6);
+  ctx.fillText('10⁻²', xOf(-2) - 12, padT + plotH + fs + 6);
+  ctx.fillText('10⁻¹', xOf(-1) - 12, padT + plotH + fs + 6);
+  ctx.fillText('10⁰', xOf(0) - 16, padT + plotH + fs + 6);
+  ctx.fillText('重连概率 p', padL + plotW / 2 - 22, padT + plotH + fs + 20);
+}
+
+swPRange.addEventListener('input', () => {
+  swCurIdx = parseInt(swPRange.value, 10);
+  drawSmallWorld();
+});
+
+/* ============================================================
+   演示 3：鲁棒性（修正：固定随机顺序 + 模式切换清晰）
+   ============================================================ */
+const robCanvas = document.getElementById('robCanvas');
+const robCurve = document.getElementById('robCurve');
+const robRange = document.getElementById('robRange');
+const robFVal = document.getElementById('robFVal');
+const robGCC = document.getElementById('robGCC');
+
+const ROB_N = 140;
+const ROB_M = 2;
+const ROB_STEPS = Math.round(ROB_N * 0.6);
+
+let robAdj = [];
+let robPos = [];
+let robRandomCurve = [];
+let robTargetCurve = [];
+let robRandomOrder = [];   // 固定的随机移除顺序
+let robTargetOrder = [];   // 固定的按度降序移除顺序
+let robMode = 'both';
+let robFrac = 0;
+
+function computeRobustness(){
+  robAdj = buildBA(ROB_N, ROB_M);
+  robPos = layoutForce(robAdj, ROB_N);
+
+  const idx = [];
+  for (let i = 0; i < ROB_N; i++) idx.push(i);
+
+  /* 固定随机顺序：只在初始化时打乱一次 */
+  robRandomOrder = shuffleArr(idx.slice());
+
+  /* 固定按度降序 */
+  robTargetOrder = idx.slice().sort((a, b) => robAdj[b].length - robAdj[a].length);
+
+  /* 曲线 */
+  const removed = new Set();
+  robRandomCurve = [1];
+  for (let i = 0; i < ROB_STEPS; i++){
+    removed.add(robRandomOrder[i]);
+    robRandomCurve.push(giantComponent(robAdj, ROB_N, removed) / ROB_N);
+  }
+
+  removed.clear();
+  robTargetCurve = [1];
+  for (let i = 0; i < ROB_STEPS; i++){
+    removed.add(robTargetOrder[i]);
+    robTargetCurve.push(giantComponent(robAdj, ROB_N, removed) / ROB_N);
+  }
+}
+
+/* 根据当前模式与比例返回被移除节点集合 */
+function currentRemovedSet(){
+  const nRem = Math.round(robFrac * ROB_STEPS);
+  let order;
+  if (robMode === 'random'){
+    order = robRandomOrder;
+  } else {
+    order = robTargetOrder;   // target 与 both 均以蓄意攻击为主视图
+  }
+  const s = new Set();
+  for (let i = 0; i < nRem && i < order.length; i++) s.add(order[i]);
+  return s;
+}
+
+function drawRobustness(){
+  if (!robAdj.length) return;
+
+  const removed = currentRemovedSet();
+  const { ctx, W, H } = fit(robCanvas);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  drawNetwork(ctx, W, H, robAdj, robPos, {
+    nodeColor: (i) => removed.has(i) ? '#334155' : '#38bdf8',
+    edgeColor: 'rgba(125,211,252,0.09)',
+    nodeRadius: Math.max(1.6, Math.min(W, H) / 78)
+  });
+
+  const gcc = giantComponent(robAdj, ROB_N, removed) / ROB_N;
+  robGCC.textContent = (gcc * 100).toFixed(1) + '%';
+
+  /* 曲线图 */
+  const c = fit(robCurve);
+  const cx = c.ctx, CW = c.W, CH = c.H;
+  cx.fillStyle = '#0d1426';
+  cx.fillRect(0, 0, CW, CH);
+
+  const padL = 42, padR = 14, padT = 12, padB = 26;
+  const plotW = CW - padL - padR;
+  const plotH = CH - padT - padB;
+
+  cx.strokeStyle = 'rgba(148,163,184,0.16)';
+  cx.lineWidth = 1;
+  for (let g = 0; g <= 4; g++){
+    const y = Math.round(padT + plotH * g / 4) + 0.5;
+    cx.beginPath(); cx.moveTo(padL, y); cx.lineTo(padL + plotW, y); cx.stroke();
+  }
+  for (let g = 0; g <= 3; g++){
+    const x = Math.round(padL + plotW * g / 3) + 0.5;
+    cx.beginPath(); cx.moveTo(x, padT); cx.lineTo(x, padT + plotH); cx.stroke();
+  }
+
+  const steps = robRandomCurve.length - 1;
+  const xOf = (i) => padL + i / steps * plotW;
+  const yOf = (v) => padT + (1 - v) * plotH;
+
+  if (robMode === 'random' || robMode === 'both'){
+    cx.strokeStyle = '#38bdf8';
+    cx.lineWidth = Math.max(1.6, CW / 450);
+    cx.beginPath();
+    robRandomCurve.forEach((v, i) => {
+      const x = xOf(i), y = yOf(v);
+      if (i) cx.lineTo(x, y); else cx.moveTo(x, y);
+    });
+    cx.stroke();
+  }
+
+  if (robMode === 'target' || robMode === 'both'){
+    cx.strokeStyle = '#ef4444';
+    cx.lineWidth = Math.max(1.6, CW / 450);
+    cx.beginPath();
+    robTargetCurve.forEach((v, i) => {
+      const x = xOf(i), y = yOf(v);
+      if (i) cx.lineTo(x, y); else cx.moveTo(x, y);
+    });
+    cx.stroke();
+  }
+
+  /* 当前标记 */
+  const nRem = Math.round(robFrac * steps);
+  const mx = xOf(nRem);
+  cx.strokeStyle = 'rgba(251,191,36,0.9)';
+  cx.lineWidth = Math.max(1.2, CW / 700);
+  cx.beginPath(); cx.moveTo(mx, padT); cx.lineTo(mx, padT + plotH); cx.stroke();
+
+  cx.fillStyle = 'rgba(148,163,184,0.95)';
+  const fs = Math.max(9, Math.round(CW / 88));
+  cx.font = fs + 'px system-ui, sans-serif';
+  cx.fillText('0%', padL - 4, padT + plotH + fs + 6);
+  cx.fillText('30%', padL + plotW / 2 - 12, padT + plotH + fs + 6);
+  cx.fillText('60%', padL + plotW - 22, padT + plotH + fs + 6);
+  cx.fillText('已移除节点比例 f', padL + plotW / 2 - 34, padT + plotH + fs + 20);
+
+  cx.fillStyle = '#38bdf8';
+  cx.fillText('随机故障', padL + 6, padT + fs + 2);
+  cx.fillStyle = '#ef4444';
+  cx.fillText('蓄意攻击', padL + 6, padT + 2 * fs + 6);
+}
+
+robRange.addEventListener('input', () => {
+  robFrac = parseInt(robRange.value, 10) / 100;
+  robFVal.textContent = (robFrac * 100).toFixed(0) + '%';
+  drawRobustness();
+});
+
+document.getElementById('robRandom').addEventListener('click', (e) => {
+  robMode = 'random';
+  document.querySelectorAll('#robRandom,#robTarget,#robBoth').forEach(b => b.classList.remove('primary'));
+  e.target.classList.add('primary');
+  drawRobustness();
+});
+document.getElementById('robTarget').addEventListener('click', (e) => {
+  robMode = 'target';
+  document.querySelectorAll('#robRandom,#robTarget,#robBoth').forEach(b => b.classList.remove('primary'));
+  e.target.classList.add('primary');
+  drawRobustness();
+});
+document.getElementById('robBoth').addEventListener('click', (e) => {
+  robMode = 'both';
+  document.querySelectorAll('#robRandom,#robTarget,#robBoth').forEach(b => b.classList.remove('primary'));
+  e.target.classList.add('primary');
+  drawRobustness();
+});
+
+/* ============================================================
+   演示 4：Kuramoto 同步
+   ============================================================ */
+const kuCanvas = document.getElementById('kuCanvas');
+const kuHist = document.getElementById('kuHist');
+const kuKRange = document.getElementById('kuKRange');
+const kuKVal = document.getElementById('kuKVal');
+const kuREl = document.getElementById('kuR');
+const kuTEl = document.getElementById('kuT');
+
+const KU_N = 90;
+let kuAdj = [];
+let kuPos = [];
+let kuTheta = null;
+let kuOmega = null;
+let kuK = 0;
+let kuTime = 0;
+let kuRHist = [];
+let kuRAF = null;
+let kuRunning = false;
+
+function gaussRand(){
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function kuInit(){
+  kuAdj = buildWS(KU_N, 6, 0.12);
+  kuPos = layoutForce(kuAdj, KU_N);
+  kuTheta = new Float64Array(KU_N);
+  kuOmega = new Float64Array(KU_N);
+  for (let i = 0; i < KU_N; i++){
+    kuTheta[i] = Math.random() * 2 * Math.PI - Math.PI;
+    kuOmega[i] = gaussRand() * 0.8;
+  }
+  kuTime = 0;
+  kuRHist = [];
+}
+
+function kuStep(dt){
+  const N = KU_N;
+  const th = kuTheta, om = kuOmega, adj = kuAdj;
+  const dth = new Float64Array(N);
+
+  for (let i = 0; i < N; i++){
+    let s = 0;
+    const nb = adj[i];
+    for (let a = 0; a < nb.length; a++){
+      s += Math.sin(th[nb[a]] - th[i]);
+    }
+    const deg = nb.length || 1;
+    dth[i] = om[i] + kuK * s / deg;
+  }
+
+  for (let i = 0; i < N; i++){
+    th[i] += dt * dth[i];
+    if (th[i] > Math.PI) th[i] -= 2 * Math.PI;
+    else if (th[i] < -Math.PI) th[i] += 2 * Math.PI;
+  }
+  kuTime += dt;
+}
+
+function kuOrder(){
+  let sx = 0, sy = 0;
+  for (let i = 0; i < KU_N; i++){
+    sx += Math.cos(kuTheta[i]);
+    sy += Math.sin(kuTheta[i]);
+  }
+  return Math.sqrt(sx * sx + sy * sy) / KU_N;
+}
+
+function kuDraw(){
+  if (!kuAdj.length) return;
+
+  const { ctx, W, H } = fit(kuCanvas);
+  ctx.fillStyle = '#0d1426';
+  ctx.fillRect(0, 0, W, H);
+
+  const colorOf = (i) => {
+    const t = (kuTheta[i] + Math.PI) / (2 * Math.PI);
+    const hue = t * 360;
+    return 'hsl(' + hue.toFixed(0) + ',85%,62%)';
+  };
+
+  drawNetwork(ctx, W, H, kuAdj, kuPos, {
+    nodeColor: colorOf,
+    edgeColor: 'rgba(125,211,252,0.07)',
+    nodeRadius: Math.max(2, Math.min(W, H) / 60)
+  });
+
+  /* 序参量曲线 */
+  const c = fit(kuHist);
+  const cx = c.ctx, CW = c.W, CH = c.H;
+  cx.fillStyle = '#0d1426';
+  cx.fillRect(0, 0, CW, CH);
+
+  const padL = 36, padR = 10, padT = 10, padB = 16;
+  const plotW = CW - padL - padR;
+  const plotH = CH - padT - padB;
+
+  cx.strokeStyle = 'rgba(148,163,184,0.16)';
+  cx.lineWidth = 1;
+  for (let g = 0; g <= 4; g++){
+    const y = Math.round(padT + plotH * g / 4) + 0.5;
+    cx.beginPath(); cx.moveTo(padL, y); cx.lineTo(padL + plotW, y); cx.stroke();
+  }
+
+  const n = kuRHist.length;
+  if (n > 1){
+    cx.strokeStyle = '#fbbf24';
+    cx.lineWidth = Math.max(1.5, CW / 460);
+    cx.beginPath();
+    for (let i = 0; i < n; i++){
+      const x = padL + i / (n - 1) * plotW;
+      const y = padT + (1 - kuRHist[i]) * plotH;
+      if (i) cx.lineTo(x, y); else cx.moveTo(x, y);
+    }
+    cx.stroke();
+  }
+
+  cx.fillStyle = 'rgba(148,163,184,0.95)';
+  const fs = Math.max(9, Math.round(CW / 95));
+  cx.font = fs + 'px system-ui, sans-serif';
+  cx.fillText('r = 1', 2, padT + fs);
+  cx.fillText('r = 0', 2, padT + plotH + 2);
+  cx.fillText('时间 →', padL + plotW / 2 - 16, padT + plotH + fs + 4);
+}
+
+function kuLoop(){
+  if (!kuRunning) return;
+  const sub = 4, dt = 0.02;
+  for (let s = 0; s < sub; s++) kuStep(dt);
+
+  const r = kuOrder();
+  kuRHist.push(r);
+  if (kuRHist.length > 260) kuRHist.shift();
+
+  kuREl.textContent = r.toFixed(3);
+  kuTEl.textContent = kuTime.toFixed(1);
+
+  kuDraw();
+  kuRAF = requestAnimationFrame(kuLoop);
+}
+
+function kuStart(){
+  if (kuRunning) return;
+  kuRunning = true;
+  kuRAF = requestAnimationFrame(kuLoop);
+}
+
+function kuStop(){
+  kuRunning = false;
+  if (kuRAF){ cancelAnimationFrame(kuRAF); kuRAF = null; }
+}
+
+kuKRange.addEventListener('input', () => {
+  kuK = parseFloat(kuKRange.value);
+  kuKVal.textContent = kuK.toFixed(2);
+});
+
+document.getElementById('kuReset').addEventListener('click', () => {
+  kuStop();
+  kuInit();
+  kuRHist.push(kuOrder());
+  kuDraw();
+  kuStart();
+});
+
+/* ============================================================
+   初始化
+   ============================================================ */
+function initAll(){
+  /* 演示 1 */
+  netN = parseInt(nRange.value, 10);
+  nVal.textContent = netN;
+  syncParamUI();
+  renderNetworkDemo();
+
+  /* 演示 2 */
+  swData = computeSmallWorld();
+  swCurIdx = 0;
+  swPRange.value = 0;
+  drawSmallWorld();
+
+  /* 演示 3 */
+  computeRobustness();
+  robFrac = 0;
+  robRange.value = 0;
+  robFVal.textContent = '0%';
+  drawRobustness();
+
+  /* 演示 4 */
+  kuK = parseFloat(kuKRange.value);
+  kuKVal.textContent = kuK.toFixed(2);
+  kuInit();
+  kuRHist.push(kuOrder());
+  kuDraw();
+  kuStart();
+}
+
+/* 响应式重绘 */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (netAdj.length){
+      const { ctx, W, H } = fit(netCanvas);
+      ctx.fillStyle = '#0d1426';
+      ctx.fillRect(0, 0, W, H);
+      drawNetwork(ctx, W, H, netAdj, netPos, {
+        nodeColor: '#38bdf8',
+        edgeColor: 'rgba(125,211,252,0.13)'
+      });
+      drawHistogram();
+    }
+    drawSmallWorld();
+    drawRobustness();
+    kuDraw();
+  }, 170);
+});
+
+function boot(){
+  setTimeout(initAll, 90);
+}
+if (document.readyState === 'complete') boot();
+else window.addEventListener('load', boot);
+</script>
+
+</body>
+</html>
