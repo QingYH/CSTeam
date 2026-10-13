@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -5,99 +6,77 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>复杂系统 · 复杂网络 · 演化博弈论</title>
 <style>
-  :root{
-    --bg:#080c18; --line:#1f2a44; --txt:#e8eefb; --dim:#93a3bf;
-  }
+  :root{--bg:#080c18;--line:#1f2a44;--txt:#e8eefb;--dim:#93a3bf;}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
-  body{
-    background:radial-gradient(1200px 600px at 50% -10%,#16224a 0%,#080c18 55%) no-repeat,#080c18;
-    color:var(--txt);
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    line-height:1.75; font-size:18px; padding-bottom:52px;
-  }
+  body{background:radial-gradient(1200px 600px at 50% -10%,#16224a 0%,#080c18 55%) no-repeat,#080c18;
+    color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:18px;padding-bottom:52px;}
   .wrap{max-width:700px;margin:0 auto;padding:24px 15px 0}
-  header h1{font-size:27px;margin:0 0 8px;letter-spacing:.4px}
+  header h1{font-size:27px;margin:0 0 8px}
   header p{margin:0;color:var(--dim);font-size:16px}
-
-  .card{
-    background:linear-gradient(180deg,#121a30 0%,#0e1526 100%);
-    border:1px solid var(--line); border-radius:18px;
-    padding:18px 16px 16px; margin-top:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
-  }
-  .badge{
-    display:inline-block;font-size:13px;letter-spacing:1px;font-weight:700;
-    padding:3px 12px;border-radius:999px;background:#1b2a4d;color:#7dd3fc;
-  }
+  .card{background:linear-gradient(180deg,#121a30 0%,#0e1526 100%);border:1px solid var(--line);
+    border-radius:18px;padding:18px 16px 16px;margin-top:20px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  .badge{display:inline-block;font-size:13px;letter-spacing:1px;font-weight:700;
+    padding:3px 12px;border-radius:999px;background:#1b2a4d;color:#7dd3fc;}
   h2{font-size:21px;margin:11px 0 7px}
   .desc{font-size:17px;color:var(--dim);margin:0 0 14px}
   .desc strong{color:#cfe2ff;font-weight:600}
-  .note{font-size:16px;color:#8394b5;margin:14px 0 0;
-        border-left:2px solid #2b3c63;padding-left:12px}
+  .note{font-size:16px;color:#8394b5;margin:14px 0 0;border-left:2px solid #2b3c63;padding-left:12px}
   .note b{color:#a9c2ea}
-  canvas{width:100%;display:block;border-radius:14px;
-         background:#070b15;border:1px solid #1b2540;touch-action:manipulation}
+  canvas{width:100%;display:block;border-radius:14px;background:#070b15;border:1px solid #1b2540;touch-action:manipulation}
   #c1{height:280px}
-  #c2{height:380px}
-  #c2chart{height:150px;margin-top:8px}
-  #c3{aspect-ratio:1/1;max-width:430px;margin:0 auto;min-height:280px;
-      image-rendering:pixelated}
-  #c3chart{height:200px;margin-top:8px}
-
+  #c2{height:420px}
+  #c3{height:400px}
+  #c3chart{height:130px;margin-top:8px}
+  #c4{aspect-ratio:1/1;max-width:430px;margin:0 auto;min-height:280px;image-rendering:pixelated}
+  #c4chart{height:200px;margin-top:8px}
   .controls{display:grid;gap:8px;margin-top:14px}
   .ctl{display:flex;align-items:center;gap:12px;font-size:16px;color:var(--dim)}
   .ctl .lab{width:118px;flex:0 0 auto}
   .ctl input[type=range]{flex:1;accent-color:#38bdf8;height:26px;margin:0}
   .ctl .val{width:58px;text-align:right;color:#7dd3fc;font-variant-numeric:tabular-nums}
-
   .btns{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
-  button{
-    background:#1b2743;color:#cfe2ff;border:1px solid #2b3c63;border-radius:11px;
-    padding:10px 16px;font-size:16px;font-family:inherit;cursor:pointer;
-    transition:background .15s, transform .1s;
-  }
+  button{background:#1b2743;color:#cfe2ff;border:1px solid #2b3c63;border-radius:11px;
+    padding:10px 16px;font-size:16px;font-family:inherit;cursor:pointer;transition:background .15s,transform .1s;}
   button:active{transform:scale(.97);background:#243459}
+  button:disabled{opacity:.5}
   button.on{background:#0f766e;border-color:#14b8a6;color:#ecfeff}
   button.hub-btn{background:#7c2d12;border-color:#fbbf24;color:#fef3c7}
   button.leaf-btn{background:#1e3a8a;border-color:#60a5fa;color:#dbeafe}
-
-  .metrics{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-  .metric{
-    flex:1 1 90px;background:#0c1424;border:1px solid #1b2540;border-radius:12px;
-    padding:9px 11px;min-width:0;
-  }
-  .metric b{display:block;font-size:23px;color:#7dd3fc;line-height:1.35;
-            font-variant-numeric:tabular-nums;transition:color .2s}
-  .metric i{font-style:normal;font-size:14px;color:var(--dim);line-height:1.45;display:block}
-
+  .metrics{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .metric{flex:1 1 80px;background:#0c1424;border:1px solid #1b2540;border-radius:12px;padding:8px 10px;min-width:0;}
+  .metric b{display:block;font-size:22px;color:#7dd3fc;line-height:1.35;font-variant-numeric:tabular-nums;}
+  .metric i{font-style:normal;font-size:13.5px;color:var(--dim);line-height:1.45;display:block}
   .bar{height:9px;border-radius:999px;background:#1b2540;overflow:hidden;margin-top:14px}
-  .bar > i{display:block;height:100%;width:0%;
-           background:linear-gradient(90deg,#38bdf8,#34d399);
-           transition:width .15s linear}
-
+  .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#34d399);transition:width .15s linear}
   .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:15px;color:var(--dim);margin-top:10px}
   .legend span{display:flex;align-items:center;gap:6px}
   .dot{width:12px;height:12px;border-radius:3.5px;display:inline-block;flex:0 0 auto}
   .hint{font-size:16px;color:#64748b;text-align:center;margin:14px 0 0}
+  .cmp-wrap{display:flex;gap:10px;margin-top:14px}
+  .cmp-box{flex:1;background:#0c1424;border-radius:12px;padding:10px 12px;min-width:0;}
+  .cmp-box.hub{border:1px solid #7c2d12}
+  .cmp-box.leaf{border:1px solid #1e3a8a}
+  .cmp-title{font-size:13px;font-weight:700;margin-bottom:4px}
+  .cmp-box.hub .cmp-title{color:#fbbf24}
+  .cmp-box.leaf .cmp-title{color:#60a5fa}
+  .cmp-body{font-size:15px;color:#cfe2ff;line-height:1.5;font-variant-numeric:tabular-nums}
+  .cmp-body .big{font-size:19px;font-weight:700;color:#ffffff}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header>
     <h1>复杂系统 · 复杂网络 · 演化博弈论</h1>
-    <p>用课间人流、热搜传播和小组作业，看懂三个听起来很唬人的词。</p>
+    <p>四个小实验，看懂三个听起来很唬人的词。</p>
   </header>
 
-  <!-- ================= 01 复杂系统 ================= -->
+  <!-- 01 双向人流 -->
   <section class="card">
     <span class="badge">01 复杂系统</span>
     <h2>教学楼课间的「双向人流」</h2>
-    <p class="desc">
-      下课铃一响，同一条走廊里两个方向的人同时涌出。
-      每个人都是一个<strong>固定大小的圆</strong>——不论密度多大，圆的尺寸始终不变。
-    </p>
+    <p class="desc">下课铃一响，同一条走廊里两个方向的人同时涌出。每个人都是一个<strong>固定大小的圆</strong>。</p>
     <canvas id="c1"></canvas>
     <div class="legend">
       <span><i class="dot" style="background:#38bdf8"></i>向右走</span>
@@ -110,1369 +89,927 @@
     </div>
     <div class="controls">
       <div class="ctl"><span class="lab">人流密度</span>
-        <input id="s1n" type="range" min="0" max="1" step="0.01" value="0.25">
-        <span class="val" id="v1n">0.25</span></div>
+        <input id="s1n" type="range" min="0" max="1" step="0.01" value="0.25"><span class="val" id="v1n">0.25</span></div>
       <div class="ctl"><span class="lab">平均速度</span>
-        <input id="s1v" type="range" min="0.6" max="2.6" step="0.1" value="1.6">
-        <span class="val" id="v1v">1.6</span></div>
+        <input id="s1v" type="range" min="0.6" max="2.6" step="0.1" value="1.6"><span class="val" id="v1v">1.6</span></div>
       <div class="ctl"><span class="lab">速度差异</span>
-        <input id="s1h" type="range" min="0" max="0.6" step="0.05" value="0.30">
-        <span class="val" id="v1h">0.30</span></div>
+        <input id="s1h" type="range" min="0" max="0.6" step="0.05" value="0.30"><span class="val" id="v1h">0.30</span></div>
       <div class="ctl"><span class="lab">避让距离</span>
-        <input id="s1r" type="range" min="1" max="60" step="1" value="24">
-        <span class="val" id="v1r">24</span></div>
+        <input id="s1r" type="range" min="1" max="60" step="1" value="24"><span class="val" id="v1r">24</span></div>
     </div>
     <div class="btns">
       <button id="b1run">▶ 开始演化</button>
       <button id="b1reset">重新打散</button>
     </div>
-    <p class="note">
-      <b>圆的大小恒定</b>（半径 7 像素），系统尺寸在加载时确定。<br>
-      <b>局部拥挤感知：</b>每个人会数一数身边（3 倍半径内）有多少邻居。<br>
-      · 邻居少 → 按自己习惯的速度走；<br>
-      · 邻居多 → 主动减速，越挤走得越慢；<br>
-      · <b>密度 = 1 时：</b>每个人四周都是人（8 个邻居），速度被压到约 17%，
-      硬核排斥让圆无法重叠——整条走廊<strong>彻底卡死</strong>。<br>
-      <b>避让距离 &gt; 16</b> 时，行人能提前感知迎面者，两条车道快速形成。
-    </p>
   </section>
 
-  <!-- ================= 02 复杂网络 ================= -->
+  <!-- 02 六度分隔 -->
   <section class="card">
     <span class="badge">02 复杂网络</span>
-    <h2>一条热搜在校园社交网里怎么刷屏</h2>
-    <p class="desc">
-      70 个同学连成一张社交网。其中有一个<strong>超级大 V</strong>，
-      他的好友里有很多也是"活跃分子"。<br>
-      点下面的按钮，从<strong>大 V</strong> 或<strong>边缘同学</strong>开始传播，看结果差多少。
-    </p>
+    <h2>500 人校园里的「六度分隔」</h2>
+    <p class="desc">500 个同学，分属 10 个圈子。<strong>点一个起点，再点一个终点</strong>——系统立刻画出最短认识链。</p>
     <canvas id="c2"></canvas>
     <div class="legend">
-      <span><i class="dot" style="background:#475569"></i>S 没看过</span>
+      <span><i class="dot" style="background:#38bdf8"></i>圈子 1-3</span>
+      <span><i class="dot" style="background:#a78bfa"></i>圈子 4-6</span>
+      <span><i class="dot" style="background:#34d399"></i>圈子 7-8</span>
+      <span><i class="dot" style="background:#f472b6"></i>圈子 9-10</span>
+      <span><i class="dot" style="background:#fbbf24;width:18px;height:3px;border-radius:2px"></i>最短路径</span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><b id="m2start">–</b><i>起点</i></div>
+      <div class="metric"><b id="m2end">–</b><i>终点</i></div>
+      <div class="metric"><b id="m2hops">–</b><i>隔了几步</i></div>
+      <div class="metric"><b id="m2avg">–</b><i>平均步数</i></div>
+      <div class="metric"><b id="m2cnt">0</b><i>已尝试</i></div>
+    </div>
+    <div class="btns">
+      <button id="b2rand">🎲 随机两个同学</button>
+      <button id="b2far">🔍 找最远的两个</button>
+      <button id="b2clear">🔄 清除路径</button>
+    </div>
+  </section>
+
+  <!-- 03 谣言传播（修复版） -->
+  <section class="card">
+    <span class="badge">03 复杂网络</span>
+    <h2>谣言在 500 人校园里怎么刷屏</h2>
+    <p class="desc">
+      少数「大 V」好友过百，多数人只有两三个好友。<br>
+      点<strong>「大 V」或「边缘同学」</strong>作为起点，看谣言结果差多少。
+    </p>
+    <canvas id="c3"></canvas>
+    <div class="legend">
+      <span><i class="dot" style="background:#475569"></i>S 没听过</span>
       <span><i class="dot" style="background:#fb923c"></i>I 正在转发</span>
-      <span><i class="dot" style="background:#38bdf8"></i>R 看过了</span>
+      <span><i class="dot" style="background:#38bdf8"></i>R 听过了</span>
       <span><i class="dot" style="background:#fbbf24"></i>⭐ 大 V</span>
     </div>
     <div class="metrics">
-      <div class="metric"><b id="m2s">–</b><i>没看过 S</i></div>
-      <div class="metric"><b id="m2i">–</b><i>正在转发 I</i></div>
-      <div class="metric"><b id="m2r">–</b><i>已看过 R</i></div>
-      <div class="metric"><b id="m2b">–</b><i>本轮新增</i></div>
+      <div class="metric"><b id="m3s">–</b><i>没听过 S</i></div>
+      <div class="metric"><b id="m3i">–</b><i>正在转发 I</i></div>
+      <div class="metric"><b id="m3r">–</b><i>听过了 R</i></div>
+      <div class="metric"><b id="m3b">–</b><i>本轮新增</i></div>
+      <div class="metric"><b id="m3step">0</b><i>演化步数</i></div>
     </div>
-    <canvas id="c2chart"></canvas>
+    <canvas id="c3chart"></canvas>
     <div class="controls">
       <div class="ctl"><span class="lab">传播概率 β</span>
-        <input id="s2b" type="range" min="0.05" max="0.40" step="0.01" value="0.18">
-        <span class="val" id="v2b">0.18</span></div>
+        <input id="s3b" type="range" min="0.03" max="0.30" step="0.01" value="0.10"><span class="val" id="v3b">0.10</span></div>
     </div>
     <div class="btns">
-      <button id="b2hub" class="hub-btn">🔥 从大 V 开始</button>
-      <button id="b2leaf" class="leaf-btn">👤 从边缘同学开始</button>
-      <button id="b2pick">🎲 随机感染</button>
-      <button id="b2reset">🔄 重置</button>
+      <button id="b3hub" class="hub-btn">🔥 从大 V 开始</button>
+      <button id="b3leaf" class="leaf-btn">👤 从边缘同学开始</button>
+      <button id="b3pick">🎲 随机感染</button>
+      <button id="b3reset">🔄 重置</button>
+    </div>
+    <div class="cmp-wrap">
+      <div class="cmp-box hub">
+        <div class="cmp-title">🔥 大 V 起点</div>
+        <div class="cmp-body" id="cmp-hub">还没试过</div>
+      </div>
+      <div class="cmp-box leaf">
+        <div class="cmp-title">👤 边缘起点</div>
+        <div class="cmp-body" id="cmp-leaf">还没试过</div>
+      </div>
     </div>
     <p class="note">
-      <b>为什么小节点传播不起来？</b><br>
-      传播能否持续，取决于 <b>R₀ = β × 好友数 ÷ 恢复概率</b>：<br>
-      · 大 V：好友约 30 人，且大 V 的好友里有很多也是"活跃分子"——<b>层层放大</b>，几轮刷屏；<br>
-      · 边缘同学：只有 1~2 个好友，第一轮就可能传不出去，<b>两三轮熄灭</b>。<br>
-      这就是无标度网络的"超级传播者"效应——<b>病毒/谣言能不能起来，取决于从谁开始</b>。
+      <b>说明：</b>边缘节点被重新连接到「<b>低度数孤岛</b>」——它的邻居全是低度数节点，
+      与高度数区域几乎没有直接连边。<br>
+      所以从边缘出发的传播链<b>无法逃逸到大 V 区域</b>，几步就熄灭；
+      从大 V 出发则瞬间刷屏。<br>
+      <b>建议操作顺序：</b>先点「🔥 从大 V 开始」，等它跑完看左侧结果；
+      再点「👤 从边缘同学开始」，看右侧结果。
     </p>
   </section>
 
-  <!-- ================= 03 演化博弈论 ================= -->
+  <!-- 04 演化博弈论 -->
   <section class="card">
-    <span class="badge">03 演化博弈论</span>
+    <span class="badge">04 演化博弈论</span>
     <h2>小组作业：合作、摸鱼，还是当那个管事的？</h2>
-    <p class="desc">
-      三种人：<span style="color:#38bdf8">合作者 C（认真干活）</span>、
-      <span style="color:#f87171">搭便车者 D（摸鱼）</span>、
-      <span style="color:#fbbf24">惩罚者 P（愿意花成本去管摸鱼的人）</span>。<br>
-      每个人只和上下左右四个邻居各博弈一次，然后<strong>照抄收益最高的那个邻居</strong>。
-    </p>
-    <canvas id="c3"></canvas>
-    <div class="bar"><i id="b3bar"></i></div>
+    <p class="desc">三种人：<span style="color:#38bdf8">合作者 C</span>、
+      <span style="color:#f87171">搭便车者 D</span>、
+      <span style="color:#fbbf24">惩罚者 P</span>。照抄收益最高的邻居。</p>
+    <canvas id="c4"></canvas>
+    <div class="bar"><i id="b4bar"></i></div>
     <div class="metrics">
-      <div class="metric"><b id="m3c">–</b><i>C 合作者</i></div>
-      <div class="metric"><b id="m3d">–</b><i>D 搭便车</i></div>
-      <div class="metric"><b id="m3p">–</b><i>P 惩罚者</i></div>
+      <div class="metric"><b id="m4c">–</b><i>C 合作者</i></div>
+      <div class="metric"><b id="m4d">–</b><i>D 搭便车</i></div>
+      <div class="metric"><b id="m4p">–</b><i>P 惩罚者</i></div>
     </div>
-
-    <p class="hint">三种策略占比随时间变化（曲线从左向右生长）</p>
+    <p class="hint">三种策略占比随时间变化</p>
     <div class="legend" style="justify-content:center;margin-top:6px">
       <span><i class="dot" style="background:#38bdf8"></i>C 合作者</span>
       <span><i class="dot" style="background:#f87171"></i>D 搭便车</span>
       <span><i class="dot" style="background:#fbbf24"></i>P 惩罚者</span>
     </div>
-    <canvas id="c3chart"></canvas>
-
+    <canvas id="c4chart"></canvas>
     <div class="controls">
       <div class="ctl"><span class="lab">诱惑 T</span>
-        <input id="s3t" type="range" min="0.4" max="2.0" step="0.05" value="1.2">
-        <span class="val" id="v3t">1.20</span></div>
+        <input id="s4t" type="range" min="0.4" max="2.0" step="0.05" value="1.2"><span class="val" id="v4t">1.20</span></div>
       <div class="ctl"><span class="lab">惩罚成本 c</span>
-        <input id="s3c" type="range" min="0.05" max="0.7" step="0.05" value="0.25">
-        <span class="val" id="v3c">0.25</span></div>
+        <input id="s4c" type="range" min="0.05" max="0.7" step="0.05" value="0.25"><span class="val" id="v4c">0.25</span></div>
     </div>
     <div class="btns">
-      <button id="b3run">▶ 开始演化</button>
-      <button id="b3reset">🔄 重置</button>
-      <button id="b3allc">全是合作者</button>
-      <button id="b3alld">全是摸鱼</button>
-      <button id="b3allp">全是惩罚者</button>
+      <button id="b4run">▶ 开始演化</button>
+      <button id="b4reset">🔄 重置</button>
+      <button id="b4allc">全是合作者</button>
+      <button id="b4alld">全是摸鱼</button>
+      <button id="b4allp">全是惩罚者</button>
     </div>
-    <p class="note">
-      <b>收益矩阵（行=自己，列=对手）</b><br>
-      · C 遇到 C / D / P = <b>1 / 0 / 1</b>　
-      · D 遇到 C / D / P = <b>T / 0 / -1</b>　
-      · P 遇到 C / D / P = <b>1-c / -c / 1-c</b><br>
-      <b>循环相克：</b>C 赢 P（1 &gt; 1-c），P 赢 D（-c &gt; -1），D 赢 C（T &gt; 0）。<br>
-      · T 很小时：全场收敛到<b>纯合作</b>；<br>
-      · T 很大时：三者形成循环相克，屏幕上出现互相追逐的<b>螺旋波</b>；<br>
-      · 同一组参数下，不同初始状态可能落到不同结局，这就是<b>双稳态</b>。<br>
-      直接<b>点格子</b>可以手动改一个人的策略。
-    </p>
   </section>
-
 </div>
 
 <script>
-/* ==================== 通用工具 ==================== */
-function $(id){ return document.getElementById(id); }
-var DPR = Math.min(window.devicePixelRatio || 1, 2);
-
-function whenCanvasReady(canvas, fn){
-  var tries = 0;
+function $(id){return document.getElementById(id);}
+var DPR=Math.min(window.devicePixelRatio||1,2);
+function whenCanvasReady(canvas,fn){
+  var tries=0;
   function check(){
-    if (document.readyState !== 'complete'){
-      setTimeout(check, 50); return;
-    }
-    var r = canvas.getBoundingClientRect();
-    if (r.width > 10 && r.height > 10){ fn(); }
-    else if (tries++ < 60){ setTimeout(check, 50); }
-    else { fn(); }
+    if(document.readyState!=='complete'){setTimeout(check,50);return;}
+    var r=canvas.getBoundingClientRect();
+    if(r.width>10&&r.height>10){fn();}
+    else if(tries++<60){setTimeout(check,50);}
+    else{fn();}
   }
   check();
 }
-
 function fitCanvas(canvas){
-  var rect = canvas.getBoundingClientRect();
-  var w = Math.max(1, Math.round(rect.width));
-  var h = Math.max(1, Math.round(rect.height));
-  canvas.width  = Math.round(w * DPR);
-  canvas.height = Math.round(h * DPR);
-  var ctx = canvas.getContext('2d');
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  return { ctx: ctx, w: w, h: h };
+  var rect=canvas.getBoundingClientRect();
+  var w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));
+  canvas.width=Math.round(w*DPR);canvas.height=Math.round(h*DPR);
+  var ctx=canvas.getContext('2d');
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  return {ctx:ctx,w:w,h:h};
 }
-
-function bindSlider(id, valId, fmt, cb){
-  var el = $(id), out = $(valId);
-  if (!el || !out) return;
-  function fire(){
-    var v = parseFloat(el.value);
-    out.textContent = fmt ? fmt(v) : v.toFixed(1);
-    if (cb) cb(v);
-  }
-  el.addEventListener('input', fire);
-  fire();
-  return el;
+function bindSlider(id,valId,fmt,cb){
+  var el=$(id),out=$(valId);if(!el||!out)return;
+  function fire(){var v=parseFloat(el.value);out.textContent=fmt?fmt(v):v.toFixed(1);if(cb)cb(v);}
+  el.addEventListener('input',fire);fire();
 }
-
 function onResize(fn){
-  var t = null;
-  function handler(){
-    clearTimeout(t);
-    t = setTimeout(fn, 160);
-  }
-  window.addEventListener('resize', handler);
-  window.addEventListener('orientationchange', function(){
-    clearTimeout(t);
-    t = setTimeout(fn, 300);
-  });
+  var t=null;
+  function h(){clearTimeout(t);t=setTimeout(fn,160);}
+  window.addEventListener('resize',h);
+  window.addEventListener('orientationchange',function(){clearTimeout(t);t=setTimeout(fn,300);});
 }
 
-
-/* =====================================================================
-   01 复杂系统：双向人流（含局部拥挤感知）
-   关键改进：
-   · 每个人会数身边（3 倍半径内）有多少邻居
-   · 邻居越多，主动减速：目标速度 & 最大速度都乘以拥挤因子
-   · 密度=1 时每个人周围约 8 个邻居，速度降到约 17%
-   · 硬核排斥用穿透量的平方，防止爆炸
-   ===================================================================== */
+/* ========== 01 双向人流 ========== */
 (function(){
-  var canvas = $('c1');
-  if (!canvas) return;
-
-  var ctx = null, W = 0, H = 0;
-  var peds = [];
-  var running = false;
-  var rafId = null;
-  var lastT = 0;
-  var frameCount = 0;
-
-  /* 固定尺寸：圆半径 7，每人 14×14 格子 */
-  var RADIUS = 7;
-  var CELL   = 14;
-
-  var cfg = {
-    density: 0.25,
-    v0: 1.6,
-    spread: 0.30,
-    R: 24
-  };
-
-  var RELAX   = 0.15;
-  var K_REP   = 0.6;
-  var K_HARD  = 40.0;
-  var K_LANE  = 0.09;
-  var MAXSP   = 1.8;
-
-  /* 拥挤感知：统计多少邻居 */
-  var CROWD_K = 0.55;       /* 拥挤因子系数 */
-  var CROWD_MIN = 0.10;     /* 拥挤因子下限（不会低于 10%） */
-
-  var cols = 0, rows = 0, cellW = 0, cellH = 0;
-  var headArr = null, nxtArr = null;
-
-  function maxPeople(){
-    if (!W || !H) return 100;
-    var gc = Math.floor(W / CELL);
-    var gr = Math.floor(H / CELL);
-    return Math.max(4, gc * gr);
-  }
-  function targetCount(){ return Math.round(cfg.density * maxPeople()); }
-
-  function laneStrength(){
-    if (cfg.R <= 5) return 0;
-    if (cfg.R >= 15) return K_LANE;
-    return K_LANE * (cfg.R - 5) / 10;
-  }
-
+  var canvas=$('c1');if(!canvas)return;
+  var ctx=null,W=0,H=0,peds=[],running=false,rafId=null,lastT=0,frameCount=0;
+  var RADIUS=7,CELL=14;
+  var cfg={density:0.25,v0:1.6,spread:0.30,R:24};
+  var RELAX=0.15,K_REP=0.6,K_HARD=40.0,K_LANE=0.09,MAXSP=1.8,CROWD_K=0.55,CROWD_MIN=0.10;
+  var cols=0,rows=0,cellW=0,cellH=0,headArr=null,nxtArr=null;
+  function maxPeople(){if(!W||!H)return 100;return Math.max(4,Math.floor(W/CELL)*Math.floor(H/CELL));}
+  function targetCount(){return Math.round(cfg.density*maxPeople());}
+  function laneStrength(){if(cfg.R<=5)return 0;if(cfg.R>=15)return K_LANE;return K_LANE*(cfg.R-5)/10;}
   function makePed(){
-    var dir = Math.random() < 0.5 ? 1 : -1;
-    var s = Math.max(0.1, 1 + (Math.random() * 2 - 1) * cfg.spread);
-    var vPref = cfg.v0 * s;
-    return {
-      x: Math.random() * W, y: Math.random() * H,
-      vx: dir * vPref * 0.5, vy: (Math.random() - 0.5) * 0.3,
-      dir: dir,
-      speedMul: s,
-      vPref: vPref,
-      cx: 0, cy: 0
-    };
+    var dir=Math.random()<0.5?1:-1;
+    var s=Math.max(0.1,1+(Math.random()*2-1)*cfg.spread);
+    return {x:Math.random()*W,y:Math.random()*H,vx:dir*cfg.v0*s*0.5,vy:(Math.random()-0.5)*0.3,dir:dir,speedMul:s,vPref:cfg.v0*s,cx:0,cy:0};
   }
-
-  /* 按固定格子铺排：密度=1 时每个格子一人，圆相切 */
   function gridSpawn(){
-    peds = [];
-    var n = targetCount();
-    if (n <= 0) return;
-
-    var gc = Math.max(1, Math.floor(W / CELL));
-    var gr = Math.max(1, Math.floor(H / CELL));
-    var total = gc * gr;
-
-    var cells = new Array(total);
-    for (var i = 0; i < total; i++) cells[i] = i;
-    var m = Math.min(n, total);
-    for (var i = 0; i < m; i++){
-      var j = i + Math.floor(Math.random() * (total - i));
-      var tmp = cells[i]; cells[i] = cells[j]; cells[j] = tmp;
-    }
-
-    var jitter = (1 - cfg.density) * 2.5;
-
-    for (var i = 0; i < m; i++){
-      var idx = cells[i];
-      var c = idx % gc;
-      var r = Math.floor(idx / gc);
-      var p = makePed();
-      p.x = (c + 0.5) * CELL + (Math.random() - 0.5) * jitter;
-      p.y = (r + 0.5) * CELL + (Math.random() - 0.5) * jitter;
+    peds=[];var n=targetCount();if(n<=0)return;
+    var gc=Math.max(1,Math.floor(W/CELL)),gr=Math.max(1,Math.floor(H/CELL));
+    var total=gc*gr,cells=new Array(total);
+    for(var i=0;i<total;i++)cells[i]=i;
+    var m=Math.min(n,total);
+    for(var i=0;i<m;i++){var j=i+Math.floor(Math.random()*(total-i));var tmp=cells[i];cells[i]=cells[j];cells[j]=tmp;}
+    var jitter=(1-cfg.density)*2.5;
+    for(var i=0;i<m;i++){
+      var idx=cells[i],c=idx%gc,r=Math.floor(idx/gc),p=makePed();
+      p.x=(c+0.5)*CELL+(Math.random()-0.5)*jitter;
+      p.y=(r+0.5)*CELL+(Math.random()-0.5)*jitter;
       peds.push(p);
     }
   }
-
-  function refreshVPref(){
-    for (var i = 0; i < peds.length; i++){
-      peds[i].vPref = cfg.v0 * peds[i].speedMul;
-    }
-  }
-
+  function refreshVPref(){for(var i=0;i<peds.length;i++)peds[i].vPref=cfg.v0*peds[i].speedMul;}
   function rebuildGrid(){
-    if (!W || !H) return;
-    /* 网格 cell 要覆盖拥挤感知范围（3 倍半径）与避让距离的较大者 */
-    var cell = Math.max(RADIUS * 3, cfg.R, 10);
-    cols = Math.max(1, Math.round(W / cell));
-    rows = Math.max(1, Math.round(H / cell));
-    cellW = W / cols;
-    cellH = H / rows;
-    headArr = new Int32Array(cols * rows);
-    nxtArr  = new Int32Array(Math.max(64, peds.length + 20));
+    if(!W||!H)return;
+    var cell=Math.max(RADIUS*3,cfg.R,10);
+    cols=Math.max(1,Math.round(W/cell));rows=Math.max(1,Math.round(H/cell));
+    cellW=W/cols;cellH=H/rows;
+    headArr=new Int32Array(cols*rows);nxtArr=new Int32Array(Math.max(64,peds.length+20));
   }
-
   function step(){
-    var n = peds.length;
-    if (!n || !headArr) return;
-
-    /* 空间网格 */
+    var n=peds.length;if(!n||!headArr)return;
     headArr.fill(-1);
-    var i;
-    for (i = 0; i < n; i++){
-      var p = peds[i];
-      var cx = Math.floor(p.x / cellW);
-      var cy = Math.floor(p.y / cellH);
-      if (cx < 0) cx = 0; else if (cx >= cols) cx = cols - 1;
-      if (cy < 0) cy = 0; else if (cy >= rows) cy = rows - 1;
-      p.cx = cx; p.cy = cy;
-      var cc = cy * cols + cx;
-      nxtArr[i] = headArr[cc];
-      headArr[cc] = i;
+    for(var i=0;i<n;i++){
+      var p=peds[i];
+      var cx=Math.floor(p.x/cellW),cy=Math.floor(p.y/cellH);
+      if(cx<0)cx=0;else if(cx>=cols)cx=cols-1;
+      if(cy<0)cy=0;else if(cy>=rows)cy=rows-1;
+      p.cx=cx;p.cy=cy;
+      var cc=cy*cols+cx;nxtArr[i]=headArr[cc];headArr[cc]=i;
     }
-
-    var R = cfg.R;
-    var HARD = RADIUS;
-    /* 拥挤感知范围：至少 3 倍半径，保证密度=1 时能数到 8 个邻居 */
-    var CROWD_R = Math.max(R, RADIUS * 3.2);
-    var CROWD_R2 = CROWD_R * CROWD_R;
-    var SEARCH = Math.max(CROWD_R, HARD, R);
-    var SEARCH2 = SEARCH * SEARCH;
-    var laneK = laneStrength();
-
-    for (i = 0; i < n; i++){
-      var p = peds[i];
-      var fx = 0, fy = 0;
-      var laneSum = 0;
-      var neighborCount = 0;
-
-      for (var dy = -1; dy <= 1; dy++){
-        var yy = (p.cy + dy + rows) % rows;
-        for (var dx = -1; dx <= 1; dx++){
-          var xx = (p.cx + dx + cols) % cols;
-          var j = headArr[yy * cols + xx];
-          while (j !== -1){
-            if (j !== i){
-              var q = peds[j];
-              var ddx = p.x - q.x, ddy = p.y - q.y;
-              if (ddx >  W * 0.5) ddx -= W; else if (ddx < -W * 0.5) ddx += W;
-              if (ddy >  H * 0.5) ddy -= H; else if (ddy < -H * 0.5) ddy += H;
-              var d2 = ddx * ddx + ddy * ddy;
-              if (d2 < SEARCH2 && d2 > 1e-4){
-                var d = Math.sqrt(d2);
-
-                /* ---- 拥挤统计 ---- */
-                if (d2 < CROWD_R2) neighborCount++;
-
-                /* ---- 硬核排斥（防穿模） ---- */
-                if (d < HARD){
-                  var pen = (HARD - d) / HARD;
-                  /* 穿透越深，力越大（用平方，防止爆炸） */
-                  var fh = K_HARD * pen * pen / Math.max(d, 1.5);
-                  fx += ddx * fh;
-                  fy += ddy * fh;
-                }
-                /* ---- 软排斥（避让距离内） ---- */
-                else if (d < R){
-                  var f = (1 - d / R) * K_REP / Math.max(d, 2.0);
-                  fx += ddx * f;
-                  fy += ddy * f;
-                }
-                /* ---- 分道力：只对前方且反向者 ---- */
-                if (laneK > 0 && d < R && q.dir !== p.dir){
-                  if (-ddx * p.dir > 0) laneSum += (1 - d / R);
-                }
+    var R=cfg.R,HARD=RADIUS,CROWD_R=Math.max(R,RADIUS*3.2),CROWD_R2=CROWD_R*CROWD_R;
+    var SEARCH=Math.max(CROWD_R,HARD,R),SEARCH2=SEARCH*SEARCH,laneK=laneStrength();
+    for(var i=0;i<n;i++){
+      var p=peds[i],fx=0,fy=0,laneSum=0,neighborCount=0;
+      for(var dy=-1;dy<=1;dy++){
+        var yy=(p.cy+dy+rows)%rows;
+        for(var dx=-1;dx<=1;dx++){
+          var xx=(p.cx+dx+cols)%cols;
+          var j=headArr[yy*cols+xx];
+          while(j!==-1){
+            if(j!==i){
+              var q=peds[j],ddx=p.x-q.x,ddy=p.y-q.y;
+              if(ddx>W*0.5)ddx-=W;else if(ddx<-W*0.5)ddx+=W;
+              if(ddy>H*0.5)ddy-=H;else if(ddy<-H*0.5)ddy+=H;
+              var d2=ddx*ddx+ddy*ddy;
+              if(d2<SEARCH2&&d2>1e-4){
+                var d=Math.sqrt(d2);
+                if(d2<CROWD_R2)neighborCount++;
+                if(d<HARD){var pen=(HARD-d)/HARD;var fh=K_HARD*pen*pen/Math.max(d,1.5);fx+=ddx*fh;fy+=ddy*fh;}
+                else if(d<R){var f=(1-d/R)*K_REP/Math.max(d,2.0);fx+=ddx*f;fy+=ddy*f;}
+                if(laneK>0&&d<R&&q.dir!==p.dir){if(-ddx*p.dir>0)laneSum+=(1-d/R);}
               }
             }
-            j = nxtArr[j];
+            j=nxtArr[j];
           }
         }
       }
-
-      /* ---- 拥挤因子：邻居越多，速度压得越低 ---- */
-      var crowd = 1 / (1 + neighborCount * CROWD_K);
-      if (crowd < CROWD_MIN) crowd = CROWD_MIN;
-
-      /* 目标速度乘以拥挤因子 */
-      var targetV = p.vPref * crowd;
-
-      p.vx += (p.dir * targetV - p.vx) * RELAX + fx;
-      p.vy += (0 - p.vy) * RELAX + fy + (Math.random() - 0.5) * 0.03;
-
-      /* 分道也受拥挤因子影响 */
-      if (laneSum > 2) laneSum = 2;
-      p.vy += laneSum * laneK * p.dir * crowd;
-
-      /* 最大速度也压缩：拥挤时最高速度降到很低 */
-      var maxSp = Math.max(0.18, MAXSP * crowd);
-      var sp = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-      if (sp > maxSp){ p.vx *= maxSp / sp; p.vy *= maxSp / sp; }
-
-      /* 位置更新 + 环形边界 */
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0) p.x += W; else if (p.x >= W) p.x -= W;
-      if (p.y < 0) p.y += H; else if (p.y >= H) p.y -= H;
+      var crowd=1/(1+neighborCount*CROWD_K);if(crowd<CROWD_MIN)crowd=CROWD_MIN;
+      var targetV=p.vPref*crowd;
+      p.vx+=(p.dir*targetV-p.vx)*RELAX+fx;
+      p.vy+=(0-p.vy)*RELAX+fy+(Math.random()-0.5)*0.03;
+      if(laneSum>2)laneSum=2;
+      p.vy+=laneSum*laneK*p.dir*crowd;
+      var maxSp=Math.max(0.18,MAXSP*crowd);
+      var sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+      if(sp>maxSp){p.vx*=maxSp/sp;p.vy*=maxSp/sp;}
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x+=W;else if(p.x>=W)p.x-=W;
+      if(p.y<0)p.y+=H;else if(p.y>=H)p.y-=H;
     }
   }
-
   function draw(){
-    if (!ctx || W <= 1 || H <= 1) return;
-    ctx.fillStyle = 'rgba(7,11,21,0.28)';
-    ctx.fillRect(0, 0, W, H);
-
-    for (var i = 0; i < peds.length; i++){
-      var p = peds[i];
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, RADIUS, 0, Math.PI * 2);
-      ctx.fillStyle = p.dir > 0 ? '#38bdf8' : '#fb7185';
-      ctx.fill();
+    if(!ctx||W<=1||H<=1)return;
+    ctx.fillStyle='rgba(7,11,21,0.28)';ctx.fillRect(0,0,W,H);
+    for(var i=0;i<peds.length;i++){
+      var p=peds[i];
+      ctx.beginPath();ctx.arc(p.x,p.y,RADIUS,0,Math.PI*2);
+      ctx.fillStyle=p.dir>0?'#38bdf8':'#fb7185';ctx.fill();
     }
   }
-
   function updateMetrics(){
-    var nEl = $('m1n'), vEl = $('m1v'), sEl = $('m1s');
-    if (!nEl || !vEl || !sEl) return;
-    nEl.textContent = peds.length;
-    if (!peds.length){
-      vEl.textContent = '–'; vEl.style.color = '#7dd3fc';
-      sEl.textContent = '空荡'; sEl.style.color = '#94a3b8';
-      return;
-    }
-    var s = 0;
-    for (var i = 0; i < peds.length; i++){
-      var p = peds[i];
-      s += Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-    }
-    var avg = s / peds.length;
-    vEl.textContent = avg.toFixed(2);
-    if (avg < 0.10){
-      vEl.style.color = '#f87171';
-      sEl.textContent = '🚨 完全卡死'; sEl.style.color = '#f87171';
-    } else if (avg < 0.40){
-      vEl.style.color = '#f87171';
-      sEl.textContent = '🚨 堵死'; sEl.style.color = '#f87171';
-    } else if (avg < 0.85){
-      vEl.style.color = '#fbbf24';
-      sEl.textContent = '⚠ 缓慢'; sEl.style.color = '#fbbf24';
-    } else {
-      vEl.style.color = '#7dd3fc';
-      sEl.textContent = '✓ 畅通'; sEl.style.color = '#34d399';
-    }
+    var nEl=$('m1n'),vEl=$('m1v'),sEl=$('m1s');if(!nEl||!vEl||!sEl)return;
+    nEl.textContent=peds.length;
+    if(!peds.length){vEl.textContent='–';vEl.style.color='#7dd3fc';sEl.textContent='空荡';sEl.style.color='#94a3b8';return;}
+    var s=0;
+    for(var i=0;i<peds.length;i++){var p=peds[i];s+=Math.sqrt(p.vx*p.vx+p.vy*p.vy);}
+    var avg=s/peds.length;vEl.textContent=avg.toFixed(2);
+    if(avg<0.10){vEl.style.color='#f87171';sEl.textContent='🚨 完全卡死';sEl.style.color='#f87171';}
+    else if(avg<0.40){vEl.style.color='#f87171';sEl.textContent='🚨 堵死';sEl.style.color='#f87171';}
+    else if(avg<0.85){vEl.style.color='#fbbf24';sEl.textContent='⚠ 缓慢';sEl.style.color='#fbbf24';}
+    else{vEl.style.color='#7dd3fc';sEl.textContent='✓ 畅通';sEl.style.color='#34d399';}
   }
-
   function loop(t){
-    if (!running){ rafId = null; return; }
-    if (t - lastT > 14){
-      step(); draw();
-      frameCount++;
-      if (frameCount % 6 === 0) updateMetrics();
-      lastT = t;
-    }
-    rafId = requestAnimationFrame(loop);
+    if(!running){rafId=null;return;}
+    if(t-lastT>14){step();draw();frameCount++;if(frameCount%6===0)updateMetrics();lastT=t;}
+    rafId=requestAnimationFrame(loop);
   }
-
-  function start(){
-    if (!peds.length && cfg.density > 0){ gridSpawn(); rebuildGrid(); }
-    running = true;
-    $('b1run').textContent = '⏸ 暂停';
-    $('b1run').classList.add('on');
-    lastT = 0;
-    if (!rafId) rafId = requestAnimationFrame(loop);
-  }
-  function stop(){
-    running = false;
-    $('b1run').textContent = '▶ 开始演化';
-    $('b1run').classList.remove('on');
-    if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
-  }
-
+  function start(){if(!peds.length&&cfg.density>0){gridSpawn();rebuildGrid();}running=true;$('b1run').textContent='⏸ 暂停';$('b1run').classList.add('on');lastT=0;if(!rafId)rafId=requestAnimationFrame(loop);}
+  function stop(){running=false;$('b1run').textContent='▶ 开始演化';$('b1run').classList.remove('on');if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
   function resize(){
-    var r = fitCanvas(canvas);
-    ctx = r.ctx; W = r.w; H = r.h;
-    ctx.fillStyle = '#070b15';
-    ctx.fillRect(0, 0, W, H);
-    gridSpawn(); rebuildGrid();
-    draw(); updateMetrics();
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;
+    ctx.fillStyle='#070b15';ctx.fillRect(0,0,W,H);
+    gridSpawn();rebuildGrid();draw();updateMetrics();
   }
-
   function init(){
     resize();
-
-    bindSlider('s1n', 'v1n', function(v){ return v.toFixed(2); }, function(v){
-      cfg.density = v;
-      if (W){ gridSpawn(); rebuildGrid(); draw(); updateMetrics(); }
+    bindSlider('s1n','v1n',function(v){return v.toFixed(2);},function(v){cfg.density=v;if(W){gridSpawn();rebuildGrid();draw();updateMetrics();}});
+    bindSlider('s1v','v1v',function(v){return v.toFixed(1);},function(v){cfg.v0=v;refreshVPref();});
+    bindSlider('s1h','v1h',function(v){return v.toFixed(2);},function(v){
+      cfg.spread=v;
+      for(var i=0;i<peds.length;i++){var s=Math.max(0.1,1+(Math.random()*2-1)*v);peds[i].speedMul=s;peds[i].vPref=cfg.v0*s;}
     });
-    bindSlider('s1v', 'v1v', function(v){ return v.toFixed(1); }, function(v){
-      cfg.v0 = v;
-      refreshVPref();
-    });
-    bindSlider('s1h', 'v1h', function(v){ return v.toFixed(2); }, function(v){
-      cfg.spread = v;
-      for (var i = 0; i < peds.length; i++){
-        var s = Math.max(0.1, 1 + (Math.random() * 2 - 1) * v);
-        peds[i].speedMul = s;
-        peds[i].vPref = cfg.v0 * s;
-      }
-    });
-    bindSlider('s1r', 'v1r', function(v){ return v.toFixed(0); }, function(v){
-      cfg.R = v;
-      if (W) rebuildGrid();
-    });
-
-    $('b1run').addEventListener('click', function(){ running ? stop() : start(); });
-    $('b1reset').addEventListener('click', function(){
-      gridSpawn(); rebuildGrid();
-      ctx.fillStyle = '#070b15';
-      ctx.fillRect(0, 0, W, H);
-      draw(); updateMetrics();
-    });
-
+    bindSlider('s1r','v1r',function(v){return v.toFixed(0);},function(v){cfg.R=v;if(W)rebuildGrid();});
+    $('b1run').addEventListener('click',function(){running?stop():start();});
+    $('b1reset').addEventListener('click',function(){gridSpawn();rebuildGrid();ctx.fillStyle='#070b15';ctx.fillRect(0,0,W,H);draw();updateMetrics();});
     onResize(resize);
-    if (window.ResizeObserver){
-      new ResizeObserver(function(){ resize(); }).observe(canvas);
-    }
+    if(window.ResizeObserver)new ResizeObserver(function(){resize();}).observe(canvas);
   }
-
-  whenCanvasReady(canvas, init);
+  whenCanvasReady(canvas,init);
 })();
 
-
-/* =====================================================================
-   02 复杂网络：热搜传播
-   关键改进：
-   · 大V 强化时，优先连接"高度数节点"（而不是随机节点）
-     → 大V 的好友里有大量活跃分子 → 传播链能层层放大
-   · 参数调到：大V 爆发、边缘熄灭
-   · BETA 默认 0.18，GAMMA = 0.22（感染节点平均活跃 4.5 轮）
-   ===================================================================== */
+/* ========== 02 六度分隔 ========== */
 (function(){
-  var canvas = $('c2');
-  var chartCanvas = $('c2chart');
-  if (!canvas || !chartCanvas) return;
+  var canvas=$('c2');if(!canvas)return;
+  var ctx=null,W=0,H=0;
+  var N=500,GROUP_N=10,PER_GROUP=50;
+  var nodes=[],adj=[],links=[];
+  var startNode=-1,endNode=-1,pathNodes=[],triedCount=0,hopsHistory=[];
+  var GROUP_COLORS=['#38bdf8','#38bdf8','#38bdf8','#a78bfa','#a78bfa','#a78bfa','#34d399','#34d399','#f472b6','#f472b6'];
 
-  var ctx = null, W = 0, H = 0;
-  var cctx = null, CW = 0, CH = 0;
-
-  var N = 70;                  /* 网络规模 */
-  var M = 2;                   /* BA 每个新节点连接 M 个已有节点 */
-  var GAMMA = 0.22;            /* 恢复概率（平均活跃 4.5 轮） */
-  var BETA  = 0.18;            /* 传染概率（可调） */
-
-  var nodes = [];
-  var adj = [];
-  var links = [];
-  var state = [];
-
-  var hubIndex = -1;
-  var leafIndex = -1;
-
-  var running = false;
-  var timer = null;
-  var steps = 0;
-  var lastNewCount = 0;
-  var totalEverInfected = 0;
-
-  var histS = [], histI = [], histR = [];
-  var MAXH = 240;
-  var TICK_MS = 320;
-
-  /* ---------- BA 无标度网络 + 强化大 V ---------- */
   function buildNetwork(){
-    nodes = []; links = []; adj = [];
-    for (var i = 0; i < N; i++){
-      nodes.push({ x: 0, y: 0, deg: 0 });
-      adj.push([]);
-    }
-
-    var m0 = M + 1;
-    for (var i = 0; i < m0; i++){
-      for (var j = i + 1; j < m0; j++){
-        links.push([i, j]);
-        adj[i].push(j); adj[j].push(i);
-        nodes[i].deg++; nodes[j].deg++;
-      }
-    }
-
-    /* 依次加入剩余节点（优先连接） */
-    for (var k = m0; k < N; k++){
-      var totalDeg = 0;
-      for (var i = 0; i < k; i++) totalDeg += nodes[i].deg;
-      if (totalDeg <= 0) break;
-
-      var targets = [];
-      var guard = 0;
-      while (targets.length < M && guard++ < 800){
-        var r = Math.random() * totalDeg;
-        var cum = 0;
-        for (var i = 0; i < k; i++){
-          cum += nodes[i].deg;
-          if (r <= cum){
-            if (targets.indexOf(i) === -1) targets.push(i);
-            break;
-          }
+    nodes=[];adj=[];links=[];
+    for(var i=0;i<N;i++){var g=Math.floor(i/PER_GROUP);nodes.push({x:0,y:0,deg:0,group:g});adj.push([]);}
+    for(var g=0;g<GROUP_N;g++){
+      var base=g*PER_GROUP;
+      for(var i=0;i<PER_GROUP;i++){
+        var a=base+i;
+        for(var k=0;k<3;k++){
+          var j=Math.floor(Math.random()*PER_GROUP);
+          if(j===i)continue;
+          var b=base+j;
+          if(adj[a].indexOf(b)===-1){adj[a].push(b);adj[b].push(a);nodes[a].deg++;nodes[b].deg++;links.push([a,b]);}
         }
       }
-      for (var t = 0; t < targets.length; t++){
-        var v = targets[t];
-        links.push([k, v]);
-        adj[k].push(v); adj[v].push(k);
-        nodes[k].deg++; nodes[v].deg++;
+    }
+    var bridges=[];
+    for(var g=0;g<GROUP_N;g++)bridges.push([]);
+    for(var g=0;g<GROUP_N;g++){var base=g*PER_GROUP;for(var k=0;k<5;k++)bridges[g].push(base+Math.floor(Math.random()*PER_GROUP));}
+    for(var g=0;g<GROUP_N;g++){
+      for(var h=g+1;h<GROUP_N;h++){
+        for(var t=0;t<2;t++){
+          var a=bridges[g][Math.floor(Math.random()*bridges[g].length)];
+          var b=bridges[h][Math.floor(Math.random()*bridges[h].length)];
+          if(adj[a].indexOf(b)===-1){adj[a].push(b);adj[b].push(a);nodes[a].deg++;nodes[b].deg++;links.push([a,b]);}
+        }
+      }
+    }
+    var seen=new Array(N).fill(false);var q=[0];seen[0]=true;
+    while(q.length){var u=q.pop();for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(!seen[v]){seen[v]=true;q.push(v);}}}
+    for(var i=0;i<N;i++){
+      if(!seen[i]){var t=Math.floor(Math.random()*N);while(!seen[t])t=Math.floor(Math.random()*N);
+        adj[i].push(t);adj[t].push(i);nodes[i].deg++;nodes[t].deg++;links.push([i,t]);seen[i]=true;}
+    }
+    for(var i=0;i<N;i++){nodes[i].x=0;nodes[i].y=0;}
+    layout();
+  }
+  function layout(){
+    if(!W||!H)return;
+    var cx=W/2,cy=H/2,R=Math.min(W,H)*0.34;
+    var groupCenters=[];
+    for(var g=0;g<GROUP_N;g++){var a=-Math.PI/2+g/GROUP_N*Math.PI*2;groupCenters.push({x:cx+Math.cos(a)*R,y:cy+Math.sin(a)*R});}
+    var maxDeg=1;for(var i=0;i<N;i++)if(nodes[i].deg>maxDeg)maxDeg=nodes[i].deg;
+    for(var i=0;i<N;i++){
+      var g=nodes[i].group,gc=groupCenters[g],a=Math.random()*Math.PI*2;
+      var degRatio=Math.sqrt(nodes[i].deg)/Math.sqrt(maxDeg);
+      var r=(1-degRatio*0.55)*(Math.min(W,H)*0.11);
+      nodes[i].x=gc.x+Math.cos(a)*r*Math.sqrt(Math.random());
+      nodes[i].y=gc.y+Math.sin(a)*r*Math.sqrt(Math.random());
+      var rr=3;
+      if(nodes[i].x<rr)nodes[i].x=rr;else if(nodes[i].x>W-rr)nodes[i].x=W-rr;
+      if(nodes[i].y<rr)nodes[i].y=rr;else if(nodes[i].y>H-rr)nodes[i].y=H-rr;
+    }
+  }
+  function findShortestPath(s,t){
+    if(s<0||t<0||s===t)return [];
+    var prev=new Array(N).fill(-1),visited=new Array(N).fill(false);
+    visited[s]=true;var q=[s],head=0;
+    while(head<q.length){
+      var u=q[head++];if(u===t)break;
+      for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(!visited[v]){visited[v]=true;prev[v]=u;q.push(v);}}
+    }
+    if(!visited[t])return [];
+    var path=[],cur=t;
+    while(cur!==-1){path.unshift(cur);cur=prev[cur];}
+    return path;
+  }
+  function draw(){
+    if(!ctx||W<=1||H<=1)return;if(nodes.length!==N)return;
+    ctx.clearRect(0,0,W,H);
+    var pathSet={};for(var i=0;i<pathNodes.length;i++)pathSet[pathNodes[i]]=true;
+    var pathEdgeSet={};
+    for(var i=0;i<pathNodes.length-1;i++){
+      var a=Math.min(pathNodes[i],pathNodes[i+1]),b=Math.max(pathNodes[i],pathNodes[i+1]);
+      pathEdgeSet[a+'-'+b]=true;
+    }
+    ctx.lineWidth=0.7;ctx.strokeStyle='rgba(96,165,250,0.10)';ctx.beginPath();
+    for(var e=0;e<links.length;e++){
+      var a=links[e][0],b=links[e][1];
+      var key=Math.min(a,b)+'-'+Math.max(a,b);
+      if(pathEdgeSet[key])continue;
+      ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);
+    }
+    ctx.stroke();
+    if(pathNodes.length>1){
+      ctx.lineWidth=2.8;ctx.strokeStyle='rgba(251,191,36,0.95)';ctx.beginPath();
+      for(var i=0;i<pathNodes.length-1;i++){
+        var a=pathNodes[i],b=pathNodes[i+1];
+        ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);
+      }
+      ctx.stroke();
+    }
+    for(var g=0;g<GROUP_N;g++){
+      ctx.fillStyle=GROUP_COLORS[g];ctx.globalAlpha=0.55;ctx.beginPath();
+      for(var i=0;i<N;i++){
+        if(nodes[i].group!==g)continue;
+        if(pathSet[i])continue;
+        ctx.moveTo(nodes[i].x+2.5,nodes[i].y);ctx.arc(nodes[i].x,nodes[i].y,2.5,0,Math.PI*2);
+      }
+      ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    if(pathNodes.length>0){
+      for(var i=0;i<pathNodes.length;i++){
+        var p=nodes[pathNodes[i]];
+        var isStart=(pathNodes[i]===startNode),isEnd=(pathNodes[i]===endNode);
+        ctx.beginPath();ctx.arc(p.x,p.y,isStart||isEnd?6:4.5,0,Math.PI*2);
+        ctx.fillStyle=isStart?'#fbbf24':(isEnd?'#f87171':'#fbbf24');ctx.fill();
+        ctx.lineWidth=1.5;ctx.strokeStyle='#ffffff';ctx.stroke();
+      }
+      var sp=nodes[startNode],ep=nodes[endNode];
+      ctx.fillStyle='#fbbf24';ctx.font='bold 13px -apple-system,"PingFang SC",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText('起点',sp.x,sp.y-9);
+      ctx.fillStyle='#f87171';ctx.fillText('终点',ep.x,ep.y-9);
+    }
+  }
+  function handleClick(mx,my){
+    var best=-1,bd=400;
+    for(var i=0;i<N;i++){var dx=nodes[i].x-mx,dy=nodes[i].y-my;var d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=i;}}
+    if(best<0)return;
+    if(startNode<0){startNode=best;endNode=-1;pathNodes=[];}
+    else if(endNode<0){
+      if(best===startNode)return;
+      endNode=best;pathNodes=findShortestPath(startNode,endNode);
+      if(pathNodes.length>0){hopsHistory.push(pathNodes.length-1);if(hopsHistory.length>10)hopsHistory.shift();triedCount++;}
+    }else{startNode=best;endNode=-1;pathNodes=[];}
+    draw();updateStats();
+  }
+  function updateStats(){
+    var sEl=$('m2start'),eEl=$('m2end'),hEl=$('m2hops'),aEl=$('m2avg'),cEl=$('m2cnt');
+    if(!sEl||!eEl||!hEl||!aEl||!cEl)return;
+    sEl.textContent=startNode<0?'–':'#'+startNode;
+    eEl.textContent=endNode<0?'–':'#'+endNode;
+    if(pathNodes.length>1){
+      var hops=pathNodes.length-1;hEl.textContent=hops+' 步';
+      hEl.style.color=hops<=4?'#34d399':(hops<=6?'#fbbf24':'#f87171');
+    }else{hEl.textContent='–';hEl.style.color='#7dd3fc';}
+    if(hopsHistory.length>0){var sum=0;for(var i=0;i<hopsHistory.length;i++)sum+=hopsHistory[i];aEl.textContent=(sum/hopsHistory.length).toFixed(1);}
+    else{aEl.textContent='–';}
+    cEl.textContent=triedCount;
+  }
+  function resize(){
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;
+    if(nodes.length!==N)buildNetwork();else layout();
+    draw();updateStats();
+  }
+  function init(){
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;buildNetwork();
+    canvas.addEventListener('pointerdown',function(e){var rect=canvas.getBoundingClientRect();handleClick(e.clientX-rect.left,e.clientY-rect.top);});
+    $('b2rand').addEventListener('click',function(){
+      startNode=Math.floor(Math.random()*N);var attempts=0;
+      do{endNode=Math.floor(Math.random()*N);}while(endNode===startNode&&attempts++<20);
+      pathNodes=findShortestPath(startNode,endNode);
+      if(pathNodes.length>0){hopsHistory.push(pathNodes.length-1);if(hopsHistory.length>10)hopsHistory.shift();triedCount++;}
+      draw();updateStats();
+    });
+    $('b2far').addEventListener('click',function(){
+      function bfsFarthest(src){
+        var dist=new Array(N).fill(-1);dist[src]=0;var q=[src],head=0;
+        while(head<q.length){var u=q[head++];for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(dist[v]<0){dist[v]=dist[u]+1;q.push(v);}}}
+        var far=src,maxD=0;for(var i=0;i<N;i++)if(dist[i]>maxD){maxD=dist[i];far=i;}
+        return far;
+      }
+      var a=bfsFarthest(0),b=bfsFarthest(a);
+      startNode=a;endNode=b;pathNodes=findShortestPath(startNode,endNode);
+      if(pathNodes.length>0){hopsHistory.push(pathNodes.length-1);if(hopsHistory.length>10)hopsHistory.shift();triedCount++;}
+      draw();updateStats();
+    });
+    $('b2clear').addEventListener('click',function(){startNode=-1;endNode=-1;pathNodes=[];draw();updateStats();});
+    onResize(resize);
+    if(window.ResizeObserver)new ResizeObserver(function(){resize();}).observe(canvas);
+  }
+  whenCanvasReady(canvas,init);
+})();
+
+/* ========== 03 谣言传播（修复版：边缘节点被"困在低度数孤岛"） ========== */
+(function(){
+  var canvas=$('c3'),chartCanvas=$('c3chart');
+  if(!canvas||!chartCanvas)return;
+  var ctx=null,W=0,H=0,cctx=null,CW=0,CH=0;
+  var N=500,M=3,GAMMA=0.30,BETA=0.10;
+  var nodes=[],adj=[],links=[],state=[];
+  var hubIndex=-1,leafIndex=-1;
+  var running=false,timer=null,steps=0,lastNewCount=0,currentOrigin=null;
+  var histS=[],histI=[],histR=[],MAXH=200,TICK_MS=380;
+
+  function removeEdge(a,b){
+    var i1=adj[a].indexOf(b);if(i1>=0)adj[a].splice(i1,1);
+    var i2=adj[b].indexOf(a);if(i2>=0)adj[b].splice(i2,1);
+    for(var e=links.length-1;e>=0;e--){
+      if((links[e][0]===a&&links[e][1]===b)||(links[e][0]===b&&links[e][1]===a)){links.splice(e,1);break;}
+    }
+    nodes[a].deg--;nodes[b].deg--;
+  }
+
+  function buildNetwork(){
+    nodes=[];adj=[];links=[];
+    for(var i=0;i<N;i++){nodes.push({x:0,y:0,deg:0,group:0});adj.push([]);}
+    var m0=M+1;
+    for(var i=0;i<m0;i++)for(var j=i+1;j<m0;j++){
+      links.push([i,j]);adj[i].push(j);adj[j].push(i);nodes[i].deg++;nodes[j].deg++;
+    }
+    for(var k=m0;k<N;k++){
+      var totalDeg=0;for(var i=0;i<k;i++)totalDeg+=nodes[i].deg;
+      if(totalDeg<=0)break;
+      var targets=[],guard=0;
+      while(targets.length<M&&guard++<800){
+        var r=Math.random()*totalDeg,cum=0;
+        for(var i=0;i<k;i++){cum+=nodes[i].deg;if(r<=cum){if(targets.indexOf(i)===-1)targets.push(i);break;}}
+      }
+      for(var t=0;t<targets.length;t++){
+        var v=targets[t];links.push([k,v]);adj[k].push(v);adj[v].push(k);nodes[k].deg++;nodes[v].deg++;
       }
     }
 
-    /* ---- 强化大 V：连接"度数最高的那些节点" ---- */
-    var maxIdx = 0, maxDeg = 0;
-    for (var i = 0; i < N; i++){
-      if (nodes[i].deg > maxDeg){ maxDeg = nodes[i].deg; maxIdx = i; }
+    /* === 强化大 V：额外连接 120 个随机节点 === */
+    var maxIdx=0,maxDeg=0;
+    for(var i=0;i<N;i++)if(nodes[i].deg>maxDeg){maxDeg=nodes[i].deg;maxIdx=i;}
+    var extra=120,cands=[];
+    for(var i=0;i<N;i++)if(i!==maxIdx&&adj[maxIdx].indexOf(i)===-1)cands.push(i);
+    for(var i=cands.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=cands[i];cands[i]=cands[j];cands[j]=tmp;}
+    for(var i=0;i<cands.length&&i<extra;i++){
+      var v=cands[i];adj[maxIdx].push(v);adj[v].push(maxIdx);nodes[maxIdx].deg++;nodes[v].deg++;links.push([maxIdx,v]);
+    }
+    hubIndex=maxIdx;
+
+    /* === 修复核心：边缘节点重新连接到"低度数孤岛" === */
+    /* 1. 找当前度数最低的非大V节点 */
+    var minIdx=-1,minDeg=Infinity;
+    for(var i=0;i<N;i++){
+      if(i===hubIndex)continue;
+      if(nodes[i].deg<minDeg){minDeg=nodes[i].deg;minIdx=i;}
+    }
+    leafIndex=minIdx;
+
+    /* 2. 断开它的所有边（它可能连到了高度数区域） */
+    var oldNeighbors=adj[minIdx].slice();
+    for(var k=0;k<oldNeighbors.length;k++){
+      removeEdge(minIdx,oldNeighbors[k]);
     }
 
-    /* 按度数降序排序所有非大V节点 */
-    var sorted = [];
-    for (var i = 0; i < N; i++){
-      if (i !== maxIdx) sorted.push(i);
+    /* 3. 收集所有"低度数节点"（度数 ≤ 5，且不是大V） */
+    var lowDegNodes=[];
+    for(var i=0;i<N;i++){
+      if(i===minIdx||i===hubIndex)continue;
+      if(nodes[i].deg<=5)lowDegNodes.push(i);
     }
-    sorted.sort(function(a, b){ return nodes[b].deg - nodes[a].deg; });
-
-    /* 取前 22 个高度数节点连接大V（若尚未连接） */
-    var added = 0;
-    for (var i = 0; i < sorted.length && added < 22; i++){
-      var t = sorted[i];
-      if (adj[maxIdx].indexOf(t) === -1){
-        adj[maxIdx].push(t);
-        adj[t].push(maxIdx);
-        nodes[maxIdx].deg++;
-        nodes[t].deg++;
-        links.push([maxIdx, t]);
-        added++;
+    /* 打乱 */
+    for(var i=lowDegNodes.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));var tmp=lowDegNodes[i];lowDegNodes[i]=lowDegNodes[j];lowDegNodes[j]=tmp;
+    }
+    /* 4. 只连接 2 个低度数节点 */
+    var connected=0;
+    for(var i=0;i<lowDegNodes.length&&connected<2;i++){
+      var v=lowDegNodes[i];
+      /* 检查这个邻居是否也连着高度数节点 */
+      var hasHighDegNb=false;
+      for(var k=0;k<adj[v].length;k++){
+        if(nodes[adj[v][k]].deg>20){hasHighDegNb=true;break;}
       }
+      if(hasHighDegNb)continue;  /* 跳过：这个邻居可能带着传播链逃逸 */
+      adj[minIdx].push(v);adj[v].push(minIdx);nodes[minIdx].deg++;nodes[v].deg++;links.push([minIdx,v]);
+      connected++;
     }
 
-    hubIndex = maxIdx;
-
-    /* 边缘同学：度数最低的非大V节点 */
-    var minDeg = Infinity;
-    var leafIdx = -1;
-    for (var i = 0; i < N; i++){
-      if (i === hubIndex) continue;
-      if (nodes[i].deg < minDeg){
-        minDeg = nodes[i].deg;
-        leafIdx = i;
-      }
-    }
-    leafIndex = leafIdx;
-
-    /* 清空位置触发重新布局 */
-    for (var i = 0; i < N; i++){ nodes[i].x = 0; nodes[i].y = 0; }
+    for(var i=0;i<N;i++){nodes[i].x=0;nodes[i].y=0;}
     layout();
   }
 
-  /* ---------- 力导向布局 ---------- */
   function layout(){
-    if (!W || !H) return;
-    var n = nodes.length;
-    var needInit = true;
-    for (var i = 0; i < n; i++){
-      if (nodes[i].x !== 0 || nodes[i].y !== 0){ needInit = false; break; }
-    }
-    if (needInit){
-      for (var i = 0; i < n; i++){
-        var a = Math.random() * Math.PI * 2;
-        var rad = Math.min(W, H) * 0.32 * Math.sqrt(Math.random());
-        nodes[i].x = W / 2 + Math.cos(a) * rad;
-        nodes[i].y = H / 2 + Math.sin(a) * rad;
-      }
-    }
-    var cx = W / 2, cy = H / 2;
-    for (var it = 0; it < 70; it++){
-      for (var i = 0; i < n; i++){
-        for (var j = i + 1; j < n; j++){
-          var dx = nodes[j].x - nodes[i].x;
-          var dy = nodes[j].y - nodes[i].y;
-          var d2 = dx * dx + dy * dy;
-          if (d2 < 1) d2 = 1;
-          var d = Math.sqrt(d2);
-          var f = 1600 / d2;
-          var fx = dx / d * f, fy = dy / d * f;
-          nodes[i].x -= fx; nodes[i].y -= fy;
-          nodes[j].x += fx; nodes[j].y += fy;
-        }
-      }
-      for (var e = 0; e < links.length; e++){
-        var a = links[e][0], b = links[e][1];
-        var dx = nodes[b].x - nodes[a].x;
-        var dy = nodes[b].y - nodes[a].y;
-        var d = Math.sqrt(dx * dx + dy * dy) || 1;
-        var f = (d - 55) * 0.05;
-        var fx = dx / d * f, fy = dy / d * f;
-        nodes[a].x += fx; nodes[a].y += fy;
-        nodes[b].x -= fx; nodes[b].y -= fy;
-      }
-      for (var i = 0; i < n; i++){
-        nodes[i].x += (cx - nodes[i].x) * 0.008;
-        nodes[i].y += (cy - nodes[i].y) * 0.008;
-      }
-    }
-    for (var i = 0; i < n; i++){
-      var r = 10 + Math.sqrt(nodes[i].deg) * 3;
-      if (nodes[i].x < r) nodes[i].x = r;
-      else if (nodes[i].x > W - r) nodes[i].x = W - r;
-      if (nodes[i].y < r + 6) nodes[i].y = r + 6;
-      else if (nodes[i].y > H - r - 6) nodes[i].y = H - r - 6;
+    if(!W||!H)return;
+    var cx=W/2,cy=H/2;
+    var maxDeg=1;for(var i=0;i<N;i++)if(nodes[i].deg>maxDeg)maxDeg=nodes[i].deg;
+    for(var i=0;i<N;i++){
+      var a=Math.random()*Math.PI*2;
+      var degRatio=Math.sqrt(nodes[i].deg)/Math.sqrt(maxDeg);
+      var r=(1-degRatio*0.78)*(Math.min(W,H)*0.44);
+      nodes[i].x=cx+Math.cos(a)*r*Math.sqrt(Math.random());
+      nodes[i].y=cy+Math.sin(a)*r*Math.sqrt(Math.random());
+      var rr=4;
+      if(nodes[i].x<rr)nodes[i].x=rr;else if(nodes[i].x>W-rr)nodes[i].x=W-rr;
+      if(nodes[i].y<rr)nodes[i].y=rr;else if(nodes[i].y>H-rr)nodes[i].y=H-rr;
     }
   }
 
-  /* ---------- 状态 ---------- */
   function clearAllStates(){
-    state = [];
-    for (var i = 0; i < N; i++) state.push(0);
-    steps = 0;
-    lastNewCount = 0;
-    totalEverInfected = 0;
-    histS.length = 0; histI.length = 0; histR.length = 0;
+    state=[];for(var i=0;i<N;i++)state.push(0);
+    steps=0;lastNewCount=0;currentOrigin=null;
+    histS.length=0;histI.length=0;histR.length=0;
     recordHistory();
   }
-
   function resetStates(){
-    stop();
-    clearAllStates();
-    draw(); drawChart(); updateStats();
+    stop();clearAllStates();
+    $('cmp-hub').textContent='还没试过';$('cmp-leaf').textContent='还没试过';
+    draw();drawChart();updateStats();
   }
-
   function recordHistory(){
-    var s = 0, iN = 0, r = 0;
-    for (var i = 0; i < N; i++){
-      if (state[i] === 0) s++;
-      else if (state[i] === 1) iN++;
-      else r++;
-    }
-    histS.push(s / N);
-    histI.push(iN / N);
-    histR.push(r / N);
-    if (histS.length > MAXH){
-      histS.shift(); histI.shift(); histR.shift();
-    }
+    var s=0,iN=0,r=0;
+    for(var i=0;i<N;i++){if(state[i]===0)s++;else if(state[i]===1)iN++;else r++;}
+    histS.push(s/N);histI.push(iN/N);histR.push(r/N);
+    if(histS.length>MAXH){histS.shift();histI.shift();histR.shift();}
   }
-
-  /* ---------- 计时器 ---------- */
   function startTimer(){
-    if (timer) clearInterval(timer);
-    running = true;
-    $('b2hub').disabled = true;
-    $('b2leaf').disabled = true;
-    $('b2pick').disabled = true;
-    timer = setInterval(function(){
-      tick();
-      draw(); drawChart(); updateStats();
-    }, TICK_MS);
+    if(timer)clearInterval(timer);running=true;
+    $('b3hub').disabled=true;$('b3leaf').disabled=true;$('b3pick').disabled=true;
+    timer=setInterval(function(){tick();draw();drawChart();updateStats();},TICK_MS);
   }
-
   function stop(){
-    running = false;
-    if (timer){ clearInterval(timer); timer = null; }
-    $('b2hub').disabled = false;
-    $('b2leaf').disabled = false;
-    $('b2pick').disabled = false;
+    running=false;if(timer){clearInterval(timer);timer=null;}
+    $('b3hub').disabled=false;$('b3leaf').disabled=false;$('b3pick').disabled=false;
   }
-
-  /* 从指定节点开始全新的传播 */
+  function recordFinalResult(){
+    if(!currentOrigin)return;
+    var infected=0;for(var i=0;i<N;i++)if(state[i]!==0)infected++;
+    var pct=(infected/N*100).toFixed(0);
+    var html='<span class="big">'+steps+'</span> 步 · 感染 <span class="big">'+infected+'</span> 人（'+pct+'%）';
+    if(currentOrigin==='hub')$('cmp-hub').innerHTML=html;
+    else if(currentOrigin==='leaf')$('cmp-leaf').innerHTML=html;
+    currentOrigin=null;
+  }
   function infect(idx){
-    if (idx < 0 || idx >= N) return;
-    stop();
-    for (var i = 0; i < N; i++) state[i] = 0;
-    state[idx] = 1;
-    steps = 0;
-    lastNewCount = 1;
-    totalEverInfected = 1;
-    histS.length = 0; histI.length = 0; histR.length = 0;
-    recordHistory();
-    draw(); drawChart(); updateStats();
-    startTimer();
+    if(idx<0||idx>=N)return;stop();
+    for(var i=0;i<N;i++)state[i]=0;
+    state[idx]=1;steps=0;lastNewCount=1;
+    if(idx===hubIndex)currentOrigin='hub';
+    else if(idx===leafIndex)currentOrigin='leaf';
+    else currentOrigin='other';
+    histS.length=0;histI.length=0;histR.length=0;
+    recordHistory();draw();drawChart();updateStats();startTimer();
   }
-
-  /* ---------- 一步演化 ---------- */
   function tick(){
-    var newlyInfected = [];
-    var newlyRecovered = [];
-
-    for (var i = 0; i < N; i++){
-      if (state[i] !== 1) continue;
-
-      /* 每个 I 节点尝试感染每个 S 邻居 */
-      for (var k = 0; k < adj[i].length; k++){
-        var v = adj[i][k];
-        if (state[v] === 0 && Math.random() < BETA){
-          newlyInfected.push(v);
-        }
+    var newlyInfected=[],newlyRecovered=[];
+    for(var i=0;i<N;i++){
+      if(state[i]!==1)continue;
+      for(var k=0;k<adj[i].length;k++){
+        var v=adj[i][k];
+        if(state[v]===0&&Math.random()<BETA)newlyInfected.push(v);
       }
-      /* 恢复 */
-      if (Math.random() < GAMMA){
-        newlyRecovered.push(i);
-      }
+      if(Math.random()<GAMMA)newlyRecovered.push(i);
     }
-
-    /* 应用感染（去重） */
-    var seen = {};
-    var actualNew = 0;
-    for (var i = 0; i < newlyInfected.length; i++){
-      var v = newlyInfected[i];
-      if (state[v] === 0 && !seen[v]){
-        seen[v] = true;
-        state[v] = 1;
-        actualNew++;
-        totalEverInfected++;
-      }
+    var seen={},actualNew=0;
+    for(var i=0;i<newlyInfected.length;i++){
+      var v=newlyInfected[i];
+      if(state[v]===0&&!seen[v]){seen[v]=true;state[v]=1;actualNew++;}
     }
-    /* 应用恢复 */
-    for (var i = 0; i < newlyRecovered.length; i++){
-      state[newlyRecovered[i]] = 2;
-    }
-
-    lastNewCount = actualNew;
-    steps++;
-    recordHistory();
-
-    /* 无 I 则自动停止 */
-    var anyI = false;
-    for (var i = 0; i < N; i++) if (state[i] === 1){ anyI = true; break; }
-    if (!anyI) stop();
+    for(var i=0;i<newlyRecovered.length;i++)state[newlyRecovered[i]]=2;
+    lastNewCount=actualNew;steps++;recordHistory();
+    var anyI=false;for(var i=0;i<N;i++)if(state[i]===1){anyI=true;break;}
+    if(!anyI){recordFinalResult();stop();}
   }
-
-  /* ---------- 绘制网络 ---------- */
   function draw(){
-    if (!ctx || W <= 1 || H <= 1) return;
-    if (nodes.length !== N) return;
-    ctx.clearRect(0, 0, W, H);
-
-    /* 边 */
-    for (var e = 0; e < links.length; e++){
-      var a = links[e][0], b = links[e][1];
-      var alive = (state[a] !== 0 || state[b] !== 0);
-      ctx.strokeStyle = alive
-        ? 'rgba(96,165,250,0.42)'
-        : 'rgba(96,165,250,0.10)';
-      ctx.lineWidth = 1.1;
-      ctx.beginPath();
-      ctx.moveTo(nodes[a].x, nodes[a].y);
-      ctx.lineTo(nodes[b].x, nodes[b].y);
-      ctx.stroke();
+    if(!ctx||W<=1||H<=1)return;if(nodes.length!==N)return;
+    ctx.clearRect(0,0,W,H);
+    ctx.lineWidth=0.5;ctx.strokeStyle='rgba(96,165,250,0.06)';ctx.beginPath();
+    for(var e=0;e<links.length;e++){
+      var a=links[e][0],b=links[e][1];
+      if(state[a]===0&&state[b]===0)continue;
+      ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);
     }
-
-    /* 节点 */
-    for (var i = 0; i < N; i++){
-      var p = nodes[i];
-      var r = 4 + Math.sqrt(p.deg) * 3.2;
-      var col;
-      if (state[i] === 0)      col = '#475569';
-      else if (state[i] === 1) col = '#fb923c';
-      else                     col = '#38bdf8';
-
-      /* I 加光晕 */
-      if (state[i] === 1){
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r + 7, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(251,146,60,0.22)';
-        ctx.fill();
+    ctx.stroke();
+    function drawByState(ts,color,rm){
+      ctx.fillStyle=color;ctx.beginPath();
+      for(var i=0;i<N;i++){
+        if(state[i]!==ts)continue;
+        var r=(3+Math.sqrt(nodes[i].deg)*0.8)*rm;
+        ctx.moveTo(nodes[i].x+r,nodes[i].y);ctx.arc(nodes[i].x,nodes[i].y,r,0,Math.PI*2);
       }
-
-      /* 大 V 金环 */
-      if (i === hubIndex){
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r + 10, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(251,191,36,0.16)';
-        ctx.fill();
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = col;
       ctx.fill();
-      ctx.lineWidth = (i === hubIndex) ? 3 : 1.5;
-      ctx.strokeStyle = (i === hubIndex) ? '#fbbf24' : '#070b15';
-      ctx.stroke();
-
-      /* 大节点显示度数 */
-      if (i === hubIndex || p.deg >= 8){
-        ctx.fillStyle = (i === hubIndex) ? '#78350f' : '#06111f';
-        ctx.font = 'bold ' + Math.min(14, r) + 'px -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(String(p.deg), p.x, p.y + 1);
-      }
     }
-
-    /* 大V 标签 */
-    if (hubIndex >= 0 && nodes[hubIndex]){
-      var hp = nodes[hubIndex];
-      ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 13px -apple-system, "PingFang SC", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('⭐ 大 V', hp.x, hp.y - 8 - Math.sqrt(hp.deg) * 3.2);
+    drawByState(0,'rgba(71,85,105,0.6)',1);
+    drawByState(2,'rgba(56,189,248,0.8)',1);
+    drawByState(1,'#fb923c',1.2);
+    if(hubIndex>=0){
+      var hp=nodes[hubIndex],hr=4+Math.sqrt(hp.deg)*1.2;
+      ctx.beginPath();ctx.arc(hp.x,hp.y,hr+8,0,Math.PI*2);ctx.fillStyle='rgba(251,191,36,0.22)';ctx.fill();
+      ctx.beginPath();ctx.arc(hp.x,hp.y,hr,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
+      ctx.lineWidth=2.5;ctx.strokeStyle='#ffffff';ctx.stroke();
+      ctx.fillStyle='#fbbf24';ctx.font='bold 14px -apple-system,"PingFang SC",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText('⭐ 大 V('+hp.deg+')',hp.x,hp.y-hr-6);
+    }
+    if(leafIndex>=0){
+      var lp=nodes[leafIndex],lr=4+Math.sqrt(lp.deg)*1.2;
+      ctx.beginPath();ctx.arc(lp.x,lp.y,lr+8,0,Math.PI*2);ctx.fillStyle='rgba(96,165,250,0.22)';ctx.fill();
+      ctx.beginPath();ctx.arc(lp.x,lp.y,lr,0,Math.PI*2);ctx.fillStyle='#60a5fa';ctx.fill();
+      ctx.lineWidth=2.5;ctx.strokeStyle='#ffffff';ctx.stroke();
+      ctx.fillStyle='#60a5fa';ctx.font='bold 14px -apple-system,"PingFang SC",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillText('👤 边缘('+lp.deg+')',lp.x,lp.y+lr+6);
     }
   }
-
-  /* ---------- 曲线图 ---------- */
   function drawChart(){
-    if (!cctx || CW <= 1 || CH <= 1) return;
-    cctx.clearRect(0, 0, CW, CH);
-    cctx.fillStyle = '#070b15';
-    cctx.fillRect(0, 0, CW, CH);
-
-    var padL = 46, padR = 12, padT = 12, padB = 28;
-    var plotW = CW - padL - padR;
-    var plotH = CH - padT - padB;
-    if (plotW < 10 || plotH < 10) return;
-
-    var yTicks = [0, 0.25, 0.5, 0.75, 1];
-    cctx.font = '11px -apple-system, "PingFang SC", sans-serif';
-    cctx.textAlign = 'right';
-    cctx.textBaseline = 'middle';
-    for (var ti = 0; ti < yTicks.length; ti++){
-      var tv = yTicks[ti];
-      var yy = padT + plotH * (1 - tv);
-      cctx.strokeStyle = (tv === 0 || tv === 1) ? '#2b3c63' : '#18233c';
-      cctx.lineWidth = 1;
-      cctx.beginPath();
-      cctx.moveTo(padL, yy);
-      cctx.lineTo(padL + plotW, yy);
-      cctx.stroke();
-      cctx.fillStyle = '#6b7c9c';
-      cctx.fillText((tv * 100).toFixed(0) + '%', padL - 6, yy);
+    if(!cctx||CW<=1||CH<=1)return;
+    cctx.clearRect(0,0,CW,CH);cctx.fillStyle='#070b15';cctx.fillRect(0,0,CW,CH);
+    var padL=44,padR=10,padT=10,padB=26;
+    var plotW=CW-padL-padR,plotH=CH-padT-padB;
+    if(plotW<10||plotH<10)return;
+    var yTicks=[0,0.5,1];
+    cctx.font='11px -apple-system,"PingFang SC",sans-serif';
+    cctx.textAlign='right';cctx.textBaseline='middle';
+    for(var ti=0;ti<yTicks.length;ti++){
+      var tv=yTicks[ti],yy=padT+plotH*(1-tv);
+      cctx.strokeStyle=(tv===0||tv===1)?'#2b3c63':'#18233c';cctx.lineWidth=1;
+      cctx.beginPath();cctx.moveTo(padL,yy);cctx.lineTo(padL+plotW,yy);cctx.stroke();
+      cctx.fillStyle='#6b7c9c';cctx.fillText((tv*100).toFixed(0)+'%',padL-5,yy);
     }
-    cctx.strokeStyle = '#3b4d70';
-    cctx.lineWidth = 1.4;
-    cctx.beginPath();
-    cctx.moveTo(padL, padT);
-    cctx.lineTo(padL, padT + plotH);
-    cctx.lineTo(padL + plotW, padT + plotH);
-    cctx.stroke();
-
-    cctx.textAlign = 'center';
-    cctx.textBaseline = 'top';
-    cctx.fillStyle = '#6b7c9c';
-    var nTicks = 4;
-    for (var i = 0; i <= nTicks; i++){
-      var frac = i / nTicks;
-      var xx = padL + plotW * frac;
-      cctx.strokeStyle = '#2b3c63';
+    cctx.strokeStyle='#3b4d70';cctx.lineWidth=1.3;
+    cctx.beginPath();cctx.moveTo(padL,padT);cctx.lineTo(padL,padT+plotH);cctx.lineTo(padL+plotW,padT+plotH);cctx.stroke();
+    cctx.textAlign='center';cctx.textBaseline='top';cctx.fillStyle='#6b7c9c';
+    cctx.fillText('0',padL,padT+plotH+6);cctx.fillText(String(MAXH),padL+plotW,padT+plotH+6);
+    cctx.fillText('时间步',padL+plotW/2,padT+plotH+6);
+    var n=histS.length;if(n<1)return;
+    var dx=plotW/(MAXH-1);
+    function line(arr,color){
+      cctx.strokeStyle=color;cctx.lineWidth=2.2;cctx.lineJoin='round';cctx.lineCap='round';
       cctx.beginPath();
-      cctx.moveTo(xx, padT + plotH);
-      cctx.lineTo(xx, padT + plotH + 4);
-      cctx.stroke();
-      cctx.fillText(String(Math.round(MAXH * frac)), xx, padT + plotH + 6);
-    }
-    cctx.fillText('时间步', padL + plotW / 2, padT + plotH + 18);
-
-    var n = histS.length;
-    if (n < 1) return;
-    var dx = plotW / (MAXH - 1);
-
-    function line(arr, color){
-      cctx.strokeStyle = color;
-      cctx.lineWidth = 2.2;
-      cctx.lineJoin = 'round';
-      cctx.lineCap = 'round';
-      cctx.beginPath();
-      for (var i = 0; i < n; i++){
-        var x = padL + i * dx;
-        var y = padT + plotH * (1 - arr[i]);
-        if (i === 0) cctx.moveTo(x, y); else cctx.lineTo(x, y);
-      }
+      for(var i=0;i<n;i++){var x=padL+i*dx,y=padT+plotH*(1-arr[i]);if(i===0)cctx.moveTo(x,y);else cctx.lineTo(x,y);}
       cctx.stroke();
     }
-    line(histS, '#94a3b8');
-    line(histI, '#fb923c');
-    line(histR, '#38bdf8');
-
-    var lastX = padL + (n - 1) * dx;
-    function dot(arr, color){
-      var y = padT + plotH * (1 - arr[n - 1]);
-      cctx.beginPath();
-      cctx.arc(lastX, y, 3.4, 0, Math.PI * 2);
-      cctx.fillStyle = color;
-      cctx.fill();
-    }
-    dot(histS, '#94a3b8');
-    dot(histI, '#fb923c');
-    dot(histR, '#38bdf8');
+    line(histS,'#94a3b8');line(histI,'#fb923c');line(histR,'#38bdf8');
   }
-
   function updateStats(){
-    var s = 0, iN = 0, r = 0;
-    for (var i = 0; i < N; i++){
-      if (state[i] === 0) s++;
-      else if (state[i] === 1) iN++;
-      else r++;
-    }
-    $('m2s').textContent = s;
-    $('m2i').textContent = iN;
-    $('m2r').textContent = r;
-    $('m2b').textContent = '+' + lastNewCount;
+    var s=0,iN=0,r=0;
+    for(var i=0;i<N;i++){if(state[i]===0)s++;else if(state[i]===1)iN++;else r++;}
+    $('m3s').textContent=s;$('m3i').textContent=iN;$('m3r').textContent=r;
+    $('m3b').textContent='+'+lastNewCount;$('m3step').textContent=steps;
   }
-
   function resize(){
-    var r = fitCanvas(canvas);
-    ctx = r.ctx; W = r.w; H = r.h;
-    var rc = fitCanvas(chartCanvas);
-    cctx = rc.ctx; CW = rc.w; CH = rc.h;
-    if (nodes.length !== N) buildNetwork();
-    else layout();
-    draw(); drawChart();
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;
+    var rc=fitCanvas(chartCanvas);cctx=rc.ctx;CW=rc.w;CH=rc.h;
+    if(nodes.length!==N)buildNetwork();else layout();
+    draw();drawChart();
   }
-
   function init(){
-    var r = fitCanvas(canvas);
-    ctx = r.ctx; W = r.w; H = r.h;
-    var rc = fitCanvas(chartCanvas);
-    cctx = rc.ctx; CW = rc.w; CH = rc.h;
-
-    buildNetwork();
-    clearAllStates();
-
-    canvas.addEventListener('pointerdown', function(e){
-      var rect = canvas.getBoundingClientRect();
-      var mx = e.clientX - rect.left;
-      var my = e.clientY - rect.top;
-      var best = -1, bd = 3600;
-      for (var i = 0; i < N; i++){
-        var dx = nodes[i].x - mx;
-        var dy = nodes[i].y - my;
-        var d2 = dx * dx + dy * dy;
-        if (d2 < bd){ bd = d2; best = i; }
-      }
-      if (best >= 0) infect(best);
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;
+    var rc=fitCanvas(chartCanvas);cctx=rc.ctx;CW=rc.w;CH=rc.h;
+    buildNetwork();clearAllStates();
+    canvas.addEventListener('pointerdown',function(e){
+      var rect=canvas.getBoundingClientRect();
+      var mx=e.clientX-rect.left,my=e.clientY-rect.top;
+      var best=-1,bd=400;
+      for(var i=0;i<N;i++){var dx=nodes[i].x-mx,dy=nodes[i].y-my;var d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=i;}}
+      if(best>=0)infect(best);
     });
-
-    bindSlider('s2b', 'v2b', function(v){ return v.toFixed(2); }, function(v){
-      BETA = v;
+    bindSlider('s3b','v3b',function(v){return v.toFixed(2);},function(v){
+      BETA=v;$('cmp-hub').textContent='还没试过';$('cmp-leaf').textContent='还没试过';
     });
-
-    $('b2hub').addEventListener('click', function(){
-      if (hubIndex >= 0) infect(hubIndex);
+    $('b3hub').addEventListener('click',function(){if(hubIndex>=0)infect(hubIndex);});
+    $('b3leaf').addEventListener('click',function(){if(leafIndex>=0)infect(leafIndex);});
+    $('b3pick').addEventListener('click',function(){
+      var candidates=[];for(var i=0;i<N;i++)if(state[i]===0)candidates.push(i);
+      if(candidates.length===0){clearAllStates();for(var i=0;i<N;i++)candidates.push(i);}
+      var pick=candidates[Math.floor(Math.random()*candidates.length)];infect(pick);
     });
-    $('b2leaf').addEventListener('click', function(){
-      if (leafIndex >= 0) infect(leafIndex);
-    });
-    $('b2pick').addEventListener('click', function(){
-      var candidates = [];
-      for (var i = 0; i < N; i++) if (state[i] === 0) candidates.push(i);
-      if (candidates.length === 0){
-        clearAllStates();
-        for (var i = 0; i < N; i++) candidates.push(i);
-      }
-      var pick = candidates[Math.floor(Math.random() * candidates.length)];
-      infect(pick);
-    });
-    $('b2reset').addEventListener('click', resetStates);
-
+    $('b3reset').addEventListener('click',resetStates);
     onResize(resize);
-    if (window.ResizeObserver){
-      new ResizeObserver(function(){ resize(); }).observe(canvas);
-    }
+    if(window.ResizeObserver)new ResizeObserver(function(){resize();}).observe(canvas);
   }
-
-  whenCanvasReady(canvas, init);
+  whenCanvasReady(canvas,init);
 })();
 
-
-/* ==================== 03 演化博弈论：三策略空间博弈 ==================== */
+/* ========== 04 演化博弈论 ========== */
 (function(){
-  var canvas = $('c3');
-  var chartCanvas = $('c3chart');
-  if (!canvas || !chartCanvas) return;
-
-  var ctx = null, W = 0, H = 0;
-  var cctx = null, CW = 0, CH = 0;
-
-  var GS   = 60;
-  var SIZE = GS * GS;
-
-  var gA = new Uint8Array(SIZE);
-  var gB = new Uint8Array(SIZE);
-  var grid = gA;
-  var scores = new Float32Array(SIZE);
-
-  var NB = new Int32Array(SIZE * 4);
+  var canvas=$('c4'),chartCanvas=$('c4chart');
+  if(!canvas||!chartCanvas)return;
+  var ctx=null,W=0,H=0,cctx=null,CW=0,CH=0;
+  var GS=60,SIZE=GS*GS;
+  var gA=new Uint8Array(SIZE),gB=new Uint8Array(SIZE);
+  var grid=gA,scores=new Float32Array(SIZE);
+  var NB=new Int32Array(SIZE*4);
   (function(){
-    for (var y = 0; y < GS; y++){
-      for (var x = 0; x < GS; x++){
-        var i = y * GS + x;
-        NB[i * 4]     = y * GS + ((x + 1) % GS);
-        NB[i * 4 + 1] = y * GS + ((x - 1 + GS) % GS);
-        NB[i * 4 + 2] = ((y + 1) % GS) * GS + x;
-        NB[i * 4 + 3] = ((y - 1 + GS) % GS) * GS + x;
-      }
+    for(var y=0;y<GS;y++)for(var x=0;x<GS;x++){
+      var i=y*GS+x;
+      NB[i*4]=y*GS+((x+1)%GS);
+      NB[i*4+1]=y*GS+((x-1+GS)%GS);
+      NB[i*4+2]=((y+1)%GS)*GS+x;
+      NB[i*4+3]=((y-1+GS)%GS)*GS+x;
     }
   })();
-
-  var off  = document.createElement('canvas');
-  off.width  = GS;
-  off.height = GS;
-  var octx = off.getContext('2d');
-  var img  = octx.createImageData(GS, GS);
-  var data = img.data;
-
-  var T = 1.2;
-  var CP = 0.25;
-  var PAY = [];
-
-  function rebuildPayoff(){
-    PAY = [
-      [1,       0,       1       ],
-      [T,       0,      -1       ],
-      [1 - CP, -CP,      1 - CP  ]
-    ];
-  }
-
-  var running = false;
-  var gen = 0;
-  var rafId = null;
-  var lastStep = 0;
-
-  var MAXH = 360;
-  var histC = [], histD = [], histP = [];
-
+  var off=document.createElement('canvas');off.width=GS;off.height=GS;
+  var octx=off.getContext('2d');var img=octx.createImageData(GS,GS);var data=img.data;
+  var T=1.2,CP=0.25,PAY=[];
+  function rebuildPayoff(){PAY=[[1,0,1],[T,0,-1],[1-CP,-CP,1-CP]];}
+  var running=false,gen=0,rafId=null,lastStep=0;
+  var MAXH=360,histC=[],histD=[],histP=[];
   function randomize(){
-    for (var i = 0; i < SIZE; i++) grid[i] = Math.floor(Math.random() * 3);
-    gen = 0;
-    histC.length = 0; histD.length = 0; histP.length = 0;
-    recordHistory();
+    for(var i=0;i<SIZE;i++)grid[i]=Math.floor(Math.random()*3);
+    gen=0;histC.length=0;histD.length=0;histP.length=0;recordHistory();
   }
-
   function fillAll(v){
-    grid.fill(v);
-    gen = 0;
-    histC.length = 0; histD.length = 0; histP.length = 0;
-    recordHistory();
+    grid.fill(v);gen=0;histC.length=0;histD.length=0;histP.length=0;recordHistory();
   }
-
   function step(){
-    var i, b, k, j;
-    for (i = 0; i < SIZE; i++){
-      var row = PAY[grid[i]];
-      b = i * 4;
-      scores[i] = row[grid[NB[b]]]
-                + row[grid[NB[b + 1]]]
-                + row[grid[NB[b + 2]]]
-                + row[grid[NB[b + 3]]];
+    var i,b,k,j;
+    for(i=0;i<SIZE;i++){
+      var row=PAY[grid[i]];b=i*4;
+      scores[i]=row[grid[NB[b]]]+row[grid[NB[b+1]]]+row[grid[NB[b+2]]]+row[grid[NB[b+3]]];
     }
-    var next = (grid === gA) ? gB : gA;
-    for (i = 0; i < SIZE; i++){
-      var bestIdx = i, bestSc = scores[i];
-      b = i * 4;
-      for (k = 0; k < 4; k++){
-        j = NB[b + k];
-        if (scores[j] > bestSc){ bestSc = scores[j]; bestIdx = j; }
-      }
-      next[i] = grid[bestIdx];
+    var next=(grid===gA)?gB:gA;
+    for(i=0;i<SIZE;i++){
+      var bestIdx=i,bestSc=scores[i];b=i*4;
+      for(k=0;k<4;k++){j=NB[b+k];if(scores[j]>bestSc){bestSc=scores[j];bestIdx=j;}}
+      next[i]=grid[bestIdx];
     }
-    grid = next;
-    gen++;
-    recordHistory();
+    grid=next;gen++;recordHistory();
   }
-
   function recordHistory(){
-    var c = 0, d = 0, p = 0;
-    for (var i = 0; i < SIZE; i++){
-      var s = grid[i];
-      if (s === 0) c++; else if (s === 1) d++; else p++;
-    }
-    histC.push(c / SIZE); histD.push(d / SIZE); histP.push(p / SIZE);
-    if (histC.length > MAXH){
-      histC.shift(); histD.shift(); histP.shift();
-    }
+    var c=0,d=0,p=0;
+    for(var i=0;i<SIZE;i++){var s=grid[i];if(s===0)c++;else if(s===1)d++;else p++;}
+    histC.push(c/SIZE);histD.push(d/SIZE);histP.push(p/SIZE);
+    if(histC.length>MAXH){histC.shift();histD.shift();histP.shift();}
   }
-
   function render(){
-    if (!ctx || W <= 1 || H <= 1) return;
-    for (var i = 0; i < SIZE; i++){
-      var p = i * 4, s = grid[i];
-      if (s === 0){ data[p]=56; data[p+1]=189; data[p+2]=248; }
-      else if (s === 1){ data[p]=248; data[p+1]=113; data[p+2]=113; }
-      else { data[p]=251; data[p+1]=191; data[p+2]=36; }
-      data[p+3] = 255;
+    if(!ctx||W<=1||H<=1)return;
+    for(var i=0;i<SIZE;i++){
+      var p=i*4,s=grid[i];
+      if(s===0){data[p]=56;data[p+1]=189;data[p+2]=248;}
+      else if(s===1){data[p]=248;data[p+1]=113;data[p+2]=113;}
+      else{data[p]=251;data[p+1]=191;data[p+2]=36;}
+      data[p+3]=255;
     }
-    octx.putImageData(img, 0, 0);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(off, 0, 0, W, H);
+    octx.putImageData(img,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(off,0,0,W,H);
   }
-
   function drawChart(){
-    if (!cctx || CW <= 1 || CH <= 1) return;
-    cctx.clearRect(0, 0, CW, CH);
-    cctx.fillStyle = '#070b15';
-    cctx.fillRect(0, 0, CW, CH);
-
-    var padL = 50, padR = 12, padT = 14, padB = 32;
-    var plotW = CW - padL - padR;
-    var plotH = CH - padT - padB;
-    if (plotW < 10 || plotH < 10) return;
-
-    var yTicks = [0, 0.25, 0.5, 0.75, 1];
-    cctx.font = '12px -apple-system, "PingFang SC", sans-serif';
-    cctx.textAlign = 'right';
-    cctx.textBaseline = 'middle';
-    for (var ti = 0; ti < yTicks.length; ti++){
-      var tv = yTicks[ti];
-      var yy = padT + plotH * (1 - tv);
-      cctx.strokeStyle = (tv === 0 || tv === 1) ? '#2b3c63' : '#18233c';
-      cctx.lineWidth = 1;
-      cctx.beginPath();
-      cctx.moveTo(padL, yy);
-      cctx.lineTo(padL + plotW, yy);
-      cctx.stroke();
-      cctx.fillStyle = '#6b7c9c';
-      cctx.fillText((tv * 100).toFixed(0) + '%', padL - 6, yy);
+    if(!cctx||CW<=1||CH<=1)return;
+    cctx.clearRect(0,0,CW,CH);cctx.fillStyle='#070b15';cctx.fillRect(0,0,CW,CH);
+    var padL=50,padR=12,padT=14,padB=32;
+    var plotW=CW-padL-padR,plotH=CH-padT-padB;
+    if(plotW<10||plotH<10)return;
+    var yTicks=[0,0.25,0.5,0.75,1];
+    cctx.font='12px -apple-system,"PingFang SC",sans-serif';
+    cctx.textAlign='right';cctx.textBaseline='middle';
+    for(var ti=0;ti<yTicks.length;ti++){
+      var tv=yTicks[ti],yy=padT+plotH*(1-tv);
+      cctx.strokeStyle=(tv===0||tv===1)?'#2b3c63':'#18233c';cctx.lineWidth=1;
+      cctx.beginPath();cctx.moveTo(padL,yy);cctx.lineTo(padL+plotW,yy);cctx.stroke();
+      cctx.fillStyle='#6b7c9c';cctx.fillText((tv*100).toFixed(0)+'%',padL-6,yy);
     }
-    cctx.strokeStyle = '#3b4d70';
-    cctx.lineWidth = 1.5;
-    cctx.beginPath();
-    cctx.moveTo(padL, padT);
-    cctx.lineTo(padL, padT + plotH);
-    cctx.lineTo(padL + plotW, padT + plotH);
-    cctx.stroke();
-
-    cctx.textAlign = 'center';
-    cctx.textBaseline = 'top';
-    cctx.fillStyle = '#6b7c9c';
-    var nTicks = 4;
-    for (var i = 0; i <= nTicks; i++){
-      var frac = i / nTicks;
-      var xx = padL + plotW * frac;
-      cctx.strokeStyle = '#2b3c63';
-      cctx.beginPath();
-      cctx.moveTo(xx, padT + plotH);
-      cctx.lineTo(xx, padT + plotH + 4);
-      cctx.stroke();
-      cctx.fillText(String(Math.round(MAXH * frac)), xx, padT + plotH + 6);
+    cctx.strokeStyle='#3b4d70';cctx.lineWidth=1.5;
+    cctx.beginPath();cctx.moveTo(padL,padT);cctx.lineTo(padL,padT+plotH);cctx.lineTo(padL+plotW,padT+plotH);cctx.stroke();
+    cctx.textAlign='center';cctx.textBaseline='top';cctx.fillStyle='#6b7c9c';
+    var nTicks=4;
+    for(var i=0;i<=nTicks;i++){
+      var frac=i/nTicks,xx=padL+plotW*frac;
+      cctx.strokeStyle='#2b3c63';
+      cctx.beginPath();cctx.moveTo(xx,padT+plotH);cctx.lineTo(xx,padT+plotH+4);cctx.stroke();
+      cctx.fillText(String(Math.round(MAXH*frac)),xx,padT+plotH+6);
     }
-    cctx.fillText('时间步', padL + plotW / 2, padT + plotH + 20);
-
-    var n = histC.length;
-    if (n < 1) return;
-    var dx = plotW / (MAXH - 1);
-
-    function line(arr, color){
-      cctx.strokeStyle = color;
-      cctx.lineWidth = 2.4;
-      cctx.lineJoin = 'round';
-      cctx.lineCap = 'round';
+    cctx.fillText('时间步',padL+plotW/2,padT+plotH+20);
+    var n=histC.length;if(n<1)return;
+    var dx=plotW/(MAXH-1);
+    function line(arr,color){
+      cctx.strokeStyle=color;cctx.lineWidth=2.4;cctx.lineJoin='round';cctx.lineCap='round';
       cctx.beginPath();
-      for (var i = 0; i < n; i++){
-        var x = padL + i * dx;
-        var y = padT + plotH * (1 - arr[i]);
-        if (i === 0) cctx.moveTo(x, y); else cctx.lineTo(x, y);
-      }
+      for(var i=0;i<n;i++){var x=padL+i*dx,y=padT+plotH*(1-arr[i]);if(i===0)cctx.moveTo(x,y);else cctx.lineTo(x,y);}
       cctx.stroke();
     }
-    line(histC, '#38bdf8');
-    line(histD, '#f87171');
-    line(histP, '#fbbf24');
-
-    var lastX = padL + (n - 1) * dx;
-    function dot(arr, color){
-      var y = padT + plotH * (1 - arr[n - 1]);
-      cctx.beginPath();
-      cctx.arc(lastX, y, 3.6, 0, Math.PI * 2);
-      cctx.fillStyle = color;
-      cctx.fill();
+    line(histC,'#38bdf8');line(histD,'#f87171');line(histP,'#fbbf24');
+    var lastX=padL+(n-1)*dx;
+    function dot(arr,color){
+      var y=padT+plotH*(1-arr[n-1]);
+      cctx.beginPath();cctx.arc(lastX,y,3.6,0,Math.PI*2);cctx.fillStyle=color;cctx.fill();
     }
-    dot(histC, '#38bdf8');
-    dot(histD, '#f87171');
-    dot(histP, '#fbbf24');
+    dot(histC,'#38bdf8');dot(histD,'#f87171');dot(histP,'#fbbf24');
   }
-
   function updateStats(){
-    var n = histC.length;
-    if (n === 0){
-      $('m3c').textContent = '–'; $('m3d').textContent = '–'; $('m3p').textContent = '–';
-      $('b3bar').style.width = '0%';
-      return;
-    }
-    var c = histC[n - 1], d = histD[n - 1], p = histP[n - 1];
-    $('m3c').textContent = (c * 100).toFixed(0) + '%';
-    $('m3d').textContent = (d * 100).toFixed(0) + '%';
-    $('m3p').textContent = (p * 100).toFixed(0) + '%';
-    $('b3bar').style.width = (c * 100) + '%';
+    var n=histC.length;
+    if(n===0){$('m4c').textContent='–';$('m4d').textContent='–';$('m4p').textContent='–';$('b4bar').style.width='0%';return;}
+    var c=histC[n-1],d=histD[n-1],p=histP[n-1];
+    $('m4c').textContent=(c*100).toFixed(0)+'%';
+    $('m4d').textContent=(d*100).toFixed(0)+'%';
+    $('m4p').textContent=(p*100).toFixed(0)+'%';
+    $('b4bar').style.width=(c*100)+'%';
   }
-
   function loop(t){
-    if (!running){ rafId = null; return; }
-    if (t - lastStep > 70){
-      step(); render(); drawChart(); updateStats();
-      lastStep = t;
-    }
-    rafId = requestAnimationFrame(loop);
+    if(!running){rafId=null;return;}
+    if(t-lastStep>70){step();render();drawChart();updateStats();lastStep=t;}
+    rafId=requestAnimationFrame(loop);
   }
-
-  function start(){
-    running = true;
-    $('b3run').textContent = '⏸ 暂停';
-    $('b3run').classList.add('on');
-    lastStep = 0;
-    if (!rafId) rafId = requestAnimationFrame(loop);
-  }
-  function stop(){
-    running = false;
-    $('b3run').textContent = '▶ 开始演化';
-    $('b3run').classList.remove('on');
-    if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
-  }
-
+  function start(){running=true;$('b4run').textContent='⏸ 暂停';$('b4run').classList.add('on');lastStep=0;if(!rafId)rafId=requestAnimationFrame(loop);}
+  function stop(){running=false;$('b4run').textContent='▶ 开始演化';$('b4run').classList.remove('on');if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
   function resize(){
-    var r = fitCanvas(canvas);
-    ctx = r.ctx; W = r.w; H = r.h;
-    ctx.imageSmoothingEnabled = false;
-    var rc = fitCanvas(chartCanvas);
-    cctx = rc.ctx; CW = rc.w; CH = rc.h;
-    render(); drawChart();
+    var r=fitCanvas(canvas);ctx=r.ctx;W=r.w;H=r.h;ctx.imageSmoothingEnabled=false;
+    var rc=fitCanvas(chartCanvas);cctx=rc.ctx;CW=rc.w;CH=rc.h;
+    render();drawChart();
   }
-
   function init(){
-    rebuildPayoff();
-    randomize();
-    resize();
-
-    canvas.addEventListener('pointerdown', function(e){
-      var rect = canvas.getBoundingClientRect();
-      var x = Math.floor((e.clientX - rect.left) / rect.width  * GS);
-      var y = Math.floor((e.clientY - rect.top ) / rect.height * GS);
-      if (x < 0 || x >= GS || y < 0 || y >= GS) return;
-      var i = y * GS + x;
-      grid[i] = (grid[i] + 1) % 3;
-      render(); updateStats();
+    rebuildPayoff();randomize();resize();
+    canvas.addEventListener('pointerdown',function(e){
+      var rect=canvas.getBoundingClientRect();
+      var x=Math.floor((e.clientX-rect.left)/rect.width*GS);
+      var y=Math.floor((e.clientY-rect.top)/rect.height*GS);
+      if(x<0||x>=GS||y<0||y>=GS)return;
+      var i=y*GS+x;grid[i]=(grid[i]+1)%3;render();updateStats();
     });
-
-    bindSlider('s3t', 'v3t', function(v){ return v.toFixed(2); }, function(v){
-      T = v; rebuildPayoff();
-    });
-    bindSlider('s3c', 'v3c', function(v){ return v.toFixed(2); }, function(v){
-      CP = v; rebuildPayoff();
-    });
-
-    $('b3run').addEventListener('click', function(){ running ? stop() : start(); });
-    $('b3reset').addEventListener('click', function(){
-      stop(); randomize(); render(); drawChart(); updateStats();
-    });
-    $('b3allc').addEventListener('click', function(){
-      stop(); fillAll(0); render(); drawChart(); updateStats();
-    });
-    $('b3alld').addEventListener('click', function(){
-      stop(); fillAll(1); render(); drawChart(); updateStats();
-    });
-    $('b3allp').addEventListener('click', function(){
-      stop(); fillAll(2); render(); drawChart(); updateStats();
-    });
-
+    bindSlider('s4t','v4t',function(v){return v.toFixed(2);},function(v){T=v;rebuildPayoff();});
+    bindSlider('s4c','v4c',function(v){return v.toFixed(2);},function(v){CP=v;rebuildPayoff();});
+    $('b4run').addEventListener('click',function(){running?stop():start();});
+    $('b4reset').addEventListener('click',function(){stop();randomize();render();drawChart();updateStats();});
+    $('b4allc').addEventListener('click',function(){stop();fillAll(0);render();drawChart();updateStats();});
+    $('b4alld').addEventListener('click',function(){stop();fillAll(1);render();drawChart();updateStats();});
+    $('b4allp').addEventListener('click',function(){stop();fillAll(2);render();drawChart();updateStats();});
     onResize(resize);
-    if (window.ResizeObserver){
-      new ResizeObserver(function(){ resize(); }).observe(canvas);
-    }
+    if(window.ResizeObserver)new ResizeObserver(function(){resize();}).observe(canvas);
   }
-
-  whenCanvasReady(canvas, init);
+  whenCanvasReady(canvas,init);
 })();
 </script>
 </body>
